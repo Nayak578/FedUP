@@ -1,0 +1,74 @@
+{
+    "name": "TestInputAction",
+    "maps": [
+        {
+            "name": "MouseTesting",
+            "id": "1f98b846-a8ca-4ac8-a182-f8fb299483ae",
+            "actions": [
+                {
+                    "name": "SlideDown",
+                    "type": "Value",
+                    "id": "ee484321-333b-4e32-8b9d-706f05719a1f",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "a13062ff-f4d0-4cb6-8e29-ab8a7db5f23a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Escape",
+                    "type": "Button",
+                    "id": "43d2473d-5006-407b-bc2b-72fa5b3a6a6c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "98ac0f90-f5cf-475b-9934-73b2d10fb95c",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SlideDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "59ee0d85-a187-41e5-a4a3-e183b4a5a4bf",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "08a31768-0811-46a3-8e31-be2b540d7e97",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

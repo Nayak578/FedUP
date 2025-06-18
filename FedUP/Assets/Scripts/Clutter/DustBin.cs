@@ -21,6 +21,7 @@ public class DustBin : Interactable
                 waste.transform.localPosition = Vector3.zero;
                 moveTotrash = false;
                 CanInteractWithBin.wasteInHand--;
+                Interacting.isHoldingTrash = false;
             }
         }
     }

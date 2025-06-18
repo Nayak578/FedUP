@@ -8,12 +8,8 @@ public class Interacting : MonoBehaviour
     [SerializeField] GameObject E;
     [SerializeField] GameObject Esc;
     private Interactable interactable;
+    private Destructable destructable;
     public static bool isInteracting=false;
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
         if (!isInteracting) {
@@ -27,7 +23,9 @@ public class Interacting : MonoBehaviour
                     E.SetActive(false);
                     isInteracting = true;
                     hit.collider.TryGetComponent<Interactable>(out interactable);
+                    hit.collider.TryGetComponent<Destructable>(out destructable);
                     if (interactable.isActiveAndEnabled) interactable.Interact();
+                    else if (destructable.isActiveAndEnabled) destructable.Destruct();
                 }
 
             } else {

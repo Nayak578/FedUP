@@ -24,6 +24,7 @@ public class Bread : Interactable
                     transform.localPosition = firstPos;
                     secondMovement = true;
                 }
+                
             } else {
                 transform.localPosition = Vector3.Lerp(transform.localPosition, secondPos, speed * Time.deltaTime);
                 if (Vector3.Distance(transform.localPosition, secondPos) < 0.01f) {

@@ -36,5 +36,6 @@ public class QTE1 : MonoBehaviour
             canvas.SetActive(false);
             //gameObject.SetActive(false);
         }
+        if (rb.linearVelocityX == 0) rb.linearVelocityX = speed;
     }
 }

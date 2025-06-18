@@ -1845,7 +1845,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1385261326}
   serializedVersion: 4
-  m_Mass: 0.05
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -2194,7 +2194,7 @@ MonoBehaviour:
   GoldenBrown: {r: 0.6132076, g: 0.5782178, b: 0.39627093, a: 0}
   SlightlyBurned: {r: 0.23584908, g: 0.15479352, b: 0, a: 0}
   Burned: {r: 0.09433961, g: 0.09433961, b: 0.09433961, a: 0}
-  force: {x: 0, y: 20, z: 5}
+  force: {x: 0, y: 40, z: 10}
 --- !u!65 &1696340356
 BoxCollider:
   m_ObjectHideFlags: 0

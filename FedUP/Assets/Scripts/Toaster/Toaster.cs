@@ -89,24 +89,27 @@ public class Toaster : Interactable
         bread.GetComponent<Rigidbody>().useGravity = true;
         bread.GetComponent<Rigidbody>().AddForce(force, ForceMode.Force);
         bread.GetComponent<Collider>().enabled = true;
-        StartCoroutine(StopBreadAfter(1.5f));
+        //StartCoroutine(StopBreadAfter(1f));
 
     }
     public void GreenResult() {
         bread.GetComponent<Renderer>().material.color = GoldenBrown;
+        bread.GetComponent<Rigidbody>().isKinematic = true;
         if (EndToastingAnimation != null) EndToastingAnimation();
+        
     }
     public void YellowResult() {
         bread.GetComponent<Renderer>().material.color = SlightlyBurned;
+        bread.GetComponent<Rigidbody>().isKinematic = true;
+
         if (EndToastingAnimation != null) EndToastingAnimation();
- 
     }
     private IEnumerator StopBreadAfter(float time) {
         yield return new WaitForSeconds(time);
         Rigidbody rb = bread.GetComponent<Rigidbody>();
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
-        rb.isKinematic = true; // Optional, makes it stop reacting to physics
+        //rb.isKinematic = true; // Optional, makes it stop reacting to physics
     }
 
 }

@@ -5,11 +5,6 @@ public class Interactable : MonoBehaviour
 {
     [SerializeField] protected PlayerInput playerInput;
     [SerializeField] protected PlayerInput interactInput;
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.T)) {
@@ -26,8 +21,9 @@ public class Interactable : MonoBehaviour
         interactInput.enabled = true;
     }
     public virtual void UnlockInteract() {
-        playerInput.enabled = true;
         interactInput.enabled = false;
+        playerInput.enabled = true;
+        
         Interacting.isInteracting = false;
     }
 

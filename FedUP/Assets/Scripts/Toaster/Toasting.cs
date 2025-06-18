@@ -33,7 +33,6 @@ public class Toasting : MonoBehaviour
             if (Vector3.Distance(transform.localPosition, firstPosBread) < 0.01f) {
                 transform.localPosition = firstPosBread;
                 startToasting = false;
-                
             }
         }
         if (endToasting) {

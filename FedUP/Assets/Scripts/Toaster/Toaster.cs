@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,8 +9,13 @@ public class Toaster : Interactable
     private Vector2 input;
     [SerializeField] float slidingLength = 10f;
     [SerializeField] GameObject Qte;
+    [SerializeField] Bread bread;
     private Vector2 initial;
     private Vector2 final;
+    [SerializeField] Color GoldenBrown;
+    [SerializeField] Color SlightlyBurned;
+    [SerializeField] Color Burned;
+    [SerializeField] Vector3 force;
     public enum State {
         start, end, pressing, nothing
     }
@@ -21,14 +27,14 @@ public class Toaster : Interactable
 
     private void Toaster_QteComplete(QTE1.QTEResult obj) {
         if (obj == QTE1.QTEResult.red) {
-            Debug.Log("Throw Bread");
+            RedResult();
         }else if (obj == QTE1.QTEResult.green) {
-            Debug.Log("good Bread");
+            GreenResult();
 
         } else if (obj == QTE1.QTEResult.yellow) {
-            Debug.Log("little burnt Bread");
+            YellowResult();
         }
-        if (EndToastingAnimation != null) EndToastingAnimation();
+        
 
     }
 
@@ -60,13 +66,11 @@ public class Toaster : Interactable
 
     }
     public override void UnlockInteract() {
-        Cursor.lockState = CursorLockMode.Locked;
         interactInput.enabled = false;
         playerInput.enabled = true;
+        Cursor.lockState = CursorLockMode.Locked;
         
         Interacting.isInteracting = false;
-        
-        
     }
     public void OnClick(InputAction.CallbackContext context) {
         if (context.performed) {
@@ -79,4 +83,30 @@ public class Toaster : Interactable
     public void MousesePos(InputAction.CallbackContext context) {
         input = context.ReadValue<Vector2>();
     }
+    private void RedResult() {
+        bread.GetComponent<Renderer>().material.color = Burned;
+        if (EndToastingAnimation != null) EndToastingAnimation();
+        bread.GetComponent<Rigidbody>().useGravity = true;
+        bread.GetComponent<Rigidbody>().AddForce(force, ForceMode.Force);
+        bread.GetComponent<Collider>().enabled = true;
+        StartCoroutine(StopBreadAfter(1.5f));
+
+    }
+    public void GreenResult() {
+        bread.GetComponent<Renderer>().material.color = GoldenBrown;
+        if (EndToastingAnimation != null) EndToastingAnimation();
+    }
+    public void YellowResult() {
+        bread.GetComponent<Renderer>().material.color = SlightlyBurned;
+        if (EndToastingAnimation != null) EndToastingAnimation();
+ 
+    }
+    private IEnumerator StopBreadAfter(float time) {
+        yield return new WaitForSeconds(time);
+        Rigidbody rb = bread.GetComponent<Rigidbody>();
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.isKinematic = true; // Optional, makes it stop reacting to physics
+    }
+
 }

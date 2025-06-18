@@ -17,10 +17,11 @@ public class Interacting : MonoBehaviour
             Vector3 fwd = transform.TransformDirection(Vector3.forward);
             if (Physics.Raycast(transform.position, fwd, out hit, range, layer)) {
                 E.SetActive(true);
-                Esc.SetActive(true);
+                
                 Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
                 if (Input.GetKeyDown(KeyCode.E)) {
                     E.SetActive(false);
+                    Esc.SetActive(true);
                     isInteracting = true;
                     hit.collider.TryGetComponent<Interactable>(out interactable);
                     hit.collider.TryGetComponent<Destructable>(out destructable);

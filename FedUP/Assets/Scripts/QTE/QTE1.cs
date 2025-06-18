@@ -33,7 +33,6 @@ public class QTE1 : MonoBehaviour
             }
             if(QteComplete!=null)
             QteComplete(result);
-            Debug.Log(result.ToString());
             canvas.SetActive(false);
             //gameObject.SetActive(false);
         }

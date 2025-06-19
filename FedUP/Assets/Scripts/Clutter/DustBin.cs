@@ -7,7 +7,7 @@ public class DustBin : Interactable
     [SerializeField] float speed = 5f;
     private bool moveTotrash;
     [SerializeField] Vector3 trashPos;
-    
+    Quaternion someRot;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -18,13 +18,20 @@ public class DustBin : Interactable
     void Update()
     {
         if (waste != null && moveTotrash) {
+            waste.GetComponent<wastes>().enabled = false;
+            
             waste.transform.localPosition = Vector3.Lerp(waste.transform.localPosition, trashPos, speed * Time.deltaTime);
-           
+            someRot = Quaternion.Euler(Random.Range(10, 60),0, Random.Range(10, 60));
             if (Vector3.Distance(waste.transform.localPosition, trashPos) < 0.01f) {
                 waste.transform.localPosition = trashPos;
+                waste.transform.localRotation = someRot;
+                waste.GetComponent<Collider>().isTrigger = false;
+                waste.GetComponent<Rigidbody>().useGravity = true;
+               
                 moveTotrash = false;
-                CanInteractWithBin.wasteInHand--;
+                
                 Interacting.isHoldingTrash = false;
+                CanInteractWithBin.wasteInHand--;
             }
         }
     }

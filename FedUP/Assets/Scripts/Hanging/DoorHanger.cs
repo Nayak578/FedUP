@@ -23,6 +23,7 @@ public class DoorHanger : Interactable
             if (Vector3.Distance(item.transform.localPosition, itemPos) < 0.01) {
                 item.transform.localPosition = itemPos;
                 hangItem = false;
+                CanInteractWithHanger.itemsToBehanged--;
             }
         }
     }

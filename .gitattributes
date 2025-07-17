@@ -1,2 +1,34 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Unity scene and prefab files (text-based but should be treated as binary)
+*.unity filter=lfs diff=lfs merge=lfs -text
+*.prefab filter=lfs diff=lfs merge=lfs -text
+*.mat filter=lfs diff=lfs merge=lfs -text
+*.anim filter=lfs diff=lfs merge=lfs -text
+*.controller filter=lfs diff=lfs merge=lfs -text
+
+# Model and texture assets
+*.fbx filter=lfs diff=lfs merge=lfs -text
+*.obj filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.psd filter=lfs diff=lfs merge=lfs -text
+*.tga filter=lfs diff=lfs merge=lfs -text
+*.tif filter=lfs diff=lfs merge=lfs -text
+*.tiff filter=lfs diff=lfs merge=lfs -text
+
+# Audio and video assets
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.ogg filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+
+# Unity specific binaries and cache assets
+*.asset filter=lfs diff=lfs merge=lfs -text
+*.physicMaterial filter=lfs diff=lfs merge=lfs -text
+*.renderTexture filter=lfs diff=lfs merge=lfs -text
+*.shadergraph filter=lfs diff=lfs merge=lfs -text
+*.vfx filter=lfs diff=lfs merge=lfs -text
+
+# Optional: Lock major scene files to avoid multiple edits
+Assets/Scenes/*.unity lockable
+Assets/Prefabs/*.prefab lockable

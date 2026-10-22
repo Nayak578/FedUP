@@ -2,6 +2,8 @@
 
 *Audited 22 Oct 2026 from the running Unity Editor through Unity MCP, plus a read of the files on disk. Nothing in the project was changed.*
 
+> **⚠️ Correction (22 Oct, after the deeper house check):** two findings in section 3 were wrong. The upper floor **does** have a ceiling; the player spawns 1.7 m in the air, which puts the camera above it. And the house is **not** open plan; it has many rooms, which my top-down screenshots couldn't show. See [`HOUSE_CHECK.md`](HOUSE_CHECK.md) for the corrected room map.
+
 > **How to read this:** Each section says what exists, what state it's in, and what that means for the game. Section 9 is a one-page verdict. Section 10 lists the things I may have misread. **Please correct those before I plan anything.**
 
 ---

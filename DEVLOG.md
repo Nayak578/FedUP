@@ -49,5 +49,10 @@
 - **The light switch makes no click yet:** there's an empty sound slot, and audio comes later.
 - **The build is a "development" build** and runs only on this PC. Before any build is shared, I'll move the project to Unity 6000.0.61 (already installed) for the security fix.
 
+### Your feedback (22 Oct)
+- **The west porch is the main entrance.** It moves there in the next build; the east doorway becomes a locked back door.
+- **Too dark:** the next build is slightly brighter.
+- You asked for the whole night as a story before going on: [`STORY_FLOW.md`](STORY_FLOW.md).
+
 ### Next
 Gate 1: Frustration bar + **Drop Your Things** + **Make Toast**. Question: *"Is the toast loop annoying-but-fair within 90 seconds?"*

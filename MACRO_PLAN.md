@@ -19,7 +19,7 @@ Fed Up will be **one apartment scene that changes over the night**, not a series
 | D3 | **Above 100%** | The **bar stops at 100**, but the hidden number keeps counting (up to 200). | ⚠️ A player at 140% must calm down 41 points to get back under 100. "Waking up calm" gets much harder once you've overshot. Say if you'd rather the hidden number also stop at 100. |
 | D4 | **Ending table** (your own notes, pages 55–56) | Your raw table is consistent. The AI-written version on page 7 scrambled it. Decoded, **only three things decide the ending**: *Did you pet the cat?* *Did you answer the phone?* *Did you stay asleep, wake up at 100%, or wake up below 100%?* "Job" and "Apartment" aren't things the player sets. They're the *result*: **the phone decides your job, and how you woke decides your home and the ghost.** Table in **Appendix 2**. **Please confirm before Slice 5.** | 6 main endings + cat death + secret ending = 8. |
 | D5 | **Secret ending** | Triggers if you go to bed **before starting any task**. The cat hasn't appeared yet, so the **cat rule doesn't apply** to this ending. The result is random: loop ending or "ghost wins". | — |
-| D6 | **Finale** | The **Narrative doc version is canon**: everything goes dark, the ghost flickers in corners, and you fight back by throwing toast, breaking mirrors and aiming the flashlight. The comedic toaster-TV-fridge boss is dropped. | — |
+| D6 | **Finale** | **Superseded 22 Oct by `STORY_BIBLE.md`:** the Horror Showdown is a **gun** sequence in the dark, following an image of the ghost. The last shot kills **the boss at the gate**; the house is wrecked and **the ghost survives**. The Burial is a mantra chase → fake wall → axe → between-the-walls squeeze → vent portal → other world → burn the body. | — |
 | D7 | **Bath** | A Phase 1 task. It goes into **Slice 2**. | — |
 | D8 | **Tasks your slice list didn't place** | **Grab a Snack, juice box, radio** → Slice 4. **Phone calls #2–4 and cat visits #2–3** → Slice 5, because they feed the ending (cat rule, phone outcome). | Nothing from the GDD is dropped. |
 
@@ -112,7 +112,7 @@ Fed Up will be **one apartment scene that changes over the night**, not a series
 | Gate | Decision question (you answer by playing) | Contents | Observable exit criteria | Effort |
 |---|---|---|---|---|
 | **0** | *"Does moving through the apartment feel right?"* | Tooling (test guard, tests, build script, video capture) · greybox scene · atmosphere kit · walking · **one interactable: a light switch** | Windows build launches · you start inside the front door · an automated test confirms every room is reachable · the light switch works · zero console errors · ≥60 fps · 30–60 s video | **2–4** |
-| **1** | *"Is the toast loop annoying-but-fair within 90 seconds?"* | Frustration system + bar · **Drop Your Things** · **Make Toast** (timing QTE, jam + mash, burn, launch, smoke alarm) · session log | Every toast outcome reachable · bar moves by exactly the Appendix 1 values (tested) · alarm adds +3%/s until silenced · log written | **3–5** |
+| **1** | *"Is the toast loop annoying-but-fair within 90 seconds?"* | Frustration system + bar · **inner-monologue subtitles** · placeholder cutscene player · **Drop Your Things** (incl. finding the boss's file) · **Make Toast** (timing QTE, jam + mash, burn, launch, smoke alarm) · session log | Every toast outcome reachable · bar moves by exactly the Appendix 1 values (tested) · alarm adds +3%/s until silenced · log written | **3–5** |
 | **2a** | *"Does the apartment feel alive without being hostile yet?"* (part 1) | **Clean Up** · **Bath** · **Phone #1** | Each task can be completed and failed · answer/ignore logged | **3–4** |
 | **2b** | Same question, part 2 | **TV** · **Cat #1** (a capsule that walks, sits and can be petted) | Cat can be petted, or walks off into the hallway · TV channels and remote loss work | **3–4** |
 | **3** | *"Does the first scare land?"* | Sleep → **Phase 2 wake-up** · ghost director v1 · **2–3 jumpscares** (mirror flicker, door slam, hallway footsteps) · atmosphere kit gets darker per phase | Phase change is visible and audible · each scare fires once, only when the director allows · cooldown proven by test | **3–5** |
@@ -125,9 +125,10 @@ Fed Up will be **one apartment scene that changes over the night**, not a series
 |---|---|---|
 | **A1** | Real furniture and props replace the boxes · doors · the cleaned house's real materials · performance pass (bed, chairs, stove) | **3–5** |
 | **A2** | Lighting rebake per phase · grain, fog, purple hallway · first real sounds and ambience · first look-and-feel gate in the real house | **3–5** |
-| **A3** | Horror Showdown finale | **3–5** |
-| **A4** | Burial dream finale (trapdoor maze + puzzle room) | **3–5** |
-| **A5** | Remaining scares, photo swap, eyes in the dark, voice/SFX, menu, settings, final optimisation | **3–5** |
+| **A3** | Horror Showdown: gun in the dark, follow the ghost image, boss-at-the-gate reveal (phone-dependent transformation) | **3–5** |
+| **A4** | Burial: mantra chase, fake wall + axe, squeeze between the walls, 90° vent portal, other world with the ghost's life fragments, burning the body | **5–8** |
+| **A5** | Remaining scares, photo swap, eyes in the dark, environmental-storytelling props, voice/SFX, menu, settings, final optimisation | **3–5** |
+| **A6** | **Cutscenes** (in-engine cinematic, Max Payne-style comic panels, absurd mini-scenes) replacing the greybox placeholders | **5–8** |
 
 ---
 
@@ -136,8 +137,8 @@ Fed Up will be **one apartment scene that changes over the night**, not a series
 | | Sessions | If we do ~4 sessions a week |
 |---|---|---|
 | Greybox gates 0–5 (whole night playable in grey, all 8 endings) | **22–34** | **~1.5–2 months** |
-| Art passes A1–A5 | **15–25** | **+1–1.5 months** |
-| **Total** | **37–59** | **~3–4 months on paper, realistically 4–6** |
+| Art passes A1–A6 (incl. cutscenes, story props) | **22–36** | **+1.5–2.5 months** |
+| **Total** | **44–70** | **~3.5–4.5 months on paper, realistically 5–7** |
 
 **Why "realistically 4–6":** the research's 2–3× rule, plus three things outside my control:
 
@@ -151,11 +152,13 @@ Fed Up will be **one apartment scene that changes over the night**, not a series
 
 ## G. Provisional layout calls (greybox makes these cheap to change; say if any is wrong)
 
-1. **Front door = the doorway at the east end of the entrance corridor** (the only door-sized way in; the west "porch opening" turned out to be a route across the floorless courtyard). You start just inside it, and it's closed behind you.
-2. **The 4.8 m north gap is walled up.** The player can't leave the house (proven by a Play Mode test).
+1. **Front door = the west porch (designer ruling, 22 Oct).** The night starts on the porch; you come in through the front door into the living room.
+2. **The east corridor doorway is a locked back door, and the 4.8 m north gap is walled up.** The player can't leave the house.
 3. **The room east of the kitchen becomes the Store Room** (the GDD's "active store room"). In the cleaned house its doorway is open.
 4. **Room names.** Upstairs: the room with the bed = Bedroom 1, the west front room = Bedroom 2, the toilet room = Bathroom 1, the small middle-north room = Bathroom 2, the landing + L-shaped hall = Hallway. Downstairs: Entrance, Living Room, Kitchen, Store Room. The two north rooms downstairs stay spare for now.
 5. **Walking:** no jump, tired walk at ~2.5 m/s, sprint at ~4 m/s.
+6. **Brightness:** Slice 0 was too dark (designer feedback). From the next build: more ambient light and stronger room lights, still dark and moody.
+7. **The full night as a story, every branch:** see [`STORY_FLOW.md`](STORY_FLOW.md).
 
 The Slice 0 build plan is in [`SLICE_0_PLAN.md`](SLICE_0_PLAN.md).
 
@@ -207,7 +210,7 @@ The Slice 0 build plan is in [`SLICE_0_PLAN.md`](SLICE_0_PLAN.md).
 | Calm extras | Juice box | −5 |
 | | Radio lo-fi uninterrupted 15 s | −5 |
 
-## Appendix 2 — Endings, decoded from your notes (pages 55–56). Please confirm.
+## Appendix 2 — Endings (updated 22 Oct from `STORY_BIBLE.md`; 🟡 = still to confirm)
 
 **Inputs:** Cat petted (yes/no) · Phone answered (yes/no) · Final choice: *stay asleep* / *wake at 100%* / *wake below 100%*
 
@@ -215,11 +218,11 @@ The Slice 0 build plan is in [`SLICE_0_PLAN.md`](SLICE_0_PLAN.md).
 |---|---|---|---|---|---|---|
 | **No** | any | any | **You die in your sleep** (ghost consumes you) | — | — | alive |
 | Yes | Answered | Stay asleep | **Loop of daily routine** | safe | safe | alive |
-| Yes | Answered | Wake at 100% | **Horror Showdown → broken home, job intact** | safe | destroyed | dead |
-| Yes | Answered | Wake below 100% | **Ghost Burial → victory, job and home intact** | safe | safe | at peace |
+| Yes | Answered | Wake at 100% | **Horror Showdown: the ghost visibly turns into the boss; you shoot him at the gate** | (boss dead) | destroyed | **alive** |
+| Yes | Answered | Wake below 100% | **Ghost Burial: burn the body in the other world; promise to live** | safe 🟡 | safe | at peace |
 | Yes | Ignored | Stay asleep | **Unemployed, ghost angry** | gone | safe | alive |
-| Yes | Ignored | Wake at 100% | **Showdown → unemployed, no home** | gone | destroyed | dead |
-| Yes | Ignored | Wake below 100% | **Burial → unemployed, but the ghost spared you** | gone | safe | at peace |
+| Yes | Ignored | Wake at 100% | **Horror Showdown: no transformation; you still shoot the boss at the gate** | (boss dead) | destroyed | **alive** |
+| Yes | Ignored | Wake below 100% | **Ghost Burial (same journey)** | gone 🟡 | safe | at peace |
 | — | — | Bed before any task | **Secret: "Maybe ignoring it all was the real answer."** (random: loop or ghost wins) | — | — | — |
 
 **Still open (needed by Slice 5, not now):** there are four calls, so what counts as "answered the phone"?

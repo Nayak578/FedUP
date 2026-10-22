@@ -12,14 +12,24 @@
 
 You play a tired, underpaid office worker coming home to a suspiciously big apartment full of second-hand, faulty appliances. One evening of chores becomes a night of haunting, absurdity and psychological horror. Your frustration, your choices and one cat decide how the night ends. Look: **Cry of Fear + P.T.** Grounded, low-poly, VHS grain, desaturated, yellowed light, purple fog as the supernatural signal.
 
-## The GDD is law
+## Story canon (highest authority)
+
+**`STORY_BIBLE.md` is the designer's "holy bible".** Part 1 is canon and beats the GDD and every plan. Part 2 holds proposals, which aren't canon until the designer approves them. **Read it before any story, ending, cutscene, dialogue or environment work.** Key points:
+- **He's a burnt-out corporate worker nearing 30** (dreams lost, AI-era despair, addictions, estranged family, unread messages, guilt, passive death wish). He lives in a cheap house by polluting factories.
+- **The phone calls are from the boss** about an important office file he brought home by mistake (found while unpacking the bag).
+- **Main entrance: the west porch.**
+- **Showdown:** a gun in the dark; the last shot kills **the boss at the gate**; the house is wrecked and **the ghost survives**. If the phone was answered, the ghost visibly turns into the boss first.
+- **Burial:** mantra → the ghost flees to the upper floor's NE wall → fake wall + axe → squeeze through the 0.6 m gap between the east walls → the bottom-right triangle shaft → 90° vent portal → other world → burn the ghost's body (a depressed man who died by suicide in this house and wanted a friend) → promise to live.
+- **Tone:** absurd + deep + scary, never too self-serious; cutscenes like Cry of Fear, Max Payne and Silent Hill (some absurd); inner monologue like Wolfenstein: The New Order; a touch of Mr. Robot.
+
+## The GDD is law (below the story bible)
 
 `D:\Fed Up GDD.pdf` is the design source. Where it contradicts itself, `MACRO_PLAN.md` section A records the designer's ruling. Highlights:
 
 - **Frustration values:** the first-listed values (`MACRO_PLAN.md` Appendix 1). All live in one data file.
 - **Frustration bands:** Calm 0–29 · Uneasy 30–59 · Agitated 60–89 · Breaking 90–99 · **Fed Up = 100**. The bar stops at 100, but the hidden value keeps counting (max 200). Per-task gates stay as written in the GDD (toast jams above 30%, flybacks above 40%, and so on).
 - **Phases:** Phase 1 Evening Routine (low haunting) → sleep → Phase 2 Wake-Up (darker, fog, whispers) → Phase 3 Haunted Night Tasks → Final Sleep.
-- **Finale:** the Narrative doc version (dark showdown: throw toast, break mirrors, aim the flashlight). The comedic appliance boss is not used.
+- **Finale:** see the story canon above (the gun showdown and the burial route). The comedic appliance boss is not used.
 - **Take a Bath is a Phase 1 task.**
 
 ## The ending flags
@@ -31,6 +41,8 @@ Only these decide the ending (`MACRO_PLAN.md` Appendix 2, decoded from the desig
 3. **Final choice:** stay asleep / wake at 100% / wake below 100%. **How you woke decides your home and the ghost.**
 4. **Frustration at the final sleep** (feeds choice 3).
 5. **Job outcome** and 6. **Apartment outcome** are results, not inputs.
+
+**Endings beyond the table:** see `STORY_BIBLE.md` for the Showdown and Burial sequences.
 
 **Secret ending:** going to bed before starting any task. The cat rule doesn't apply (the cat hasn't appeared yet). The result is random: loop or ghost wins.
 
@@ -76,6 +88,7 @@ Only these decide the ending (`MACRO_PLAN.md` Appendix 2, decoded from the desig
 - **Do not cut** a task, jumpscare, room, ending or phase without the designer's sign-off.
 - **Do not change** feel or pacing (walk speed, timings, scare frequency) or the visual direction without sign-off. Offer it as an option.
 - **Do not take on** anything that adds more than one session beyond the current gate without asking first.
+- **Do not change** `STORY_BIBLE.md` Part 1. Add ideas to Part 2 as proposals.
 - **Do not edit** `firstdraft.unity` or `MOdel/ver2.blend`. They're the reference originals.
 - **Do not push** to GitHub or add asset packs to git without the designer's OK (Git LFS storage costs).
 - **Do not weaken, skip or delete tests** to make something pass.

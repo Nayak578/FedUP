@@ -1,0 +1,11 @@
+time_s,source,delta,hidden,display,band
+0.00,start,0.00,0.00,0.00,Calm
+48.27,FE_Toast_FailedOrBurnt,10.00,10.00,10.00,Calm
+51.21,FE_Toast_FailedOrBurnt,10.00,20.00,20.00,Calm
+52.23,FE_SmokeAlarm_PerSecond,3.02,23.02,23.02,Calm
+53.23,FE_SmokeAlarm_PerSecond,3.01,26.03,26.03,Calm
+54.23,FE_SmokeAlarm_PerSecond,3.00,29.03,29.03,Calm
+55.23,FE_SmokeAlarm_PerSecond,3.00,32.03,32.03,Uneasy
+56.23,FE_SmokeAlarm_PerSecond,3.01,35.04,35.04,Uneasy
+57.23,FE_SmokeAlarm_PerSecond,0.14,35.17,35.17,Uneasy
+63.88,FE_Toast_Success,-5.00,30.17,30.17,Uneasy

@@ -26,7 +26,7 @@ namespace FedUp.EditorTools
     public static class GreyboxBuilder
     {
         const string Root = "Assets/_Project";
-        const string HouseFbx = Root + "/Art/Models/Environment/ENV_Apartment_v01.fbx";
+        const string HouseFbx = Root + "/Art/Models/Environment/ENV_Apartment_v02.fbx";
         const string ReferenceScene = "Assets/firstdraft.unity";
         const float GroundFloor = 4.83f, UpperFloor = 8.27f;
         // firstdraft places the house root (ver2) at (-60.4, 0, 30.8); the greybox puts the house at the origin.
@@ -34,7 +34,8 @@ namespace FedUp.EditorTools
 
         static readonly (string name, Vector3 pos, int tour)[] Rooms =
         {
-            ("Entrance",            new Vector3(-26.3f, GroundFloor, 0.78f), 0),
+            ("Entrance",            new Vector3(-46.6f, GroundFloor, -3.3f), 0),
+            ("Back Hall",           new Vector3(-26.3f, GroundFloor, 0.78f), 0),
             ("Living Room",         new Vector3(-41.9f, GroundFloor, -4.6f), 1),
             ("Kitchen",             new Vector3(-34.4f, GroundFloor, -3.9f), 2),
             ("Store Room",          new Vector3(-27.6f, GroundFloor, -4.3f), 3),
@@ -49,6 +50,25 @@ namespace FedUp.EditorTools
             ("Spare Upper North",   new Vector3(-32.5f, UpperFloor,  5.87f), 0),
             ("Spare Upper Middle",  new Vector3(-33.6f, UpperFloor, -2.76f), 0),
         };
+
+        // West porch: the deck in front of the new front door (cut into the north end of the living-room window)
+        internal static readonly Vector3 PorchSpawn = new Vector3(-49.4f, 4.73f, -3.33f);
+
+        static void PorchBounds(Transform parent)
+        {
+            // Invisible walls so the porch is a small pen in front of the door, not the whole deck around the house
+            void Wall(string n, Vector3 c, Vector3 size)
+            {
+                var go = new GameObject(n);
+                go.transform.SetParent(parent);
+                go.transform.position = c;
+                go.AddComponent<BoxCollider>().size = size;
+                go.isStatic = true;
+            }
+            Wall("GB_PorchBounds_West", new Vector3(-50.35f, GroundFloor + 1.5f, -3.5f), new Vector3(0.1f, 3f, 5.6f));
+            Wall("GB_PorchBounds_South", new Vector3(-49.1f, GroundFloor + 1.5f, -6.3f), new Vector3(2.6f, 3f, 0.1f));
+            Wall("GB_PorchBounds_North", new Vector3(-49.1f, GroundFloor + 1.5f, -0.7f), new Vector3(2.6f, 3f, 0.1f));
+        }
 
         static readonly string[] NotFurniture = { "ver2", "Lights", "Directional Light", "Global Volume", "NestedParent_Unpack", "Area", "GameObject", "Terrain" };
 
@@ -75,7 +95,7 @@ namespace FedUp.EditorTools
 
             // House shell, all grey
             var house = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(HouseFbx));
-            house.name = "ENV_Apartment_v01";
+            house.name = "ENV_Apartment_v02";
             foreach (var r in house.GetComponentsInChildren<MeshRenderer>())
                 r.sharedMaterials = Enumerable.Repeat(wallMat, r.sharedMaterials.Length).ToArray();
             foreach (var t in house.GetComponentsInChildren<Transform>()) t.gameObject.isStatic = true;
@@ -88,9 +108,10 @@ namespace FedUp.EditorTools
 
             // Sealed exits (provisional layout calls, MACRO_PLAN.md section G)
             var blockers = new GameObject("GB_Exits");
-            // The only door-sized exterior opening is at the east end of the entrance corridor: that is the front door.
-            Seal("GB_FrontDoor_Closed", new Vector3(-28.5f, GroundFloor + 1.2f, 0.5f), Vector3.right, Vector3.forward, blockers.transform, blockerMat, log);
+            // Front door = the west porch (designer ruling). The east corridor doorway is a locked back door.
+            Seal("GB_BackDoor_Locked", new Vector3(-28.5f, GroundFloor + 1.2f, 0.5f), Vector3.right, Vector3.forward, blockers.transform, blockerMat, log);
             Seal("GB_Wall_NorthGap", new Vector3(-37.8f, GroundFloor + 1.2f, 7.5f), Vector3.forward, Vector3.right, blockers.transform, blockerMat, log);
+            PorchBounds(blockers.transform);
             Physics.SyncTransforms();
 
             // Navigation (agent = player-sized) for tests and the autopilot
@@ -117,29 +138,32 @@ namespace FedUp.EditorTools
                 m.roomName = name; m.tourOrder = tour;
             }
 
-            // Spawn just inside the front door, facing into the house (west)
+            // The night starts on the west porch, facing the front door (designer ruling 22 Oct)
             var entrance = markers.transform.Find("ROOM_Entrance").position;
             var spawnGo = new GameObject("SpawnPoint");
-            spawnGo.transform.SetPositionAndRotation(entrance, Quaternion.Euler(0, 270, 0));
+            spawnGo.transform.SetPositionAndRotation(PorchSpawn, Quaternion.Euler(0, 90, 0));
             spawnGo.AddComponent<SpawnPoint>();
-            foreach (Transform m in markers.transform) MoveOntoOpenFloor(m, entrance, log);
+            foreach (Transform m in markers.transform) MoveOntoOpenFloor(m, PorchSpawn, log);
 
             // Atmosphere kit
             var lightsRoot = new GameObject("Lights");
             foreach (Transform m in markers.transform)
-                if (m.name != "ROOM_Entrance") RoomLight(m.name.Replace("ROOM_", "LGT_"), m.position, lightsRoot.transform, 1.1f);
-            var entranceLight = RoomLight("LGT_Entrance", entrance, lightsRoot.transform, 1.4f);
+                if (m.name != "ROOM_Entrance") RoomLight(m.name.Replace("ROOM_", "LGT_"), m.position, lightsRoot.transform, 2.8f);
+            var entranceLight = RoomLight("LGT_Entrance", entrance, lightsRoot.transform, 3.0f);
+            var porchLight = RoomLight("LGT_Porch", PorchSpawn + new Vector3(0.5f, 0f, 0f), lightsRoot.transform, 2.2f);
+            porchLight.transform.position += Vector3.up * 0.1f;
+            // Slice 0 feedback: "too dark". Brighter ambient and room lights, still dark and moody.
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.035f, 0.033f, 0.045f);
+            RenderSettings.ambientLight = new Color(0.11f, 0.105f, 0.12f);
             RenderSettings.skybox = null;
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
             RenderSettings.fogColor = new Color(0.09f, 0.06f, 0.12f);
-            RenderSettings.fogDensity = 0.045f;
+            RenderSettings.fogDensity = 0.035f;
             CreateVolume(log);
 
-            // Light switch on the wall nearest the entrance
-            var sw = CreateLightSwitch(entrance, entranceLight, interactMat, log);
+            // Light switch on the wall just inside the front door
+            var sw = CreateLightSwitch(new Vector3(-46.9f, GroundFloor, -2.45f), new[] { Vector3.left }, entranceLight, interactMat, log);
 
             // Player. Re-load the data assets: opening/closing the reference scene can unload unreferenced assets.
             tuning = LoadOrCreate<PlayerTuningSO>(Root + "/Data/Player/PlayerTuning.asset");
@@ -147,7 +171,7 @@ namespace FedUp.EditorTools
             focus = LoadOrCreate<InteractionFocusChannelSO>(Root + "/Data/Channels/InteractionFocus.asset");
             controls = AssetDatabase.LoadAssetAtPath<InputActionAsset>(Root + "/Input/FedUpControls.inputactions");
             var player = new GameObject("Player");
-            player.transform.SetPositionAndRotation(entrance, Quaternion.Euler(0, 270, 0));
+            player.transform.SetPositionAndRotation(PorchSpawn, Quaternion.Euler(0, 90, 0));
             player.layer = LayerMask.NameToLayer("Ignore Raycast");
             var cc = player.AddComponent<CharacterController>();
             var motor = player.AddComponent<FirstPersonMotor>();
@@ -169,6 +193,7 @@ namespace FedUp.EditorTools
             cc.height = tuning.bodyHeight; cc.radius = tuning.bodyRadius; cc.center = new Vector3(0, tuning.bodyHeight / 2, 0);
 
             CreateHud(focus, interaction);
+            GreyboxGate1.Build(new GreyboxGate1.Context(motor, interactor, GameObject.Find("HUD").transform, interactMat, propMat, log));
 
             foreach (var mb in Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None))
             {
@@ -267,7 +292,7 @@ namespace FedUp.EditorTools
             log.AppendLine($"WARNING {marker.name}: no reachable open floor within 3 m");
         }
 
-        static Light RoomLight(string name, Vector3 floorPos, Transform parent, float intensity)
+        internal static Light RoomLight(string name, Vector3 floorPos, Transform parent, float intensity)
         {
             var go = new GameObject(name);
             go.transform.SetParent(parent);
@@ -276,17 +301,17 @@ namespace FedUp.EditorTools
             l.type = LightType.Point;
             l.color = new Color(1f, 0.8f, 0.55f);
             l.intensity = intensity;
-            l.range = 6.5f;
+            l.range = 7.5f;
             l.shadows = LightShadows.None;
             l.lightmapBakeType = LightmapBakeType.Realtime;
             return l;
         }
 
-        static LightSwitch CreateLightSwitch(Vector3 entrance, Light target, Material mat, StringBuilder log)
+        static LightSwitch CreateLightSwitch(Vector3 origin, Vector3[] directions, Light target, Material mat, StringBuilder log)
         {
-            Vector3 eye = entrance + Vector3.up * 1.35f;
+            Vector3 eye = origin + Vector3.up * 1.35f;
             RaycastHit best = default; bool found = false;
-            foreach (var d in new[] { Vector3.forward, Vector3.back, Vector3.left })
+            foreach (var d in directions)
                 if (Physics.Raycast(eye, d, out var h, 3.5f) && (!found || h.distance < best.distance)) { best = h; found = true; }
             if (!found) { log.AppendLine("WARNING: no wall near the entrance for the light switch"); best.point = eye + Vector3.forward; best.normal = Vector3.back; }
 
@@ -323,7 +348,7 @@ namespace FedUp.EditorTools
             var profile = ScriptableObject.CreateInstance<VolumeProfile>();
             AssetDatabase.CreateAsset(profile, path);
             var tm = profile.Add<Tonemapping>(true); tm.mode.Override(TonemappingMode.ACES);
-            var ca = profile.Add<ColorAdjustments>(true); ca.saturation.Override(-35f); ca.contrast.Override(12f); ca.postExposure.Override(0.4f);
+            var ca = profile.Add<ColorAdjustments>(true); ca.saturation.Override(-35f); ca.contrast.Override(12f); ca.postExposure.Override(0.75f);
             var fg = profile.Add<FilmGrain>(true); fg.type.Override(FilmGrainLookup.Medium3); fg.intensity.Override(0.5f); fg.response.Override(0.8f);
             var vg = profile.Add<Vignette>(true); vg.intensity.Override(0.38f); vg.smoothness.Override(0.45f);
             var bl = profile.Add<Bloom>(true); bl.intensity.Override(0.35f); bl.threshold.Override(1f);
@@ -376,7 +401,7 @@ namespace FedUp.EditorTools
             log.AppendLine("navmesh agent = player body (radius 0.3, height 1.75, step 0.3)");
         }
 
-        static Material Mat(string name, Color c)
+        internal static Material Mat(string name, Color c)
         {
             string path = $"{Root}/Art/Materials/{name}.mat";
             var m = AssetDatabase.LoadAssetAtPath<Material>(path);
@@ -391,7 +416,7 @@ namespace FedUp.EditorTools
             return m;
         }
 
-        static T LoadOrCreate<T>(string path) where T : ScriptableObject
+        internal static T LoadOrCreate<T>(string path) where T : ScriptableObject
         {
             var a = AssetDatabase.LoadAssetAtPath<T>(path);
             if (a != null) return a;
@@ -400,7 +425,7 @@ namespace FedUp.EditorTools
             return a;
         }
 
-        static void Wire(Object target, params (string field, object value)[] values)
+        internal static void Wire(Object target, params (string field, object value)[] values)
         {
             var so = new SerializedObject(target);
             foreach (var (field, value) in values)

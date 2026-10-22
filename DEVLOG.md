@@ -1,5 +1,70 @@
 # Fed Up — Devlog
 
+## Slice 1 (Greybox Gate 1) — 23 Oct 2026
+
+**Question for you:** *"Is the toast loop annoying-but-fair within 90 seconds?"*
+
+### What changed
+- **You now start on the west porch at night**, after a short black-screen opening: the factories, the smog, *"Nine hours of making a chatbot sound human. It's better at it than me."*, your phone buzzing with **212 unread**. You open the front door and step in. It closes and locks behind you.
+- **The front door is real.** I cut a doorway into the north end of the big living-room window (floor to 2.2 m, 1.1 m wide); the rest is still a window. The east corridor door is now a locked back door.
+- **Brighter**, per your note: about three times the ambient light, stronger and wider room lights, more exposure. Still dark and moody, but you can read the rooms.
+- **The FED UP meter** (top-left) fills and changes colour by band (calm green → uneasy yellow → agitated orange → breaking red → FED UP pulsing), and flashes each change (+10, −5).
+- **The inner voice:** italic subtitles at the bottom. All his lines live in one editable list (`Data/Story/Monologue.asset`); change the words without touching code.
+- **Drop Your Things:**
+  - Hang your jacket, kick off your shoes, then hold E to empty your bag. Out comes the **CONFIDENTIAL** file: a placeholder absurd cutscene (camera turns to it, a one-note choir, *"Huh… what the hell is this?"*, *"That's not mine. That is very much not mine."*).
+  - Later, when you're away and not looking, the jacket twitches or falls. Hang it back up.
+- **Make Toast:**
+  - Press E on the toaster, then press again while the marker is in the golden zone.
+  - Too early and the crooked toaster launches it (usually to the floor, sometimes the counter, rarely up to the ceiling). Too late and it burns. Both cost **+10**.
+  - **Two failures in a row set off the smoke alarm** on the kitchen ceiling: **+3% every second** until you reach up and silence it.
+  - **Above 30% the toaster jams first:** mash E to free it.
+  - Golden toast **−5** when you take it. Leave it 15 s and **something eats it (+10)**.
+- **The session log:** every frustration change is written to a spreadsheet file each run (GDD "analytics hooks"), so we tune from facts.
+
+### What I decided and why
+- **Early press = launched, late press = burnt.** The GDD says mistimed toast "gets jammed, burnt, or launches"; this mapping makes each failure readable from the timing bar.
+- **Failing to unjam in time counts as burnt (+10).** The GDD doesn't say; this was the least surprising choice.
+- **Timing feel defaults:** the marker takes 3.5 s from raw to burnt, and the golden zone is 60–75% of the bar. These are feel numbers, so they live in `Data/Tasks/ToastTuning.asset`. Tell me "too easy" or "too tight" and I'll change one number.
+- **Moved one line:** *"Toast. A man can still make toast."* now plays on your first press of the toaster. A test caught it talking over the end of the file scene.
+- **The frustration values are guarded by a test.** If a data file drifts from your table by accident, the test fails.
+
+### Evidence
+- **Rules, test-first:**
+  - Red: `38 tests, 23 failed` (e.g. "Bands: Expected Uneasy but was Calm"; "TwoFailuresInARow: Expected True but was False").
+  - Green: **`38 passed`**, then **42 passed** with the table guard added.
+- **Play Mode, 18 passed, 0 failed:**
+  - The 9 Slice 0 checks, updated for the porch start: every room is still reachable and nothing outside is.
+  - The prologue hands control back.
+  - The door opens from the porch and locks behind you.
+  - Drop Your Things completes, shows the file and costs nothing.
+  - The jacket falls and can be re-hung.
+  - Golden toast taken: **20% → 15%**, and the bar shows 15%.
+  - Two failures ring the alarm, which costs **+5 to +7 over 2 s**, and stops when silenced.
+  - At 35% the toaster jams and mashing frees it.
+  - Toast left too long is eaten (+10).
+  - The session log is written.
+- **Packaged build** `builds/slice_1/FedUp.exe`, run hands-free. Player log:
+  `AUTOPILOT DONE gate1 dropThings=Done toast=Done attempts=3 last=Golden frustration=30.2 avgFrameMs=2.69` and **0 exceptions**.
+- **Session log from that run** (`evidence/slice_1_session_log.csv`): burnt +10 → launched +10 → alarm +3, +3, +3, +3 (band turns *uneasy* at 32) → silenced → jammed and mashed → golden toast −5 → **30%**.
+- **Video:** `evidence/slice_1.mp4`, 60 s from the real build. I cut 11 s of plain walking from the living room to the kitchen to stay inside 60 s.
+
+### Playtest checklist (5 minutes)
+1. Let the opening play, open the front door and drop your things. **Did the file scene make you smile, and did you read both lines?**
+2. Make toast until you get a golden one. Try one too early and one too late on purpose. **Is it clear from the bar *why* each one failed?**
+3. Burn two in a row and let the alarm ring a few seconds before you silence it. **Does the meter climbing feel like pressure, or just punishment?**
+
+**Feel question:** *"Is the toast loop annoying-but-fair within 90 seconds?"*
+
+### Known limits (not bugs)
+- **Sounds are placeholder beeps and tones.** Real sound comes in the art passes.
+- **The cutscenes are placeholder** captions and camera moves; the real ones come in pass A6.
+- **The toast doesn't eject on success** (the GDD's task page says it should). I kept the narrative page's version: golden toast pops up and waits for you. Say if you want it launched every time.
+
+### Next
+Gate 2a: **Clean Up**, **Take a Bath**, **Phone call #1** (the boss).
+
+---
+
 ## Slice 0 (Greybox Gate 0) — 22 Oct 2026
 
 **Question for you:** *"Does moving through the apartment feel right?"*

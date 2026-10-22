@@ -1,6 +1,7 @@
 using System.Collections;
 using FedUp.Interaction;
 using FedUp.Player;
+using FedUp.Story;
 using FedUp.UI;
 using NUnit.Framework;
 using UnityEngine;
@@ -27,6 +28,7 @@ namespace FedUp.Tests
             interactor = Object.FindAnyObjectByType<Interactor>();
             sw = Object.FindAnyObjectByType<LightSwitch>();
             prompt = Object.FindAnyObjectByType<InteractionPromptUI>();
+            Object.FindAnyObjectByType<CutscenePlayer>()?.SkipAll(); // the prologue takes control away
             motor.UseVirtualInput = true;
         }
 

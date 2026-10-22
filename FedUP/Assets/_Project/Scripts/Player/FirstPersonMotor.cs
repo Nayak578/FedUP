@@ -14,6 +14,8 @@ namespace FedUp.Player
         [SerializeField] Transform cameraPivot;
         [SerializeField] InputActionAsset controls;
 
+        /// <summary>Cutscenes take control away: no walking or looking while locked.</summary>
+        public bool Locked { get; set; }
         public bool UseVirtualInput { get; set; }
         public Vector2 VirtualMove { get; set; }
         public bool VirtualSprint { get; set; }
@@ -87,8 +89,9 @@ namespace FedUp.Player
         {
             Vector2 moveInput = UseVirtualInput ? VirtualMove : move?.ReadValue<Vector2>() ?? Vector2.zero;
             bool sprinting = UseVirtualInput ? VirtualSprint : sprint != null && sprint.IsPressed();
+            if (Locked) { moveInput = Vector2.zero; sprinting = false; }
 
-            if (!UseVirtualInput && look != null && Cursor.lockState == CursorLockMode.Locked)
+            if (!Locked && !UseVirtualInput && look != null && Cursor.lockState == CursorLockMode.Locked)
             {
                 Vector2 delta = look.ReadValue<Vector2>() * tuning.lookSensitivity;
                 SetLook(Yaw + delta.x, Pitch - delta.y);

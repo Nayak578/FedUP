@@ -1,0 +1,40 @@
+Mono path[0] = 'D:/Unity/FedUP/builds/slice_1/FedUp_Data/Managed'
+Mono config path = 'D:/Unity/FedUP/builds/slice_1/MonoBleedingEdge/etc'
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Initialize engine version: 6000.0.46f1 (fb93bc360d3a)
+[Subsystems] Discovering subsystems at path D:/Unity/FedUP/builds/slice_1/FedUp_Data/UnitySubsystems
+kGfxThreadingModeSplitJobs is not supported on Direct3D 11. Reverting to kGfxThreadingModeClientWorkerJobs instead.
+GfxDevice: creating device client; kGfxThreadingModeClientWorkerJobs
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 3050 Laptop GPU (ID=0x25e2)
+    Vendor:   NVIDIA
+    VRAM:     3962 MB
+    Driver:   32.0.15.9174
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  0.248 seconds
+- Finished resetting the current domain, in  0.003 seconds
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+<RI> Initializing input.
+Using Windows.Gaming.Input
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 0.643800 ms
+RenderGraph is now enabled.
+AUTOPILOT START gate1
+AUTOPILOT DROPTHINGS done=True fileFound=True
+AUTOPILOT ALARM ringing
+AUTOPILOT JAM mashing
+AUTOPILOT DONE gate1 dropThings=Done toast=Done attempts=3 last=Golden frustration=30.2 switchToggles=1 avgFrameMs=2.69 worstFrameMs=30.89 log=C:/Users/kumar/AppData/LocalLow/DefaultCompany/Fed Up\sessions\session_20261023_005338.csv
+[Physics::Module] Cleanup current backned.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.

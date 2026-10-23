@@ -24,5 +24,27 @@ namespace FedUp.Tests
             Assert.AreEqual(amount, e.amount, 1e-4f, asset);
             Assert.AreEqual(perSecond, e.perSecond, asset);
         }
+
+        [TestCase("FE_Bath_ItemLost", 6f)]
+        [TestCase("FE_Bath_Success", -10f)]
+        [TestCase("FE_Cleanup_Flyback", 6f)]
+        [TestCase("FE_Cleanup_Giggle", 2f)]
+        [TestCase("FE_Cleanup_RoomClean", -10f)]
+        [TestCase("FE_Phone1_Ignored", 2f)]
+        [TestCase("FE_Phone1_Answered", -5f)]
+        [TestCase("FE_TV_StaticOrHorror", 7f)]
+        [TestCase("FE_TV_Infomercial", 5f)]
+        [TestCase("FE_TV_LostRemote", 10f)]
+        [TestCase("FE_TV_RemoteStolen", 5f)]
+        [TestCase("FE_TV_Calm", -10f)]
+        [TestCase("FE_Cat_Petted", -20f)]
+        [TestCase("FE_Cat_PettedAfterHiss", -10f)]
+        public void Gate2Values_MatchTheDesignerTable(string asset, float amount)
+        {
+            var e = Load(asset);
+            Assert.IsNotNull(e, asset);
+            Assert.AreEqual(amount, e.amount, 1e-4f, asset);
+            Assert.IsFalse(e.perSecond, asset);
+        }
     }
 }

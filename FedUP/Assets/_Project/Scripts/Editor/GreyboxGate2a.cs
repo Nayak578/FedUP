@@ -21,6 +21,7 @@ namespace FedUp.EditorTools
     /// <summary>
     /// Gate 2a content: Take a Bath (downstairs bathroom), Clean Up Mess (living room), boss call #1, plus two
     /// story props. Appends the three tasks to the TaskRunner after Make Toast (GDD pacing: bath before clean-up).
+    /// Every placement has its design reason beside it; the full list is DESIGN_LOGIC.md.
     /// Data assets are created once and never overwritten; missing monologue lines are added, existing ones kept.
     /// </summary>
     public static class GreyboxGate2a
@@ -84,14 +85,15 @@ namespace FedUp.EditorTools
             Vector3 PickFloor(Vector3 near, float minGap, float clearance = 0.3f)
             {
                 Vector3 best = near; float bestD = float.MaxValue;
-                for (float x = -46.8f; x <= -37.4f; x += 0.4f)
-                    for (float z = -7.5f; z <= -1.0f; z += 0.4f)
+                for (float x = -46.8f; x <= -37.0f; x += 0.2f)
+                    for (float z = -7.5f; z <= -0.4f; z += 0.2f)
                     {
                         var p = new Vector3(x, G, z);
                         if (!NavMesh.SamplePosition(p, out var h, 0.15f, NavMesh.AllAreas) || Mathf.Abs(h.position.y - G) > 0.15f) continue;
                         if (Physics.CheckBox(p + Vector3.up * 0.35f, new Vector3(clearance, 0.3f, clearance))) continue;
                         if (used.Any(u => (u - p).magnitude < minGap)) continue;
-                        if ((p - new Vector3(-46.6f, G, -3.3f)).magnitude < 1.6f) continue; // keep the doorway clear
+                        if ((p - new Vector3(-46.6f, G, -3.3f)).magnitude < 1.6f) continue; // keep the front doorway clear
+                        if ((p - new Vector3(-36.5f, G, 0.4f)).magnitude < 0.9f) continue; // and the way to the stairs
                         float d = (p - near).sqrMagnitude;
                         if (d < bestD) { bestD = d; best = p; }
                     }
@@ -99,14 +101,21 @@ namespace FedUp.EditorTools
                 return best;
             }
 
+            // The two containers sit at opposite ends of the room, so every trip crosses it (and the ghost works behind
+            // your back). Bin: the kitchen side, where rubbish goes out. Basket: by the doorway to the stairs, where
+            // he's been leaving it for weeks "to take up later".
             var bins = new List<ClutterBin>();
             var trash = G1.Box("PREF_TrashBin (greybox)", root, PickFloor(new Vector3(-38.0f, G, -7.4f), 1.2f) + Vector3.up * 0.3f, new Vector3(0.4f, 0.6f, 0.4f), c.InteractMat, interactable);
             G1.Interactable(trash, "bin_trash", "Throw it in the bin", InteractionMode.Press, 0f);
             var trashBin = trash.AddComponent<ClutterBin>(); trashBin.accepts = ClutterKind.Trash; bins.Add(trashBin);
-            var basket = G1.Box("PREF_LaundryBasket (greybox)", root, PickFloor(new Vector3(-46.5f, G, -7.2f), 1.2f) + Vector3.up * 0.22f, new Vector3(0.55f, 0.45f, 0.4f), c.InteractMat, interactable);
+            var basket = G1.Box("PREF_LaundryBasket (greybox)", root, PickFloor(new Vector3(-37.6f, G, -0.7f), 1.2f) + Vector3.up * 0.22f, new Vector3(0.55f, 0.45f, 0.4f), c.InteractMat, interactable);
             G1.Interactable(basket, "bin_laundry", "Put it in the laundry basket", InteractionMode.Press, 0f);
             var basketBin = basket.AddComponent<ClutterBin>(); basketBin.accepts = ClutterKind.Laundry; bins.Add(basketBin);
 
+            // Each item lies where he dropped it: the shirt just inside the front door (peeled off on the way in), the
+            // cans in front of the TV, last night's takeout at the end of the couch, and the mug where it smashed
+            // between the armchair and the kitchen (his coffee route). All on open floor, in plain view of the walk
+            // from the kitchen back to the couch.
             var clutter = new List<ClutterItem>();
             void Clutter(string id, string prompt, ClutterKind kind, string lineId, Vector3 near, Vector3 size, Material m)
             {
@@ -121,7 +130,7 @@ namespace FedUp.EditorTools
             Clutter("shirt", "Pick up the shirt", ClutterKind.Laundry, "pick_shirt", new Vector3(-44.5f, G, -2.0f), new Vector3(0.45f, 0.06f, 0.35f), cloth);
             Clutter("cans", "Pick up the cans", ClutterKind.Trash, "pick_cans", new Vector3(-40.0f, G, -2.2f), new Vector3(0.2f, 0.12f, 0.12f), trashMat);
             Clutter("takeout", "Pick up the takeout box", ClutterKind.Trash, "pick_takeout", new Vector3(-43.0f, G, -6.6f), new Vector3(0.22f, 0.1f, 0.18f), trashMat);
-            Clutter("mug", "Pick up the broken mug", ClutterKind.Trash, "pick_mug", new Vector3(-39.0f, G, -5.0f), new Vector3(0.1f, 0.1f, 0.1f), trashMat);
+            Clutter("mug", "Pick up the broken mug", ClutterKind.Trash, "pick_mug", new Vector3(-37.6f, G, -3.2f), new Vector3(0.1f, 0.1f, 0.1f), trashMat);
 
             // story props: the unopened prescription on the coffee table, Mom's card on the side table
             var coffee = Object.FindObjectsByType<Transform>(FindObjectsSortMode.None).FirstOrDefault(t => t.name.Contains("CoffeTable"));
@@ -140,8 +149,14 @@ namespace FedUp.EditorTools
             G1.SetString(cardProp, "lineId", "read_card");
 
             // ---------- Phone call #1 ----------
-            var phoneTable = G1.Box("GB_PhoneTable", root, PickFloor(new Vector3(-37.8f, G, -1.2f), 1.2f) + Vector3.up * 0.4f, new Vector3(0.45f, 0.8f, 0.45f), c.PropMat, 0);
-            var phone = G1.Box("PREF_Phone (greybox)", root, phoneTable.transform.position + new Vector3(0f, 0.44f, 0f), new Vector3(0.22f, 0.08f, 0.18f), c.InteractMat, interactable);
+            // GDD: the phone "sits on the hallway shelf". The shelf is on the north wall of the hallway, a few steps
+            // past the stairs towards the back hall: out of sight from the couch (checked: the stair doorway and the
+            // kitchen gaps don't show it), so you hear it, get up and leave the TV for the dark corridor; and from
+            // it you look straight down to the back hall the cat comes from next.
+            Vector3 shelfFrom = new Vector3(-32.0f, G + 1.0f, 0.8f);
+            float wallZ = Hit(shelfFrom, Vector3.forward, 3f).z;
+            var phoneTable = G1.Box("GB_HallwayShelf", root, new Vector3(shelfFrom.x, G + 1.0f, wallZ - 0.14f), new Vector3(0.7f, 0.05f, 0.26f), c.PropMat, 0);
+            var phone = G1.Box("PREF_Phone (greybox)", root, phoneTable.transform.position + new Vector3(0f, 0.065f, 0f), new Vector3(0.22f, 0.08f, 0.18f), c.InteractMat, interactable);
             phone.GetComponent<BoxCollider>().size = new Vector3(2.5f, 5f, 2.5f);
             var phoneTI = G1.Interactable(phone, "phone", "Answer the phone", InteractionMode.Press, 0f);
 
@@ -151,6 +166,7 @@ namespace FedUp.EditorTools
             hold.SetParent(c.Interactor.transform, false);
             hold.localPosition = new Vector3(0.28f, -0.28f, 0.65f);
 
+            // Bath clothes hang on the wall the tub faces, so lying in the bath you're watching them the whole time.
             var bath = systems.AddComponent<BathTask>();
             bath.objective = "Take a bath";
             GreyboxBuilder.Wire(bath, ("tuning", bathTuning), ("tub", tubTI), ("bathSpot", spot), ("lookAt", lookAt),

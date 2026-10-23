@@ -48,6 +48,7 @@ Only these decide the ending (`MACRO_PLAN.md` Appendix 2, decoded from the desig
 
 ## How we build
 
+- **Every placement and decision has a written design reason** (designer rule, `STORY_BIBLE.md` "Design logic"). Write the reason in `DESIGN_LOGIC.md` before building the thing: the route, the sightline, what it says about him, what it sets up. Never place by "nearest free floor".
 - **Greybox-first.** All gameplay is built and played in `_Project/Scenes/Greybox.unity`: the real house walls in grey, `GB_*` boxes where furniture goes, `ROOM_*` markers, plus an atmosphere kit (dark, fog, grain, placeholder sound). Art passes A1–A5 come after greybox gate 5.
 - **Gate order:**
   - **0:** walk + light switch

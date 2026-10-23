@@ -9,6 +9,7 @@ using FedUp.Tasks.Bath;
 using FedUp.Tasks.Cleanup;
 using FedUp.Tasks.Phone;
 using FedUp.Tasks.Toast;
+using FedUp.Tasks.Tv;
 using FedUp.UI;
 using FedUp.World;
 using NUnit.Framework;
@@ -140,7 +141,7 @@ namespace FedUp.Tests
             Assert.AreEqual(TaskState.Done, clean.State);
             Assert.AreEqual(1, clean.ComedyFlybacks, "the joke happens once");
             Assert.AreEqual(8f, frustration.Value, 1e-3f, "flyback +6 and giggle +2");
-            Assert.IsInstanceOf<PhoneCallTask>(runner.Current, "the boss calls next");
+            Assert.IsInstanceOf<TvTask>(runner.Current, "TV is next (GDD order: clean-up, TV, then the boss calls)");
         }
 
         [UnityTest]

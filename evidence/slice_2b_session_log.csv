@@ -1,0 +1,7 @@
+time_s,source,delta,hidden,display,band
+0.00,start,0.00,0.00,0.00,Calm
+8.52,FE_TV_StaticOrHorror,7.00,7.00,7.00,Calm
+11.12,FE_TV_Infomercial,3.00,10.00,10.00,Calm
+36.65,FE_TV_Calm,-10.00,0.00,0.00,Calm
+45.87,FE_Phone1_Answered,0.00,0.00,0.00,Calm
+64.28,FE_Cat_Petted,0.00,0.00,0.00,Calm

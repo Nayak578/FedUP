@@ -68,6 +68,16 @@
 - **He talks to himself**, like B.J. in **Wolfenstein: The New Order**.
 - **Some of Mr. Robot** in it.
 
+### Design logic (designer, 23 Oct 2026)
+
+- **Every decision and every single thing needs proper design logic behind it.** Nothing is placed "because there was space".
+- **For every object, ask why it is *here*:**
+  - the player's route (where they're coming from, where they'll walk next, what they pass on the way)
+  - what they can see from where they stand
+  - what it says about him or the house
+  - what later scene it sets up
+- **The reasons are written down** in [`DESIGN_LOGIC.md`](DESIGN_LOGIC.md), one line per thing, before it's built. A thing with no written reason gets moved until it has one.
+
 ---
 
 ### Approved additions (designer approved all of Claude's proposals, 23 Oct 2026)

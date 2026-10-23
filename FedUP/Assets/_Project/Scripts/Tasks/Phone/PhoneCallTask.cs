@@ -110,6 +110,7 @@ namespace FedUp.Tasks.Phone
 
         public override void DebugComplete()
         {
+            StopAllCoroutines(); // a skipped call must not start ringing (and ring out) later
             Ringing = false;
             if (ring != null) ring.Stop();
             if (phone != null) phone.available = false;

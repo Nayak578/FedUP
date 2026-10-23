@@ -6,9 +6,11 @@ using FedUp.Player;
 using FedUp.Story;
 using FedUp.Tasks;
 using FedUp.Tasks.Bath;
+using FedUp.Tasks.Cat;
 using FedUp.Tasks.Cleanup;
 using FedUp.Tasks.Phone;
 using FedUp.Tasks.Toast;
+using FedUp.Tasks.Tv;
 using FedUp.World;
 using UnityEngine;
 using UnityEngine.AI;
@@ -18,9 +20,8 @@ namespace FedUp.DebugTools
     /// <summary>
     /// Hands-free play for evidence videos and build checks. Runs only when the game is launched with
     /// "-autopilot" (or when a test sets <see cref="forceRun"/>).
-    /// Gate 1 demo: come in through the porch door, drop your things (the file scene), flip the light,
-    /// burn a toast, launch a toast, silence the smoke alarm, unjam the toaster, make golden toast, eat it.
-    /// "-autopilot-tour" instead walks every room (the Slice 0 check).
+    /// "-autopilot" plays the newest gate (2b: TV, boss call, cat). "-autopilot-gate2a" plays bath, clean-up and
+    /// the call; "-autopilot-gate1" plays the porch, drop-things and toast; "-autopilot-tour" walks every room.
     /// </summary>
     public class Autopilot : MonoBehaviour
     {
@@ -45,11 +46,12 @@ namespace FedUp.DebugTools
             var args = System.Environment.GetCommandLineArgs();
             bool tour = forceTour || args.Contains("-autopilot-tour");
             bool gate1 = args.Contains("-autopilot-gate1");
+            bool gate2a = args.Contains("-autopilot-gate2a");
             bool demo = forceRun || args.Contains("-autopilot");
-            if (!tour && !gate1 && !demo) { enabled = false; return; }
+            if (!tour && !gate1 && !gate2a && !demo) { enabled = false; return; }
             motor.UseVirtualInput = true;
             if (firstSwitch != null) firstSwitch.Toggled += _ => SwitchToggles++;
-            StartCoroutine(tour ? Tour() : gate1 ? Gate1Demo() : Gate2aDemo());
+            StartCoroutine(tour ? Tour() : gate1 ? Gate1Demo() : gate2a ? Gate2aDemo() : Gate2bDemo());
         }
 
         void Update()
@@ -190,6 +192,78 @@ namespace FedUp.DebugTools
             float avg = frameCount > 0 ? frameTimeSum / frameCount : 0f;
             Debug.Log($"AUTOPILOT DONE gate2a bath={bath.State} cleanup={clean.State} phone={(call.Answered ? "answered" : call.Ignored ? "ignored" : "none")} " +
                       $"frustration={frustration?.Value:F1} avgFrameMs={avg:F2} worstFrameMs={worstFrame:F2} log={frustration?.LogPath}");
+            if (quitWhenDone && !Application.isEditor) { yield return new WaitForSeconds(1f); Application.Quit(); }
+        }
+
+        // ------------------------------------------------------------------ Gate 2b demo
+
+        IEnumerator Gate2bDemo()
+        {
+            var cutscenes = FindAnyObjectByType<CutscenePlayer>();
+            var runner = FindAnyObjectByType<TaskRunner>();
+            var frustration = FindAnyObjectByType<FrustrationSystem>();
+            var tv = FindAnyObjectByType<TvTask>();
+            var call = FindAnyObjectByType<PhoneCallTask>();
+            var cat = FindAnyObjectByType<CatVisitTask>();
+            yield return new WaitForSeconds(0.3f);
+            if (cutscenes != null) cutscenes.SkipAll();
+            // Gate 1 and 2a are in their own videos; skip to the TV
+            FindAnyObjectByType<FrontDoor>()?.Open();
+            motor.Teleport(RoomPos("ROOM_LivingRoom"), 180f);
+            yield return new WaitForSeconds(0.3f);
+            while (!(runner.Current is TvTask)) { runner.DebugSkipCurrent(); yield return null; }
+            if (firstSwitch != null && !firstSwitch.IsOn) firstSwitch.Interact(interactor);
+            Debug.Log("AUTOPILOT START gate2b");
+
+            // the demo fixes the dice so every outcome shows up in a minute; the odds themselves are tested
+            yield return Use("couch", hold: 1.3f);
+            yield return new WaitForSeconds(1.5f);
+            foreach (var roll in new[] { 0.1f, 0.6f, 0.85f })
+            {
+                tv.ForcedChannelRoll = roll; tv.ForcedStealRoll = 0.9f; tv.VirtualPress();
+                yield return new WaitForSeconds(2.6f);
+            }
+            for (int i = 0; i < 10 && tv.Seated; i++)
+            {
+                tv.ForcedChannelRoll = 0.1f; tv.ForcedStealRoll = 0.9f; tv.VirtualPress();
+                yield return new WaitForSeconds(0.15f);
+            }
+            Debug.Log($"AUTOPILOT TV batteries={tv.BatteryLosses}");
+            yield return new WaitForSeconds(1.5f);
+            yield return Use("under_couch", hold: 1.5f);
+            yield return new WaitForSeconds(1.2f);
+            yield return Use("couch", hold: 1.3f);
+            tv.ForcedChannelRoll = 0.97f; tv.ForcedStealRoll = 0.9f; tv.VirtualPress();
+            float t0 = Time.time;
+            while (tv.State != TaskState.Done && Time.time - t0 < 15f) yield return null;
+            Debug.Log($"AUTOPILOT TV state={tv.State} channel={tv.Session.Channel} changes={tv.ChannelChanges}");
+
+            // the boss calls from the hallway shelf; get up and answer
+            t0 = Time.time;
+            while (!call.Ringing && Time.time - t0 < 6f) yield return null;
+            yield return new WaitForSeconds(1.0f);
+            tv.VirtualStand();
+            yield return null;
+            yield return Use("phone");
+            yield return new WaitUntil(() => call.State == TaskState.Done);
+
+            // stand still at the shelf: the cat comes down the corridor
+            motor.VirtualMove = Vector2.zero;
+            t0 = Time.time;
+            while (!cat.Arrived && Time.time - t0 < 30f) yield return null;
+            yield return FaceTowards(cat.Cat.transform.position);
+            yield return new WaitForSeconds(1.5f);
+            yield return Use("cat", hold: 1.8f);
+            t0 = Time.time;
+            while (cat.State != TaskState.Done && Time.time - t0 < 20f) yield return null;
+            yield return new WaitForSeconds(2.5f);
+
+            Finished = true;
+            motor.VirtualMove = Vector2.zero;
+            float avg = frameCount > 0 ? frameTimeSum / frameCount : 0f;
+            Debug.Log($"AUTOPILOT DONE gate2b tv={tv.State} batteries={tv.BatteryLosses} phone={(call.Answered ? "answered" : call.Ignored ? "ignored" : "none")} " +
+                      $"cat={(cat.Session.Petted ? "petted" : cat.Session.Left ? "left" : "none")} frustration={frustration?.Value:F1} " +
+                      $"avgFrameMs={avg:F2} worstFrameMs={worstFrame:F2} log={frustration?.LogPath}");
             if (quitWhenDone && !Application.isEditor) { yield return new WaitForSeconds(1f); Application.Quit(); }
         }
 

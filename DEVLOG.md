@@ -1,5 +1,77 @@
 # Fed Up — Devlog
 
+## Slice 2b (Greybox Gate 2b) — 23 Oct 2026
+
+**Question for you:** *"Does the apartment feel alive without being hostile yet?"* (part 2: now with the TV and the cat)
+
+### Your new rule: every thing has a reason
+- **It's canon now.** I added it to `STORY_BIBLE.md` Part 1 ("Design logic") in your words, to the project rules and to my memory.
+- **`DESIGN_LOGIC.md` is the register.**
+  - It holds the evening route and **29 numbered placements**, each with its reason: the route, what you can see, what it says about him, what it sets up. Plus the decisions that aren't places.
+  - It opens with an annotated ground-floor map (`evidence/design/ground_floor_logic.png`).
+- **Some reasons are tested, so they can't quietly break:**
+  - you can't see the phone from the couch, but you can walk to it
+  - from the phone you can see down the corridor to where the cat appears
+  - the couch faces the TV and nothing blocks the screen
+- **Applying the rule moved three things from Gate 2a:**
+  - **The phone.** It was on a table in the living room for no reason. The GDD says "the hallway shelf", so it's now on the hallway wall past the stairs. **You can't see it from the couch:** you hear it ring, get up, leave the TV and walk into the dark corridor. My first hallway spot *was* visible through the stair doorway, and the new test caught it, so it moved 2.6 m further.
+  - **The laundry basket** now sits by the doorway to the stairs ("I'll take it up later", for weeks). It's at the opposite end from the bin, so every trip crosses the room.
+  - **The broken mug** lies where it smashed, between the armchair and the kitchen. Before, it had landed right next to the bin.
+
+### What changed
+- **The evening is in the GDD order:** toast → bath → clean-up → **TV → the boss calls → the cat**. In 2a I'd put the call before TV; the GDD has it after TV, "before the sleep trigger".
+- **Watch TV** (living room):
+  - Hold E on the couch to sit; the camera drops and faces the screen. While sitting, **E flips the channel** and **moving stands you up**.
+  - The channels: **static** (50%), **infomercials** (30%, *"FocusMax! Work twenty hours. Feel nothing."*), **horror** (15%: AI-layoff news, or whispering) and, rarely, **calm** (5%): **old home video of him as a kid on a red bike**.
+  - Static and horror cost **+7**, ads **+5**, but **the TV adds +10 at most in total**. The room's light changes colour with every channel.
+  - **Spam it** (10 presses in 5 s) and the batteries pop out under the couch: *"You lost the remote again…"* (+10, within the cap). Get up and feel under the couch to find them.
+  - **Above 50%, a hand under the couch may grab the remote:** mash E to win the tug of war. Lose, and it leaves the remote at the foot of the TV (+5).
+  - **Stay on the home video for 10 s:** **−10**, and *"That kid had plans. …Sorry, buddy."*
+- **The boss calls** while the home video plays. The phone is out of sight, in the hallway.
+- **The cat, visit #1:**
+  - Stand still after the call and a **black cat** comes down the dark corridor from the back hall, where the back door is locked. Nobody can come in that way. Its eyes catch the light first.
+  - It sits in front of you. *"…I don't have a cat."*
+  - **Hold E to pet it:** it purrs, the picture warms and softens for a moment, **−20**, *"Finally, someone chill."* Then it walks back into the dark.
+  - **Ignore it for 20 s** and it leaves: *"Cats are smart. They don't stay where they're not loved."* That costs nothing now, but **the night remembers** (the ending's cat rule).
+  - **Above 60%** it may hiss and vanish onto the couch armrest (your spot). Try again after 30 s, for −10.
+
+### What I decided and why
+- **The +10 TV cap covers everything the TV does** (channels, batteries, the ghost grab). Your table says "TV can add at most +10 in total". Calming isn't capped.
+- **The ghost grab is a 10% chance per press, only above 50%.** The GDD says "low chance". Ten percent keeps it a surprise. It's one number in `Data/Tasks/TvTuning.asset`.
+- **The cat waits 20 s.** The GDD doesn't say. That's long enough to notice it and walk over, short enough that ignoring it is a choice. It's in `Data/Tasks/CatTuning.asset`.
+- **A black cat with eyes that catch the light.** The old omen reads instantly, even as boxes, and you see it coming down the corridor before you see the cat.
+
+### Evidence
+- **Rules, test-first:**
+  - Red: `101 tests, 66 passed, 35 failed` (e.g. "Expected: Stolen, But was: Ignored", "FE_Cat_Petted: Expected not null").
+  - Green: **`101 passed, 0 failed`**.
+  - Your frustration table is now guarded for every Gate 2 value too.
+- **Play Mode: 40 passed, 0 failed** (12 new).
+  - The first run had **6 failures, all fixed:**
+    - A skipped phone call could still ring out later (+2). Fixed in the game, not the test.
+    - The under-couch search spot was out of arm's reach.
+    - The phone was visible from the couch (see above).
+    - A Gate 1 jacket test failed once, then passed on two reruns. I'm watching it.
+  - TV: bad channels **0 → 7 → 10, then capped**. Spamming loses the batteries and you find them. Lose the tug: **55 → 60**, remote at the TV's foot. Win the tug: no change. Calm 10 s: **30 → 20**, then the phone rings.
+  - Cat: petted **30 → 10**, recorded, screen softens. Ignored: walks off, recorded as not petted, costs nothing. At 70% it hisses, reappears on the couch, and the retry after 30 s gives **70 → 60**.
+  - The three design-reason checks above.
+- **Packaged build** `builds/slice_2b/FedUp.exe`, run hands-free. Player log:
+  `AUTOPILOT DONE gate2b tv=Done batteries=1 phone=answered cat=petted frustration=0.0`, **0 exceptions**.
+- **Session log from that run** (`evidence/slice_2b_session_log.csv`): static +7 → infomercial +3 (cap reached) → calm −10 → phone and cat both calm, but the meter was already at 0.
+- **Video:** `evidence/slice_2b.mp4`, 60 s from the real build. I cut about 18 s of walking and waiting. It starts at the TV (Gates 1 and 2a have their own videos). The demo fixes the dice so every outcome shows up in a minute. It can't show the ghost grab, which only happens above 50%; the tests cover that.
+
+### Playtest checklist (5 minutes)
+1. Sit and flip channels until you find the home video. **Did hunting for it feel like a small hope, or just a chore?**
+2. When the phone rings, **did getting up and leaving the TV feel like an intrusion?**
+3. Meet the cat. Pet it once, then replay and ignore it. **Did ignoring it feel like it mattered, even though nothing happened?**
+
+**Feel question:** *"Does the apartment feel alive without being hostile yet?"*
+
+### Known limits (not bugs)
+- **The channels are coloured screens with captions.** Real footage comes in the art passes.
+- **The cat is boxes, with no animation** (it slides and sits). The real cat comes in pass A1.
+- **He doesn't fall asleep on the couch yet.** That's Gate 3. The night ends on *"Eyes… heavy. Just five minutes on the couch."*
+
 ## Slice 2a (Greybox Gate 2a) — 23 Oct 2026
 
 **Question for you:** *"Does the apartment feel alive without being hostile yet?"*

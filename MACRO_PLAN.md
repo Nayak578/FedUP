@@ -154,8 +154,10 @@ Fed Up will be **one apartment scene that changes over the night**, not a series
 
 1. **Front door = the west porch (designer ruling, 22 Oct).** The night starts on the porch; you come in through the front door into the living room.
 2. **The east corridor doorway is a locked back door, and the 4.8 m north gap is walled up.** The player can't leave the house.
-3. **The room east of the kitchen becomes the Store Room** (the GDD's "active store room"). In the cleaned house its doorway is open.
-4. **Room names.** Upstairs: the room with the bed = Bedroom 1, the west front room = Bedroom 2, the toilet room = Bathroom 1, the small middle-north room = Bathroom 2, the landing + L-shaped hall = Hallway. Downstairs: Entrance, Living Room, Kitchen, Store Room. The two north rooms downstairs stay spare for now.
+3. **Room names: the designer's labelled floor plans (23 Oct) rule** (`evidence/house/DESIGNER_room_labels_*.png`).
+   - **Upstairs:** Bedroom, Work Room (west front), Balcony, Bathroom Upstairs (west), Bathroom Middle, Wardrobe, **Storeroom** (where the axe will be), **Locked Room** (stays locked and can't be entered), plus the Landing and Hallway.
+   - **Downstairs:** Entrance, Living Room, Kitchen, **Bathroom Downstairs** (the room east of the kitchen, where you take the bath), Guest Bedroom, Garage (its big shutter stays closed), Back Hall.
+4. *(Replaced by 3.)* The old guesses (Bedroom 1/2, Bathroom 1/2, a downstairs Store Room) are retired.
 5. **Walking:** no jump, tired walk at ~2.5 m/s, sprint at ~4 m/s.
 6. **Brightness:** Slice 0 was too dark (designer feedback). From the next build: more ambient light and stronger room lights, still dark and moody.
 7. **The full night as a story, every branch:** see [`STORY_FLOW.md`](STORY_FLOW.md).

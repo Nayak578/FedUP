@@ -1,7 +1,7 @@
 # Launches a slice build with the hands-free autopilot, records its window with ffmpeg,
 # and copies the player log next to the video.
-# Usage: powershell -ExecutionPolicy Bypass -File tools/capture_build.ps1 -Slice 0
-param([int]$Slice = 0, [int]$MaxSeconds = 90)
+# Usage: powershell -ExecutionPolicy Bypass -File tools/capture_build.ps1 -Slice 2a
+param([string]$Slice = "0", [int]$MaxSeconds = 90)
 
 $root = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $root "builds\slice_$Slice\FedUp.exe"
@@ -33,6 +33,7 @@ public static class Win {
   [StructLayout(LayoutKind.Sequential)] public struct POINT { public int X, Y; }
   [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
   [DllImport("user32.dll")] public static extern bool SetProcessDPIAware();
+  [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
 }
 "@
 [Win]::SetProcessDPIAware() | Out-Null
@@ -41,6 +42,7 @@ Start-Sleep -Milliseconds 800
 $r = New-Object Win+RECT; [Win]::GetClientRect($game.MainWindowHandle, [ref]$r) | Out-Null
 $p = New-Object Win+POINT; [Win]::ClientToScreen($game.MainWindowHandle, [ref]$p) | Out-Null
 $w = ($r.R - $r.L) - (($r.R - $r.L) % 2); $h = ($r.B - $r.T) - (($r.B - $r.T) % 2)
+[Win]::SetCursorPos($p.X + [int]($w / 2), $p.Y + [int]($h / 2)) | Out-Null  # keep the mouse off the taskbar so no thumbnail popup lands in the video
 
 $psi = New-Object System.Diagnostics.ProcessStartInfo
 $psi.FileName = "ffmpeg"

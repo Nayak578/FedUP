@@ -1,5 +1,65 @@
 # Fed Up — Devlog
 
+## Slice 2a (Greybox Gate 2a) — 23 Oct 2026
+
+**Question for you:** *"Does the apartment feel alive without being hostile yet?"*
+
+### What changed
+- **Your room labels are in.** Every room now carries the name from your floor plans:
+  - **Upstairs:** Bedroom, Work Room, Balcony, Bathroom Upstairs, Bathroom Middle, Wardrobe, Storeroom, Locked Room.
+  - **Downstairs:** Guest Bedroom, Garage, Bathroom Downstairs.
+  - **The Locked Room really is locked:** its door is shut and the game proves you can't get in.
+  - **The garage shutter is closed** (it used to open onto nothing).
+- **Take a Bath** (Bathroom Downstairs):
+  - Hold E at the tub to run the bath. You sink in (the camera drops to bath height) and **hold E to relax**: the bar only fills while you hold.
+  - Your clothes hang on three hooks. Every few seconds one starts to slide. **Press the arrow shown (← → ↑ ↓) within 1.6 s to snatch it.** Too slow and it's gone: **+6** and *"…Not again."*
+  - Nothing lost: **−10**. Lost anything: *"Fine. I didn't need it anyway."*
+- **Clean Up the Mess** (Living Room):
+  - Four bits of mess: a shirt, cans, a takeout box and a broken mug. Each has its own line (*"'World's Okayest Employee.' Even the mug gave up."*).
+  - Pick one up with E and carry it. Shirts go in the **laundry basket**, everything else in the **bin**. The wrong one is refused (*"Not in there."*).
+  - **The joke, once per night:** the first time you bin three in a row, the third item **flies back out** (+6) and something giggles (+2). *"…Was that you?"*
+  - **Above 40%, the ghost may knock a drop back out** (40% chance; +6 and +2). After a streak of three, it leaves you alone for 60 s.
+  - **After that streak, if the room stays clean for 30 s, you calm down (−10).**
+- **Boss call #1:**
+  - After the clean-up, the house phone in the living room rings for 15 s. The line is bad: *"Hey— it's me… you l—ft something on… the f—le…"*
+  - **Answer it: −5. Ignore it: +2.** Either way the game now **remembers** it for the ending (the "phone answered" flag).
+- **Two things you can read** (optional; they cost nothing): an unopened prescription on the coffee table, and a birthday card *"from Mom. …That was March."*
+
+### What I decided and why
+- **The bath's "slide" is a direction prompt (← → ↑ ↓).** It reads instantly and works on a gamepad later. The timings (12 s of relaxing, clothes at 3.5, 7 and 10.5 s, 1.6 s to react) live in `Data/Tasks/BathTuning.asset`.
+- **The phone rings after the clean-up.** That gives the evening a clear beat (bath, tidy, then the boss intrudes). Moving it is a one-line change.
+- **Clean-up numbers** (40% gate, 40% chance, 60 s of peace, 30 s for the clean-room bonus) are in `Data/Tasks/CleanupTuning.asset`.
+- **Mess never hides behind furniture.** The first run dropped the takeout box in the gap behind the sofa's arm, where you could barely see it. Every item now needs open floor around it.
+
+### Evidence
+- **Rules, test-first** (bath and clean-up maths):
+  - Red: `57 tests, 42 passed, 15 failed` (all 15 new bath and clean-up rules).
+  - Green: **`57 passed, 0 failed`**.
+- **Play Mode, 28 passed, 0 failed** (the 18 earlier checks plus 10 new):
+  - Perfect bath: **20% → 10%**, control comes back. Lose everything: **+18**.
+  - Clean everything: done, with exactly one flyback: **+8**.
+  - Wrong container refused.
+  - At 50%, the ghost rejects a drop: **→ 58%**.
+  - Both readables speak.
+  - Phone answered: **20% → 15%** and recorded. Ignored: **+2** and recorded as missed.
+  - The Locked Room can't be reached, and every one of your room names exists.
+- **Packaged build** `builds/slice_2a/FedUp.exe`, run hands-free. Player log:
+  `AUTOPILOT BATH saved=2 lost=1`, `AUTOPILOT CLEANUP done=True flybacks=1 rejections=0`, `AUTOPILOT DONE gate2a bath=Done cleanup=Done phone=answered frustration=9.0 avgFrameMs=2.68 worstFrameMs=11.39`, **0 exceptions**.
+- **Session log from that run** (`evidence/slice_2a_session_log.csv`): lost a shirt +6 → comedy flyback +6, giggle +2 → answered the boss −5 → **9%**.
+- **Video:** `evidence/slice_2a.mp4`, 60 s from the real build. It skips the Gate 1 chores (they're in the Slice 1 video). I cut about 38 s of walking between rooms.
+
+### Playtest checklist (5 minutes)
+1. Take the bath. Save one item and let one go on purpose. **Was the slide prompt easy to see while you were relaxing?**
+2. Clean the living room. **Did the item flying back make you laugh, or feel like a bug?**
+3. When the phone rings, answer it once, then replay and ignore it. **Did either choice feel like it mattered?**
+
+**Feel question:** *"Does the apartment feel alive without being hostile yet?"*
+
+### Known limits (not bugs)
+- **Sounds are still placeholder tones** (the ring, the giggle).
+- **Clothes and mess are grey boxes**; real props come in pass A1.
+- **The test demo skips Gate 1.** In the build you play, you still do all of Gate 1 first.
+
 ## Slice 1 (Greybox Gate 1) — 23 Oct 2026
 
 **Question for you:** *"Is the toast loop annoying-but-fair within 90 seconds?"*

@@ -83,6 +83,7 @@ namespace FedUp.Tests
         {
             var path = new NavMeshPath();
             var unreachable = Object.FindObjectsByType<RoomMarker>(FindObjectsSortMode.None)
+                .Where(m => m.expectReachable)
                 .Where(m => !NavMesh.CalculatePath(spawn.transform.position, m.transform.position, NavMesh.AllAreas, path)
                             || path.status != NavMeshPathStatus.PathComplete)
                 .Select(m => m.roomName).ToList();
@@ -93,6 +94,7 @@ namespace FedUp.Tests
         public void EveryRoom_HasACeiling()
         {
             var open = Object.FindObjectsByType<RoomMarker>(FindObjectsSortMode.None)
+                .Where(m => m.expectCeiling)
                 .Where(m => !Physics.Raycast(m.transform.position + Vector3.up * 1.5f, Vector3.up, 4f, ~0, QueryTriggerInteraction.Ignore))
                 .Select(m => m.roomName).ToList();
             Assert.IsEmpty(open, "rooms open to the sky: " + string.Join(", ", open));

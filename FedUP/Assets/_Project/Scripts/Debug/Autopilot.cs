@@ -5,6 +5,9 @@ using FedUp.Interaction;
 using FedUp.Player;
 using FedUp.Story;
 using FedUp.Tasks;
+using FedUp.Tasks.Bath;
+using FedUp.Tasks.Cleanup;
+using FedUp.Tasks.Phone;
 using FedUp.Tasks.Toast;
 using FedUp.World;
 using UnityEngine;
@@ -41,11 +44,12 @@ namespace FedUp.DebugTools
         {
             var args = System.Environment.GetCommandLineArgs();
             bool tour = forceTour || args.Contains("-autopilot-tour");
+            bool gate1 = args.Contains("-autopilot-gate1");
             bool demo = forceRun || args.Contains("-autopilot");
-            if (!tour && !demo) { enabled = false; return; }
+            if (!tour && !gate1 && !demo) { enabled = false; return; }
             motor.UseVirtualInput = true;
             if (firstSwitch != null) firstSwitch.Toggled += _ => SwitchToggles++;
-            StartCoroutine(tour ? Tour() : Gate1Demo());
+            StartCoroutine(tour ? Tour() : gate1 ? Gate1Demo() : Gate2aDemo());
         }
 
         void Update()
@@ -118,6 +122,77 @@ namespace FedUp.DebugTools
             if (quitWhenDone && !Application.isEditor) { yield return new WaitForSeconds(1f); Application.Quit(); }
         }
 
+        // ------------------------------------------------------------------ Gate 2a demo
+
+        IEnumerator Gate2aDemo()
+        {
+            var cutscenes = FindAnyObjectByType<CutscenePlayer>();
+            var runner = FindAnyObjectByType<TaskRunner>();
+            var frustration = FindAnyObjectByType<FrustrationSystem>();
+            var bath = FindAnyObjectByType<BathTask>();
+            var clean = FindAnyObjectByType<CleanupTask>();
+            var call = FindAnyObjectByType<PhoneCallTask>();
+            yield return new WaitForSeconds(0.3f);
+            if (cutscenes != null) cutscenes.SkipAll();
+            // Gate 1 chores are shown in the Gate 1 video; skip them here
+            FindAnyObjectByType<FrontDoor>()?.Open();
+            motor.Teleport(RoomPos("ROOM_Entrance"), 90f);
+            yield return new WaitForSeconds(0.3f);
+            while (runner.Current is DropThingsTask || runner.Current is MakeToastTask) { runner.DebugSkipCurrent(); yield return null; }
+            // a player who did Gate 1 already has the living-room light on
+            if (firstSwitch != null && !firstSwitch.IsOn) yield return UseObject(firstSwitch.transform, 0f, () => interactor.VirtualPress());
+            Debug.Log("AUTOPILOT START gate2a");
+
+            // bath: save the first and last item, lose the middle one
+            yield return Use("bathtub", hold: 1.4f);
+            bath.VirtualRelaxHeld = true;
+            int lastPrompt = -1;
+            while (bath.Bathing)
+            {
+                var p = bath.Session.Prompt;
+                if (p.HasValue && p.Value.Item != lastPrompt)
+                {
+                    lastPrompt = p.Value.Item;
+                    if (p.Value.Item != 1) { yield return new WaitForSeconds(0.5f); bath.VirtualPress(p.Value.Direction); }
+                }
+                yield return null;
+            }
+            bath.VirtualRelaxHeld = false;
+            Debug.Log($"AUTOPILOT BATH saved={bath.Session.Saved} lost={bath.Session.Lost}");
+            yield return new WaitForSeconds(1.0f);
+
+            // clean up: nearest item first, right container; flown-back items get picked up again
+            for (int guard = 0; guard < 12 && clean.State == TaskState.Active; guard++)
+            {
+                ClutterItem next = null; float best = float.MaxValue;
+                foreach (var i in FindObjectsByType<ClutterItem>(FindObjectsSortMode.None))
+                {
+                    if (i.InBin || !i.gameObject.activeInHierarchy) continue;
+                    float d = (i.transform.position - motor.transform.position).sqrMagnitude;
+                    if (d < best) { best = d; next = i; }
+                }
+                if (next == null) break;
+                yield return new WaitForSeconds(0.7f); // let a flown-back item land
+                yield return Use(next.Pickup.id);
+                yield return Use(next.kind == ClutterKind.Laundry ? "bin_laundry" : "bin_trash");
+            }
+            Debug.Log($"AUTOPILOT CLEANUP done={clean.State == TaskState.Done} flybacks={clean.ComedyFlybacks} rejections={clean.Rejections}");
+
+            // the boss calls
+            float waited = 0f;
+            while (!call.Ringing && waited < 6f) { waited += Time.deltaTime; yield return null; }
+            yield return Use("phone");
+            yield return new WaitUntil(() => call.State == TaskState.Done);
+            yield return new WaitForSeconds(3.0f);
+
+            Finished = true;
+            motor.VirtualMove = Vector2.zero;
+            float avg = frameCount > 0 ? frameTimeSum / frameCount : 0f;
+            Debug.Log($"AUTOPILOT DONE gate2a bath={bath.State} cleanup={clean.State} phone={(call.Answered ? "answered" : call.Ignored ? "ignored" : "none")} " +
+                      $"frustration={frustration?.Value:F1} avgFrameMs={avg:F2} worstFrameMs={worstFrame:F2} log={frustration?.LogPath}");
+            if (quitWhenDone && !Application.isEditor) { yield return new WaitForSeconds(1f); Application.Quit(); }
+        }
+
         IEnumerator PressWhenMarker(MakeToastTask toast, float at)
         {
             float started = Time.time;
@@ -143,6 +218,9 @@ namespace FedUp.DebugTools
             if (away.magnitude > 1.2f) yield return WalkTo(stand, target.name);
             yield return FaceTowards(target.position);
             yield return new WaitForSeconds(0.25f);
+            var focused = interactor.Current as Component;
+            if (press == null && (focused == null || focused.transform != target))
+                Debug.LogWarning($"AUTOPILOT MISSED {target.name} at {target.position} from {motor.transform.position}, looking at {(focused != null ? focused.name : "nothing")}");
             if (hold > 0f)
             {
                 interactor.VirtualHeld = true;

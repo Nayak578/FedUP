@@ -11,6 +11,10 @@ namespace FedUp.World
         public string roomName = "Room";
         [Tooltip("Order in the autopilot tour. 0 = not part of the tour.")]
         public int tourOrder;
+        [Tooltip("Untick for rooms the player must NOT reach yet (e.g. the locked room).")]
+        public bool expectReachable = true;
+        [Tooltip("Untick for open-air spaces (e.g. a balcony) so the ceiling check skips them.")]
+        public bool expectCeiling = true;
 
         void OnDrawGizmos()
         {

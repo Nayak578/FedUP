@@ -11,6 +11,7 @@ namespace FedUp.Tasks
         [SerializeField] List<TaskBehaviour> tasks = new List<TaskBehaviour>();
         [SerializeField] Text objectiveText;
         [SerializeField] MonologueLibrarySO lines;
+        [SerializeField] RunStateSO runState;
         [Tooltip("Line said when the last task of this build is done.")]
         [SerializeField] string allDoneLineId = "gate1_done";
         [SerializeField] string allDoneObjective = "";
@@ -18,6 +19,24 @@ namespace FedUp.Tasks
         public int CurrentIndex { get; private set; } = -1;
         public bool AllDone { get; private set; }
         public string ObjectiveText => objectiveText != null ? objectiveText.text : null;
+
+        void Awake()
+        {
+            if (runState != null) runState.ResetRun();
+        }
+
+        void Update()
+        {
+            if (!AllDone && CurrentIndex >= 0 && CurrentIndex < tasks.Count) SetObjective(tasks[CurrentIndex].Objective);
+        }
+
+        /// <summary>Autopilot/tests: finish the current task immediately.</summary>
+        public void DebugSkipCurrent()
+        {
+            if (CurrentIndex >= 0 && CurrentIndex < tasks.Count) tasks[CurrentIndex].DebugComplete();
+        }
+
+        public TaskBehaviour Current => CurrentIndex >= 0 && CurrentIndex < tasks.Count ? tasks[CurrentIndex] : null;
 
         void Start()
         {
@@ -36,7 +55,7 @@ namespace FedUp.Tasks
                 return;
             }
             var task = tasks[CurrentIndex];
-            SetObjective(task.objective);
+            SetObjective(task.Objective);
             task.Begin();
         }
 

@@ -32,23 +32,28 @@ namespace FedUp.EditorTools
         // firstdraft places the house root (ver2) at (-60.4, 0, 30.8); the greybox puts the house at the origin.
         static readonly Vector3 ReferenceToGreybox = new Vector3(60.4f, 0f, -30.8f);
 
-        static readonly (string name, Vector3 pos, int tour)[] Rooms =
+        // Room names from the designer's labelled floor plans (23 Oct): evidence/house/DESIGNER_room_labels_*.png
+        static readonly (string name, Vector3 pos, int tour, bool reachable, bool ceiling)[] Rooms =
         {
-            ("Entrance",            new Vector3(-46.6f, GroundFloor, -3.3f), 0),
-            ("Back Hall",           new Vector3(-26.3f, GroundFloor, 0.78f), 0),
-            ("Living Room",         new Vector3(-41.9f, GroundFloor, -4.6f), 1),
-            ("Kitchen",             new Vector3(-34.4f, GroundFloor, -3.9f), 2),
-            ("Store Room",          new Vector3(-27.6f, GroundFloor, -4.3f), 3),
-            ("Spare Ground North A",new Vector3(-32.5f, GroundFloor,  5.5f), 0),
-            ("Spare Ground North B",new Vector3(-27.25f,GroundFloor,  6.6f), 0),
-            ("Landing",             new Vector3(-40.0f, UpperFloor, -1.25f), 4),
-            ("Bedroom 1",           new Vector3(-45.6f, UpperFloor, -3.9f), 5),
-            ("Bathroom 1",          new Vector3(-45.6f, UpperFloor, -7.6f), 6),
-            ("Bedroom 2",           new Vector3(-45.6f, UpperFloor,  1.4f), 7),
-            ("Hallway",             new Vector3(-27.25f,UpperFloor,  1.75f), 8),
-            ("Bathroom 2",          new Vector3(-36.06f,UpperFloor,  5.87f), 9),
-            ("Spare Upper North",   new Vector3(-32.5f, UpperFloor,  5.87f), 0),
-            ("Spare Upper Middle",  new Vector3(-33.6f, UpperFloor, -2.76f), 0),
+            // ground floor
+            ("Entrance",            new Vector3(-46.6f, GroundFloor, -3.3f), 0, true, true),
+            ("Living Room",         new Vector3(-41.9f, GroundFloor, -4.6f), 1, true, true),
+            ("Kitchen",             new Vector3(-34.4f, GroundFloor, -3.9f), 2, true, true),
+            ("Bathroom Downstairs", new Vector3(-27.6f, GroundFloor, -4.3f), 3, true, true),
+            ("Guest Bedroom",       new Vector3(-32.5f, GroundFloor,  5.5f), 4, true, true),
+            ("Garage",              new Vector3(-27.25f,GroundFloor,  6.6f), 5, true, true),
+            ("Back Hall",           new Vector3(-26.3f, GroundFloor, 0.78f), 0, true, true),
+            // upper floor
+            ("Landing",             new Vector3(-40.0f, UpperFloor, -1.25f), 6, true, true),
+            ("Bedroom",             new Vector3(-45.6f, UpperFloor, -3.9f), 7, true, true),
+            ("Bathroom Upstairs",   new Vector3(-45.6f, UpperFloor, -7.6f), 8, true, true),
+            ("Hallway",             new Vector3(-27.25f,UpperFloor,  1.75f), 9, true, true),
+            ("Work Room",           new Vector3(-45.6f, UpperFloor,  1.4f), 10, true, true),
+            ("Balcony",             new Vector3(-43.4f, UpperFloor,  5.57f), 11, true, true),
+            ("Bathroom Middle",     new Vector3(-36.06f,UpperFloor,  5.87f), 12, true, true),
+            ("Wardrobe",            new Vector3(-36.07f,UpperFloor,  1.26f), 13, true, true),
+            ("Storeroom",           new Vector3(-33.6f, UpperFloor, -2.68f), 14, true, true),
+            ("Locked Room",         new Vector3(-32.13f,UpperFloor,  2.76f), 0, false, true),
         };
 
         // West porch: the deck in front of the new front door (cut into the north end of the living-room window)
@@ -110,6 +115,8 @@ namespace FedUp.EditorTools
             var blockers = new GameObject("GB_Exits");
             // Front door = the west porch (designer ruling). The east corridor doorway is a locked back door.
             Seal("GB_BackDoor_Locked", new Vector3(-28.5f, GroundFloor + 1.2f, 0.5f), Vector3.right, Vector3.forward, blockers.transform, blockerMat, log);
+            Seal("GB_GarageShutter_Closed", new Vector3(-27.2f, GroundFloor + 1.2f, 9.6f), Vector3.forward, Vector3.right, blockers.transform, blockerMat, log);
+            Seal("GB_LockedRoomDoor", new Vector3(-31.5f, UpperFloor + 1.2f, 2.25f), Vector3.right, Vector3.forward, blockers.transform, blockerMat, log, openBeyond: 3f);
             Seal("GB_Wall_NorthGap", new Vector3(-37.8f, GroundFloor + 1.2f, 7.5f), Vector3.forward, Vector3.right, blockers.transform, blockerMat, log);
             PorchBounds(blockers.transform);
             Physics.SyncTransforms();
@@ -126,7 +133,7 @@ namespace FedUp.EditorTools
 
             // Room markers, snapped onto the navmesh
             var markers = new GameObject("ROOMS");
-            foreach (var (name, pos, tour) in Rooms)
+            foreach (var (name, pos, tour, reachable, ceiling) in Rooms)
             {
                 var go = new GameObject("ROOM_" + name.Replace(" ", ""));
                 go.transform.SetParent(markers.transform);
@@ -135,7 +142,7 @@ namespace FedUp.EditorTools
                 else log.AppendLine($"WARNING room marker off navmesh: {name}");
                 go.transform.position = p;
                 var m = go.AddComponent<RoomMarker>();
-                m.roomName = name; m.tourOrder = tour;
+                m.roomName = name; m.tourOrder = tour; m.expectReachable = reachable; m.expectCeiling = ceiling;
             }
 
             // The night starts on the west porch, facing the front door (designer ruling 22 Oct)
@@ -193,7 +200,9 @@ namespace FedUp.EditorTools
             cc.height = tuning.bodyHeight; cc.radius = tuning.bodyRadius; cc.center = new Vector3(0, tuning.bodyHeight / 2, 0);
 
             CreateHud(focus, interaction);
-            GreyboxGate1.Build(new GreyboxGate1.Context(motor, interactor, GameObject.Find("HUD").transform, interactMat, propMat, log));
+            var gate1 = new GreyboxGate1.Context(motor, interactor, GameObject.Find("HUD").transform, interactMat, propMat, log);
+            GreyboxGate1.Build(gate1);
+            GreyboxGate2a.Build(gate1);
 
             foreach (var mb in Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None))
             {
@@ -238,9 +247,10 @@ namespace FedUp.EditorTools
         }
 
         /// <summary>Finds the opening in front of <paramref name="inside"/> along <paramref name="outward"/> and fills it.</summary>
-        static void Seal(string name, Vector3 inside, Vector3 outward, Vector3 along, Transform parent, Material mat, StringBuilder log)
+        static void Seal(string name, Vector3 inside, Vector3 outward, Vector3 along, Transform parent, Material mat, StringBuilder log, float openBeyond = 6f)
         {
-            float Probe(float s) => Physics.Raycast(inside + along * s, outward, out var h, 6f) ? h.distance : -1f;
+            // an opening = the ray doesn't hit anything within openBeyond (for inner doors, the wall of the next room is further away)
+            float Probe(float s) => Physics.Raycast(inside + along * s, outward, out var h, 6f) && h.distance <= openBeyond ? h.distance : -1f;
             if (Probe(0) >= 0) { log.AppendLine($"{name}: no opening found ahead (hit at {Probe(0):F2} m), skipped"); return; }
             float lo = 0, hi = 0;
             while (lo > -4f && Probe(lo - 0.05f) < 0) lo -= 0.05f;
@@ -266,6 +276,7 @@ namespace FedUp.EditorTools
         /// </summary>
         static void MoveOntoOpenFloor(Transform marker, Vector3 entrance, StringBuilder log)
         {
+            if (!marker.GetComponent<RoomMarker>().expectReachable) return;
             var path = new NavMeshPath();
             float floor = marker.position.y > (GroundFloor + UpperFloor) / 2 ? UpperFloor : GroundFloor;
             bool Good(Vector3 p, out Vector3 snapped)

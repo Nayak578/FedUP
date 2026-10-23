@@ -37,9 +37,14 @@
 - The **"sick" versions cut most of the light** (14 round lights down to 2–3) and keep the trigger count similar.
 - **Lesson for our night phase:** take light away, keep the scripted moments, add fog and sound.
 
-## Max Payne and Silent Hill 2 (planned, when we reach those gates)
+## Max Payne (read-only look at the installed copy, 23 Oct 2026)
 
-- **Max Payne:** comic-panel cutscene pacing (panels per scene, seconds per panel, voiceover rhythm) → informs the A6 comic-panel style. Measured from the original game, which has open, well-documented formats.
+- **What I could read:** only the loose intro movie (`intro.mpg`). The game's data archives (`.ras`) are scrambled, so per rule 3 I didn't open them. The comic panels live in those archives, so panel-by-panel pacing will be learned from play-throughs instead.
+- **The intro's rhythm, measured:** 37 s, 8 cuts. Most shots are short (**middle shot length about 1.3 s**), then **one long hold of about 20 s**. Fast, fast, fast, then make you sit in it.
+- **Lesson for our cutscenes (A6):** short punchy cuts to set the scene, then one long uncomfortable hold on the thing that matters (the file, the phone, the boss at the gate). The placeholder file scene already holds on the file; the real one should cut in faster.
+
+## Silent Hill 2 (planned, when we reach that gate)
+
 - **Silent Hill 2:** fog distance and density, radio-static warning, cutscene framing → informs the A2 look and gate 3 scares. Only from formats that aren't encrypted. If your copy is the 2024 remake, its files are locked, so I'd learn from play-throughs and screenshots instead.
 
 ## Rules for using other games

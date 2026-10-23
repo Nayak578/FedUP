@@ -16,6 +16,8 @@ namespace FedUp.Player
 
         /// <summary>Cutscenes take control away: no walking or looking while locked.</summary>
         public bool Locked { get; set; }
+        /// <summary>Lower the camera (e.g. lying in the bath). Null = normal eye height.</summary>
+        public float? EyeHeightOverride { get; set; }
         public bool UseVirtualInput { get; set; }
         public Vector2 VirtualMove { get; set; }
         public bool VirtualSprint { get; set; }
@@ -115,7 +117,7 @@ namespace FedUp.Player
             float t = tuning.walkSpeed > 0 ? CurrentSpeed / tuning.walkSpeed : 0f;
             if (IsGrounded && t > 0.05f) bobPhase += Time.deltaTime * tuning.headBobFrequency * Mathf.PI * 2f * Mathf.Min(t, 1.6f);
             float bob = Mathf.Sin(bobPhase) * tuning.headBobAmplitude * Mathf.Clamp01(t);
-            cameraPivot.localPosition = new Vector3(0, tuning.eyeHeight + bob, 0);
+            cameraPivot.localPosition = new Vector3(0, (EyeHeightOverride ?? tuning.eyeHeight) + bob, 0);
         }
     }
 }

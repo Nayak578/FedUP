@@ -1,0 +1,6 @@
+time_s,source,delta,hidden,display,band
+0.00,start,0.00,0.00,0.00,Calm
+24.11,FE_Bath_ItemLost,6.00,6.00,6.00,Calm
+58.31,FE_Cleanup_Flyback,6.00,12.00,12.00,Calm
+58.31,FE_Cleanup_Giggle,2.00,14.00,14.00,Calm
+84.85,FE_Phone1_Answered,-5.00,9.00,9.00,Calm

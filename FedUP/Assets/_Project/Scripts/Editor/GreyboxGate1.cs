@@ -244,7 +244,7 @@ namespace FedUp.EditorTools
         }
 
         /// <summary>Loads Data/&lt;path&gt;.asset, or creates it with <paramref name="init"/> the first time. Never overwrites.</summary>
-        static T Once<T>(string path, System.Action<T> init) where T : ScriptableObject
+        internal static T Once<T>(string path, System.Action<T> init) where T : ScriptableObject
         {
             string full = $"{Root}/Data/{path}.asset";
             var a = AssetDatabase.LoadAssetAtPath<T>(full);
@@ -258,7 +258,7 @@ namespace FedUp.EditorTools
 
         // ------------------------------------------------------------------ scene helpers
 
-        static GameObject Box(string name, Transform parent, Vector3 pos, Vector3 size, Material mat, int layer, bool local = false)
+        internal static GameObject Box(string name, Transform parent, Vector3 pos, Vector3 size, Material mat, int layer, bool local = false)
         {
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
             go.name = name;
@@ -270,21 +270,21 @@ namespace FedUp.EditorTools
             return go;
         }
 
-        static TaskInteractable Interactable(GameObject go, string id, string prompt, InteractionMode mode, float hold)
+        internal static TaskInteractable Interactable(GameObject go, string id, string prompt, InteractionMode mode, float hold)
         {
             var t = go.AddComponent<TaskInteractable>();
             t.id = id; t.prompt = prompt; t.mode = mode; t.holdSeconds = hold;
             return t;
         }
 
-        static Transform Marker(string name, Transform parent, Vector3 pos)
+        internal static Transform Marker(string name, Transform parent, Vector3 pos)
         {
             var t = new GameObject(name).transform;
             t.SetParent(parent); t.position = pos;
             return t;
         }
 
-        static Vector3 Surface(Vector3 xz, float minY, float maxY, StringBuilder log, string what)
+        internal static Vector3 Surface(Vector3 xz, float minY, float maxY, StringBuilder log, string what)
         {
             foreach (var h in Physics.RaycastAll(new Vector3(xz.x, maxY + 0.5f, xz.z), Vector3.down, 3f))
                 if (h.point.y >= minY && h.point.y <= maxY) return h.point;
@@ -292,14 +292,14 @@ namespace FedUp.EditorTools
             return new Vector3(xz.x, minY + 0.45f, xz.z);
         }
 
-        static Vector3 Ceiling(Vector3 from, StringBuilder log)
+        internal static Vector3 Ceiling(Vector3 from, StringBuilder log)
         {
             if (Physics.Raycast(from, Vector3.up, out var h, 4f)) return h.point;
             log.AppendLine("WARNING no kitchen ceiling found for the smoke alarm");
             return from + Vector3.up * 1.4f;
         }
 
-        static RectTransform Rect(string name, Transform parent, Vector2 aMin, Vector2 aMax, Vector2 pos, Vector2 size, Vector2 pivot)
+        internal static RectTransform Rect(string name, Transform parent, Vector2 aMin, Vector2 aMax, Vector2 pos, Vector2 size, Vector2 pivot)
         {
             var rt = new GameObject(name, typeof(RectTransform)).GetComponent<RectTransform>();
             rt.SetParent(parent, false);
@@ -308,7 +308,7 @@ namespace FedUp.EditorTools
             return rt;
         }
 
-        static Text TextAt(string name, Transform parent, Font font, int size, TextAnchor align, Vector2 aMin, Vector2 aMax, Vector2 pos, Vector2 sizeDelta, Vector2 pivot)
+        internal static Text TextAt(string name, Transform parent, Font font, int size, TextAnchor align, Vector2 aMin, Vector2 aMax, Vector2 pos, Vector2 sizeDelta, Vector2 pivot)
         {
             var rt = Rect(name, parent, aMin, aMax, pos, sizeDelta, pivot);
             var t = rt.gameObject.AddComponent<Text>();
@@ -318,7 +318,23 @@ namespace FedUp.EditorTools
             return t;
         }
 
-        static void SetFloat(Object target, string field, float value)
+        internal static void SetString(Object target, string field, string value)
+        {
+            var so = new SerializedObject(target);
+            so.FindProperty(field).stringValue = value;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        internal static void SetStrings(Object target, string field, string[] values)
+        {
+            var so = new SerializedObject(target);
+            var p = so.FindProperty(field);
+            p.arraySize = values.Length;
+            for (int i = 0; i < values.Length; i++) p.GetArrayElementAtIndex(i).stringValue = values[i];
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        internal static void SetFloat(Object target, string field, float value)
         {
             var so = new SerializedObject(target);
             so.FindProperty(field).floatValue = value;

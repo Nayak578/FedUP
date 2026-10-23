@@ -11,6 +11,9 @@ namespace FedUp.Tasks
         [Tooltip("Shown on screen while this task is active.")]
         public string objective = "Do the thing";
 
+        /// <summary>The on-screen objective; tasks can add live detail (e.g. "2/4").</summary>
+        public virtual string Objective => objective;
+
         public TaskState State { get; private set; } = TaskState.Waiting;
         public event Action<TaskBehaviour> Completed;
 
@@ -22,6 +25,9 @@ namespace FedUp.Tasks
         }
 
         protected abstract void OnBegin();
+
+        /// <summary>Autopilot/tests: skip straight past this task.</summary>
+        public virtual void DebugComplete() => Complete();
 
         protected void Complete()
         {

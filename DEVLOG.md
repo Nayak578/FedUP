@@ -1,5 +1,82 @@
 # Fed Up — Devlog
 
+## Slice 3 (Greybox Gate 3) — 23 Oct 2026
+
+**Question for you:** *"Does the first scare land?"*
+
+### What changed
+- **He falls asleep on the couch.** After the cat, the objective is *"Lie down on the couch"*. Hold E: the room dims, the home video slows and warps, *"Five minutes. Just five."* The screen goes black: **3:07 AM**.
+- **He wakes in the "sick" house (Phase 2).** It's the same rooms, but:
+  - **Every light is off except three:** the TV (now static, all by itself), a weak bulb at the far end of the hallway, and a weak bulb in the downstairs bathroom. **Those three draw the path.** A switch still works, but only gives a weak glow.
+  - **Thicker, colder fog and a colder, greyer picture.**
+  - **A low drone and faint whispers** under everything.
+  - ***"…Cold. Why is it so cold."***
+- **Phone torch (F):** a cone of light from his phone. It cuts out for a moment on its own now and then. Phase 2 only.
+- **The objective at 3 AM:** *"Splash water on your face"* in the downstairs bathroom. *(My proposal, see below.)* It takes you down the long hallway to a mirror.
+- **Three scares, in the order you meet them:**
+  1. **Footsteps in the hallway.** Walk towards the bathroom and a step lands behind you for every step you take, a few metres back. Stop, and it takes one more. Turn around: nothing. *"…Hello?"*
+  2. **The mirror.**
+     - The mirror over the sink faces the doorway, the only way in.
+     - After you splash your face, your reflection starts to follow you a beat late.
+     - Then, for a split second, **something pale stands right behind your shoulder**.
+     - Then the mirror **cracks, silently**. *"No. No, no, no."*
+  3. **The door.** As you walk away down the hallway, **the bathroom door slams shut behind you**. *"I'm not going back in there."* Go back anyway, and it **creaks open by itself, purple fog seeping out**.
+- **Back in the living room:** *"…I'm not going back to sleep."* That sets up Gate 4 (snack, juice box, radio, phone #2).
+- **The ghost director** decides when each scare may happen:
+  - **Every scare fires once.**
+  - **None during the first 6 s after you wake**, so the change itself can land.
+  - **After a scare the house goes quiet:** 10 s when you're calm, 5 s when you're fed up, ×1.3 after a big scare.
+  - If you rush, a scare waits for its moment rather than piling up.
+
+### What I decided and why
+- **Every placement has its reason** in `DESIGN_LOGIC.md` #30–39.
+  - **The idea:** Phase 2 is the sick version of the same house (from the Cry of Fear study). Same rooms, most of the light gone, fog and sound added, and the scares sit along a route you already know.
+  - **Two placements changed after I saw them in the engine:**
+    - **The figure** started in the doorway. It was too small and far to read in a split second, so it now stands right behind you.
+    - **The director's quiet** started at 14 s / 7 s / ×1.5. That left 21 s after the mirror, so you'd be back in the living room before the door could slam behind you. Now 10 s / 5 s / ×1.3.
+- **"Splash water on your face" is my proposal, not the GDD.** At 3 AM he needs a reason to walk somewhere, and this one leads past all three scares. Easy to veto.
+- **Scares cost no frustration.** Your table has no Phase 2 scare values (only the final-sleep jumpscare, +15). They're atmosphere until you say otherwise.
+- **The mirror shows a pale figure, not a face.** The GDD's "distorted smile or missing eyes" needs a real face model; that comes in the art pass.
+- **The coat hook was hard to aim at.** It was an 8 cm target, and a Gate 1 test kept missing it now and then. The hook and the jacket under it are now one easy target. That's a real fix for players, not just the test.
+- **Phase 2 darkness, tuned once.** The first recording was nearly black looking back down the hallway. I eased the colour grade and widened the torch beam. It's still the darkest the game has been.
+
+### Evidence
+- **Director rules, test-first:**
+  - Red: `113 tests, 101 passed, 12 failed` (e.g. "Expected: Grace, But was: Quiet").
+  - Green: **`113 passed, 0 failed`**.
+- **Play Mode: 50 passed, 0 failed** (10 new).
+  - Lying down → Phase 2: thicker fog, only 2 room lights left on, drone playing, torch available, the TV switched to static by itself.
+  - The torch only works from the wake-up.
+  - The hallway is silent in the evening.
+  - Footsteps follow you, then stop the moment you turn.
+  - The mirror lags, shows the figure, then cracks.
+  - The door slams once, reopens with fog, and never slams again.
+  - **The director keeps the quiet:** the mirror can't fire until the quiet after the footsteps is over (checked to the second).
+  - The gate ends in the living room.
+  - Two design-reason checks: **the mirror faces the only way in**, and **the lights left on are exactly the path ones**.
+  - Two older tests updated for the new order: after the cat comes *"Lie down on the couch"*, not the end of the night.
+  - **Two flaky failures fixed at the cause:**
+    - **The Gate 1 jacket test:** the coat hook was an 8 cm target (now the hook and the jacket together).
+    - **The Gate 2a clean-up test:** its helper sometimes teleported you *inside the couch* to look at the takeout box. It now picks a free spot with a clear view; the checks themselves are unchanged.
+  - **A real game bug fixed too:** a flown-back clutter item could land half under the couch. It now always lands on open floor.
+- **Packaged build** `builds/slice_3/FedUp.exe`, run hands-free, 0 exceptions:
+  `AUTOPILOT STEPS played=6 stoppedByTurning=True` · `AUTOPILOT MIRROR figure=True cracked=True` · `AUTOPILOT DOOR state=Reopened slams=1` · `AUTOPILOT DONE gate3 phase=2 … allDone=True`
+- **Director log from the same run:** footsteps at 23.8 s → mirror at 36.1 s (held back 2.3 s for the quiet) → door at 49.1 s (the moment the quiet ended).
+- **Smoothness:** average frame 2.5 ms. The first recording had one 98 ms hitch when the house turned (the night's sounds were being generated on the spot). They're now made at load, and the worst frame is **14 ms**.
+- **Video:** `evidence/slice_3.mp4`, 59 s from the real build. I cut about 12 s of walking and the splash screen. It starts at the end of the evening (Gates 1–2b have their own videos).
+
+### Playtest checklist (5 minutes)
+1. Fall asleep and wake up. **Can you tell at once that the house has changed, and is it too dark to find your way?**
+2. Walk the hallway to the bathroom. When the footsteps start, keep walking a few steps, then turn around. **Did your stomach drop?**
+3. At the mirror, sway your head a little after splashing your face. **Did you catch the figure, and did the silent crack land harder than a sound would have?**
+
+**Feel question:** *"Does the first scare land?"*
+
+### Known limits (not bugs)
+- **All sounds are placeholder tones**, footsteps and slam included. Real sound design comes in pass A2, and scares lean on sound more than anything.
+- **The figure and your reflection are capsules.** Faces and bodies come in the art passes.
+- **The GDD's other scares** (TV turning on by itself, the drawer gun, dolls, photos, red eyes, truck/train) come in Gates 4–5 on top of this director.
+
 ## Slice 2b (Greybox Gate 2b) — 23 Oct 2026
 
 **Question for you:** *"Does the apartment feel alive without being hostile yet?"* (part 2: now with the TV and the cat)

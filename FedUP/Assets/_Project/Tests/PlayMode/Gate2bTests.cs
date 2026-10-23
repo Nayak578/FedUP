@@ -6,6 +6,7 @@ using FedUp.Player;
 using FedUp.Story;
 using FedUp.Tasks;
 using FedUp.Tasks.Cat;
+using FedUp.Tasks.Night;
 using FedUp.Tasks.Phone;
 using FedUp.Tasks.Tv;
 using FedUp.Fx;
@@ -244,7 +245,7 @@ namespace FedUp.Tests
             var run = Resources.FindObjectsOfTypeAll<RunStateSO>().First();
             Assert.IsTrue(run.CatVisitHappened(1));
             Assert.IsFalse(run.CatPettedOn(1));
-            Assert.IsTrue(runner.AllDone);
+            Assert.IsInstanceOf<SleepTask>(runner.Current, "next: lie down on the couch (Gate 3)");
         }
 
         [UnityTest]

@@ -99,6 +99,27 @@
 
 ---
 
+## Falling asleep and Phase 2: the wake-up (Gate 3)
+
+**Route:** couch (lie down) → *3:07 AM* → wake on the couch → **the long hallway** (footsteps behind you) → **downstairs bathroom** (splash water; the mirror) → leave, and **the bathroom door slams behind you** → back to the living room.
+
+**The idea (from the Cry of Fear study):** Phase 2 is the *sick version of the same rooms*. Same house, most of the light taken away, fog and sound added. You've walked this exact route in Phase 1 (toast, bath, phone, cat), so you know it, and now every familiar spot turns on you.
+
+| # | Thing | Why it's there |
+|---|---|---|
+| 30 | **Lie down on the couch** | GDD: he "falls asleep during channel cycling". He never makes it upstairs to bed: *"just five minutes"*. He wakes in the same room, so the change is obvious. |
+| 31 | **The sleep scene** | STORY_FLOW: the lights dim and the sound warps, and the TV turns to static by itself. It cuts to black and *3:07 AM*. The static he falls asleep to is the static he wakes to. |
+| 32 | **The lights left on** (TV static, a weak bathroom bulb, a weak back-hall bulb) | Cry of Fear's "sick" apartments cut 14 lights to 2–3. Ours keeps three, and **they draw the path**: the TV where you wake, the bulb at the end of the hallway, and the bathroom you're heading for. Every other light is off. A switch still works, but gives only a weak glow. |
+| 33 | **Phone torch (F)** | STORY_FLOW: "his phone torch is his only light, and it flickers by itself". It's a narrow cone, so the dark stays dark outside it. Phase 2 only: in the evening the lights still work. |
+| 34 | **Footsteps behind you: the long hallway** | GDD: "footsteps echo behind player in hallway, vanish when turned around". It's the longest straight walk in the house (stairs to back hall), so your back is exposed the longest. And it's the corridor the cat came down: something you trusted, now following you. |
+| 35 | **Sink and mirror: the bathroom's south wall** | The mirror faces the doorway, the only way in. Standing at the sink, **the reflection shows the door behind you**. It's the room where you bathed safely in the evening, now the first room that turns. |
+| 36 | **The figure (only in the mirror)** | Right behind your shoulder, between you and the doorway (the only way out), for a fraction of a second. You turn, and there's nothing. First your own reflection follows you a beat late (GDD: "reflection slightly delayed"); then the mirror cracks, silently. *(First placed in the doorway itself; seen in-engine it was too small and far to read in a split second, so it moved to right behind you.)* |
+| 37 | **The bathroom door slams behind you** | GDD: "door behind player slams shut". It fires as you walk away, with your back to it, so you never see it move. It's the room you just fled. |
+| 38 | **It reopens by itself, with purple fog** | GDD: "on return, it opens slowly by itself with fog seeping out". Purple fog is the game's supernatural signal (GDD art notes): something is in there now. |
+| 39 | **Back to the living room** | The gate ends where the night started: *"…I'm not going back to sleep."* That sets up the Phase 2 tasks (snack, juice box, radio, phone #2) in Gate 4. |
+
+---
+
 ## Decisions (not places)
 
 | Decision | Reason |
@@ -109,6 +130,10 @@
 | **Ghost grab: 10% per press, only above 50%** | GDD: "low chance, frustration > 50%". Ten percent keeps it a surprise, not a routine. Editable in `TvTuning`. |
 | **The cat waits 20 s before leaving** | The GDD doesn't say. It's long enough to notice it and walk over, and short enough that ignoring it is a real choice. Editable in `CatTuning`. |
 | **The cat arrives after 1.5 s of you standing still** | GDD: "while the player is sitting or standing still". After the call you're standing at the shelf, so it comes down the corridor towards you. |
+| **The ghost director spaces every scare** | MACRO_PLAN: "the ghost acts more often as you get angrier, but always backs off after a big moment". There's 6 s of grace after you wake, so the change itself can land. After a scare the house goes quiet: 10 s when you're calm, down to 5 s when you're fed up, ×1.3 after a big scare. *(First set to 14/7/×1.5. That left 21 s after the mirror, so you'd be back in the living room before the door could slam behind you; tuned so the three scares chain along the route.)* Every scare fires once. All the numbers are in `GhostDirectorTuning`. |
+| **Scares cost no frustration** | The table has no Phase 2 scare values (only the final-sleep jumpscare, +15). Scares are atmosphere until you say otherwise. |
+| **"Splash water on your face" (Phase 2 objective)** | **My proposal, not GDD.** At 3 AM he needs a reason to walk somewhere, and this one takes him down the hallway to a mirror. You can veto it. |
+| **The mirror shows a figure, not a face** | The GDD's "distorted smile or missing eyes" needs a real face. In grey boxes a dark figure in the doorway reads better. The face comes in the art pass. |
 | **The demo videos fix the dice** | So every outcome shows up in 60 seconds. The real odds are covered by the tests. |
 
 ## How this is checked

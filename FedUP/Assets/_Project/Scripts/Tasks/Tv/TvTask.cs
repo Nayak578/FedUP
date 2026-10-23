@@ -289,6 +289,20 @@ namespace FedUp.Tasks.Tv
             if (caption != null) subtitles?.Say(caption, 3f, SubtitleStyle.Caption);
         }
 
+        /// <summary>The TV changes channel by itself (the sleep scene: it turns to static while he dozes).</summary>
+        public void ForceChannel(TvChannel ch)
+        {
+            if (Session != null && Session.Channel == ch) return;
+            ShowChannel(ch);
+            ForcedChannel = ch;
+        }
+
+        public TvChannel? ForcedChannel { get; private set; }
+        public Light ScreenLight => screenLight;
+
+        /// <summary>The sound warps as he falls asleep (1 = normal).</summary>
+        public void SetSoundPitch(float pitch) { if (tvAudio != null) tvAudio.pitch = pitch; }
+
         /// <summary>The screen colour right now (tests check the channel is visible).</summary>
         public Color ScreenColor
         {

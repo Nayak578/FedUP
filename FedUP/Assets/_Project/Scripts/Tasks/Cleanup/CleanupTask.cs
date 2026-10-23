@@ -105,8 +105,22 @@ namespace FedUp.Tasks.Cleanup
             frustration?.Request(tuning.giggle);
             sfx.PlayOneShot(PlaceholderTones.Get("giggle"));
             lines?.Say("flyback");
-            Vector3 land = item.Home + new Vector3(Random.Range(-0.6f, 0.6f), 0f, Random.Range(-0.6f, 0.6f));
-            StartCoroutine(Fly(item, bin.transform.position + Vector3.up * 0.6f, land));
+            StartCoroutine(Fly(item, bin.transform.position + Vector3.up * 0.6f, LandingSpot(item)));
+        }
+
+        /// <summary>Near where it lay, but always on open floor in view (never half under the couch).</summary>
+        Vector3 LandingSpot(ClutterItem item)
+        {
+            var col = item.GetComponent<Collider>();
+            for (int i = 0; i < 12; i++)
+            {
+                Vector3 p = item.Home + new Vector3(Random.Range(-0.6f, 0.6f), 0f, Random.Range(-0.6f, 0.6f));
+                var hits = Physics.OverlapBox(p + Vector3.up * 0.35f, new Vector3(0.3f, 0.3f, 0.3f));
+                bool open = true;
+                foreach (var h in hits) if (h != col && !h.isTrigger) { open = false; break; }
+                if (open) return p;
+            }
+            return item.Home; // where it lay is known to be open (the builder checks)
         }
 
         IEnumerator Fly(ClutterItem item, Vector3 from, Vector3 to)

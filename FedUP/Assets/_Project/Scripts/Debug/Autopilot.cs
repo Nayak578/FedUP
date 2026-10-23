@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Linq;
 using FedUp.Frustration;
+using FedUp.Ghost;
+using FedUp.Ghost.Scares;
 using FedUp.Interaction;
 using FedUp.Player;
 using FedUp.Story;
@@ -8,6 +10,7 @@ using FedUp.Tasks;
 using FedUp.Tasks.Bath;
 using FedUp.Tasks.Cat;
 using FedUp.Tasks.Cleanup;
+using FedUp.Tasks.Night;
 using FedUp.Tasks.Phone;
 using FedUp.Tasks.Toast;
 using FedUp.Tasks.Tv;
@@ -20,8 +23,9 @@ namespace FedUp.DebugTools
     /// <summary>
     /// Hands-free play for evidence videos and build checks. Runs only when the game is launched with
     /// "-autopilot" (or when a test sets <see cref="forceRun"/>).
-    /// "-autopilot" plays the newest gate (2b: TV, boss call, cat). "-autopilot-gate2a" plays bath, clean-up and
-    /// the call; "-autopilot-gate1" plays the porch, drop-things and toast; "-autopilot-tour" walks every room.
+    /// "-autopilot" plays the newest gate (3: sleep, the Phase 2 wake-up and its scares). "-autopilot-gate2b" plays
+    /// TV, the boss call and the cat; "-autopilot-gate2a" bath, clean-up and the call; "-autopilot-gate1" the porch,
+    /// drop-things and toast; "-autopilot-tour" walks every room.
     /// </summary>
     public class Autopilot : MonoBehaviour
     {
@@ -47,11 +51,12 @@ namespace FedUp.DebugTools
             bool tour = forceTour || args.Contains("-autopilot-tour");
             bool gate1 = args.Contains("-autopilot-gate1");
             bool gate2a = args.Contains("-autopilot-gate2a");
+            bool gate2b = args.Contains("-autopilot-gate2b");
             bool demo = forceRun || args.Contains("-autopilot");
-            if (!tour && !gate1 && !gate2a && !demo) { enabled = false; return; }
+            if (!tour && !gate1 && !gate2a && !gate2b && !demo) { enabled = false; return; }
             motor.UseVirtualInput = true;
             if (firstSwitch != null) firstSwitch.Toggled += _ => SwitchToggles++;
-            StartCoroutine(tour ? Tour() : gate1 ? Gate1Demo() : gate2a ? Gate2aDemo() : Gate2bDemo());
+            StartCoroutine(tour ? Tour() : gate1 ? Gate1Demo() : gate2a ? Gate2aDemo() : gate2b ? Gate2bDemo() : Gate3Demo());
         }
 
         void Update()
@@ -264,6 +269,94 @@ namespace FedUp.DebugTools
             Debug.Log($"AUTOPILOT DONE gate2b tv={tv.State} batteries={tv.BatteryLosses} phone={(call.Answered ? "answered" : call.Ignored ? "ignored" : "none")} " +
                       $"cat={(cat.Session.Petted ? "petted" : cat.Session.Left ? "left" : "none")} frustration={frustration?.Value:F1} " +
                       $"avgFrameMs={avg:F2} worstFrameMs={worstFrame:F2} log={frustration?.LogPath}");
+            if (quitWhenDone && !Application.isEditor) { yield return new WaitForSeconds(1f); Application.Quit(); }
+        }
+
+        // ------------------------------------------------------------------ Gate 3 demo
+
+        IEnumerator Gate3Demo()
+        {
+            var cutscenes = FindAnyObjectByType<CutscenePlayer>();
+            var runner = FindAnyObjectByType<TaskRunner>();
+            var frustration = FindAnyObjectByType<FrustrationSystem>();
+            var sleep = FindAnyObjectByType<SleepTask>();
+            var torch = FindAnyObjectByType<PhoneTorch>();
+            var steps = FindAnyObjectByType<FootstepStalker>();
+            var mirror = FindAnyObjectByType<MirrorScare>();
+            var door = FindAnyObjectByType<DoorSlamScare>();
+            yield return new WaitForSeconds(0.3f);
+            if (cutscenes != null) cutscenes.SkipAll();
+            // the evening is in the earlier videos; start at the end of it, lights on, by the couch
+            FindAnyObjectByType<FrontDoor>()?.Open();
+            while (!(runner.Current is SleepTask)) { runner.DebugSkipCurrent(); yield return null; }
+            if (firstSwitch != null && !firstSwitch.IsOn) firstSwitch.Interact(interactor);
+            motor.Teleport(GameObject.Find("CTRL_CouchStand").transform.position + Vector3.up * 0.2f, 0f);
+            yield return new WaitForSeconds(0.5f);
+            Debug.Log("AUTOPILOT START gate3");
+
+            yield return Use("couch_sleep", hold: 1.4f);
+            yield return new WaitUntil(() => sleep.State == TaskState.Done);
+            Debug.Log($"AUTOPILOT WOKE phase={FindAnyObjectByType<NightPhaseController>().Phase}");
+            yield return new WaitForSeconds(1.2f);
+            torch.VirtualToggle();
+            yield return LookAround();
+            yield return new WaitForSeconds(1.5f);
+
+            // the hallway: walk towards the bathroom; when the steps start, stop, then turn around
+            yield return WalkTo(new Vector3(-36.0f, motor.transform.position.y, 1.0f), "hallway");
+            yield return FaceTowards(new Vector3(-28f, motor.transform.position.y + 1.5f, 1.0f));
+            float t0 = Time.time;
+            while (!steps.Fired && Time.time - t0 < 12f) { motor.VirtualMove = new Vector2(0f, 0.6f); yield return null; }
+            float walked = Time.time;
+            while (steps.Running && steps.StepsPlayed < 5 && Time.time - walked < 5f) { motor.VirtualMove = new Vector2(0f, 0.6f); yield return null; }
+            motor.VirtualMove = Vector2.zero;
+            yield return new WaitForSeconds(1.4f); // it takes one more step
+            yield return FaceTowards(motor.transform.position + Vector3.left * 3f + Vector3.up * 1.4f);
+            Debug.Log($"AUTOPILOT STEPS played={steps.StepsPlayed} stoppedByTurning={steps.StoppedByTurning}");
+            yield return new WaitForSeconds(1.8f);
+
+            // the bathroom: splash, then look up into the mirror and sway a little (the reflection lags)
+            yield return Use("sink");
+            var glass = mirror.transform.position;
+            yield return FaceTowards(glass);
+            t0 = Time.time;
+            while (!mirror.Finished && Time.time - t0 < 25f)
+            {
+                float yaw = 180f + Mathf.Sin((Time.time - t0) * 1.3f) * 9f;
+                motor.SetLook(yaw, motor.Pitch);
+                yield return null;
+            }
+            Debug.Log($"AUTOPILOT MIRROR figure={mirror.FigureWasShown} cracked={mirror.Cracked}");
+            yield return new WaitForSeconds(1.0f);
+
+            // leave: the door slams behind you in the hallway; go back to it, it opens with fog; then the couch
+            yield return WalkTo(new Vector3(-31.2f, motor.transform.position.y, 1.2f), "out of the bathroom");
+            yield return FaceTowards(new Vector3(-36f, motor.transform.position.y + 1.5f, 1.2f));
+            t0 = Time.time;
+            while (door.State == DoorSlamScare.DoorState.Open && Time.time - t0 < 15f) yield return null;
+            yield return new WaitForSeconds(2.5f);
+            yield return FaceTowards(door.transform.position + Vector3.up * 1.2f);
+            yield return new WaitForSeconds(1.5f);
+            t0 = Time.time;
+            while (door.State == DoorSlamScare.DoorState.Slammed && Time.time - t0 < 10f)
+            {
+                Vector3 to = door.transform.position - motor.transform.position; to.y = 0f;
+                motor.VirtualMove = to.magnitude > 2.0f ? new Vector2(0f, 0.5f) : Vector2.zero;
+                yield return null;
+            }
+            motor.VirtualMove = Vector2.zero;
+            yield return new WaitForSeconds(5.5f); // it opens, fog seeping out
+            Debug.Log($"AUTOPILOT DOOR state={door.State} slams={door.Slams}");
+            yield return WalkTo(GameObject.Find("ROOM_LivingRoom").transform.position, "living room");
+            t0 = Time.time;
+            while (!runner.AllDone && Time.time - t0 < 5f) yield return null;
+            yield return new WaitForSeconds(3f);
+
+            Finished = true;
+            motor.VirtualMove = Vector2.zero;
+            float avg = frameCount > 0 ? frameTimeSum / frameCount : 0f;
+            Debug.Log($"AUTOPILOT DONE gate3 phase={FindAnyObjectByType<NightPhaseController>().Phase} steps={steps.Fired} mirror={mirror.Finished} " +
+                      $"door={door.State} allDone={runner.AllDone} frustration={frustration?.Value:F1} avgFrameMs={avg:F2} worstFrameMs={worstFrame:F2}");
             if (quitWhenDone && !Application.isEditor) { yield return new WaitForSeconds(1f); Application.Quit(); }
         }
 

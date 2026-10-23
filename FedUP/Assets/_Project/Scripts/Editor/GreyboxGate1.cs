@@ -103,6 +103,10 @@ namespace FedUp.EditorTools
             // ---------- drop your things ----------
             var hook = Box("PREF_CoatHook (greybox)", root, new Vector3(-47.78f, G + 1.65f, -1.5f), new Vector3(0.08f, 0.08f, 0.3f), c.InteractMat, interactable);
             hook.GetComponent<BoxCollider>().size = new Vector3(4f, 6f, 2f);
+            // the hook alone is an 8 cm target; the hook and the jacket below it make one easy target to aim at
+            var hookCol = hook.GetComponent<BoxCollider>();
+            hookCol.center = new Vector3(0f, -3.5f, 0f);
+            hookCol.size = new Vector3(5f, 12f, 2f);
             var hookTI = Interactable(hook, "coat_hook", "Hang your jacket", InteractionMode.Press, 0f);
             var jacket = Box("GB_Jacket", root, new Vector3(-47.70f, G + 1.2f, -1.5f), new Vector3(0.14f, 0.85f, 0.5f), c.PropMat, 0);
             Object.DestroyImmediate(jacket.GetComponent<Collider>());

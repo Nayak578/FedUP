@@ -64,7 +64,7 @@ namespace FedUp.Tests
             Assert.IsNotNull(t, id);
             Vector3 away = motor.transform.position - t.transform.position; away.y = 0;
             if (away.sqrMagnitude < 0.01f) away = Vector3.right;
-            Vector3 feet = t.transform.position + away.normalized * 0.9f;
+            Vector3 feet = StandSpot(t.transform, away.normalized);
             feet.y = motor.transform.position.y + 0.3f;
             motor.Teleport(feet, 0f);
             yield return null;
@@ -75,6 +75,25 @@ namespace FedUp.Tests
             if (hold > 0f) { interactor.VirtualHeld = true; yield return new WaitForSeconds(hold); interactor.VirtualHeld = false; }
             else interactor.VirtualPress();
             yield return null; yield return null;
+        }
+
+        /// <summary>
+        /// 0.9 m from the target on open floor with a clear view of it: the way we came if that works, otherwise the
+        /// nearest direction around it that does (coming from the bin, "the way we came" can be inside the couch).
+        /// </summary>
+        static Vector3 StandSpot(Transform target, Vector3 preferred)
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                float a = (i % 2 == 0 ? 1 : -1) * ((i + 1) / 2) * 22.5f;
+                Vector3 dir = Quaternion.Euler(0f, a, 0f) * preferred;
+                Vector3 feet = target.position + dir * 0.9f;
+                if (!NavMesh.SamplePosition(new Vector3(feet.x, 4.85f, feet.z), out var hit, 0.15f, NavMesh.AllAreas)) continue;
+                Vector3 eye = new Vector3(feet.x, hit.position.y + 1.6f, feet.z);
+                if (Physics.Linecast(eye, target.position, out var block) && !block.collider.transform.IsChildOf(target)) continue;
+                return feet;
+            }
+            return target.position + preferred * 0.9f;
         }
 
         // ---------------- bath ----------------

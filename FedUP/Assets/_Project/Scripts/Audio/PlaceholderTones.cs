@@ -31,6 +31,12 @@ namespace FedUp.Audio
                 "lullaby" => Make(name, 4.0f, t => 0.12f * Sine(LullabyNotes[(int)t % 4], t) * Mathf.Clamp01(1f - (t % 1f) * 0.8f)),
                 "purr" => Make(name, 2.0f, t => 0.35f * Sine(55f, t) * (0.5f + 0.5f * Mathf.Sin(2f * Mathf.PI * 24f * t)) * Env(t, 2.0f)),
                 "hiss" => Make(name, 0.8f, t => Noise(t) * 0.3f * Env(t, 0.8f)),
+                "step" => Make(name, 0.22f, t => (Noise(t) * 0.5f + Sine(70f, t)) * Mathf.Exp(-t * 26f) * 0.7f),
+                "sting" => Make(name, 1.2f, t => (Sine(880f, t) + Sine(932f, t) + Sine(1245f, t) + Noise(t) * 0.6f) * 0.22f * Mathf.Exp(-t * 3.2f)),
+                "slam" => Make(name, 0.9f, t => (Sine(55f, t) * 0.9f + Noise(t) * 0.7f * Mathf.Exp(-t * 30f)) * Mathf.Exp(-t * 6f)),
+                "creak" => Make(name, 2.5f, t => 0.2f * Sine(180f + 60f * Mathf.Sin(t * 3.1f), t) * ((t * 23f % 1f) < 0.55f ? 1f : 0.3f) * Env(t, 2.5f)),
+                // whole cycles in 6 s so the loop has no click
+                "drone" => Make(name, 6.0f, t => 0.25f * (Sine(48f, t) + Sine(48.5f, t) + 0.4f * Sine(96.5f, t)) + Noise(t) * 0.02f),
                 _ => Make("click", 0.05f, t => Sine(1800f, t) * Mathf.Exp(-t * 90f) * 0.6f),
             };
             cache[name] = c;

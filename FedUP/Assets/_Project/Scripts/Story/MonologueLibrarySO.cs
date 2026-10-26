@@ -11,12 +11,20 @@ namespace FedUp.Story
     [CreateAssetMenu(menuName = "FedUp/Story/Monologue Library", fileName = "Monologue")]
     public class MonologueLibrarySO : ScriptableObject
     {
+        /// <summary>
+        /// Writing rule 1 (CLAUDE.md): every line he says is flat about the unreal or raw about his life. Lines to the
+        /// player (the Mr. Robot touch) are the one exception; other voices (the boss) aren't his monologue at all.
+        /// </summary>
+        public enum LineRule { Unset, FlatAboutTheUnreal, RawAboutHisLife, ToThePlayer, OtherVoice }
+
         [Serializable]
         public class Entry
         {
             public string id;
             [TextArea(1, 3)] public string text;
             [Min(0.5f)] public float seconds = 3f;
+            [Tooltip("Which writing rule this line plays (CLAUDE.md writing rule 1). A line that plays none gets cut.")]
+            public LineRule rule;
         }
 
         public SubtitleChannelSO subtitles;

@@ -162,7 +162,7 @@ Bed before any task: the loop, or the ghost wins.
 
 ### Where things come from
 1. **The gun:** kept in his bedside drawer. *(Quietly tied to his death wish; it flashes past once in the Phase 2 drawer scare, so the Showdown doesn't come from nowhere.)*
-2. **The axe:** in the **store room**, seen early when you pass by. *(Store room = the GDD's "active store room".)*
+2. **The axe:** in the **Storeroom** (upstairs, beside the Locked Room), seen early in the Storeroom blackout. *(See `STORY_BIBLE.md` and `DESIGN_LOGIC.md` #55–56.)*
 3. **The mantra:** **his mother's**, the one she said over him when he was sick as a kid. You hear it once, early, in her **unheard voicemail**. *(It ties the Burial to family, which is the thing he lost.)*
 4. **The boss at the gate:** he came for the file. Call #4 sets it up: *"I'm coming over."*
 

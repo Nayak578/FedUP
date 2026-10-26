@@ -136,6 +136,31 @@ namespace FedUp.Ghost
             return all;
         }
 
+        /// <summary>
+        /// The house holds its breath (GDD Cat Visit #2-3: "a dramatic reduction in ambient noise and temporarily
+        /// pauses ghost activity"): the drone and whispers dip, and the director stays quiet.
+        /// </summary>
+        public void Hush(float seconds)
+        {
+            director?.Hush(seconds);
+            StartCoroutine(HushRoutine(seconds));
+        }
+
+        System.Collections.IEnumerator HushRoutine(float seconds)
+        {
+            float d = drone != null ? drone.volume : 0f, w = whispers != null ? whispers.volume : 0f;
+            for (float t = 0f; t < seconds; t += Time.deltaTime)
+            {
+                // down fast, back up slowly over the last third
+                float k = t < 0.6f ? 1f - t / 0.6f * 0.85f : t < seconds * 0.66f ? 0.15f : 0.15f + 0.85f * (t - seconds * 0.66f) / (seconds * 0.34f);
+                if (drone != null) drone.volume = d * k;
+                if (whispers != null) whispers.volume = w * k;
+                yield return null;
+            }
+            if (drone != null) drone.volume = d;
+            if (whispers != null) whispers.volume = w;
+        }
+
         /// <summary>The lights stutter for a moment (things vanish; something passes).</summary>
         public void Flicker(float seconds) => StartCoroutine(FlickerRoutine(seconds));
 

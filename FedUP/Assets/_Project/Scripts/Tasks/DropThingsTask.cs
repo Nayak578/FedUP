@@ -80,5 +80,11 @@ namespace FedUp.Tasks
             if (jacket != null) jacket.Arm(coatHook);
             Complete();
         }
+
+        public override void DebugComplete()
+        {
+            foreach (var t in new[] { coatHook, shoeRack, bagTable }) if (t != null) t.available = false;
+            base.DebugComplete();
+        }
     }
 }

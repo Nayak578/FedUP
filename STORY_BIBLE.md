@@ -41,6 +41,8 @@
 - **Answered:** at the end, **the ghost turns into the boss**, he shoots, and then realises it was really his boss.
 - **Ignored:** **the ghost doesn't transform**, but he still shoots him.
 
+**Either way, the boss dies at the gate (designer, 26 Oct).** The phone changes only the staging, not the outcome. Ignored: the figure at the gate looks to him like the ghost, he shoots, and it was the boss, who came anyway (call #4 on the answering machine, or he just showed up). Answered: the ghost seems to turn into the boss, he shoots, and it was the boss all along. Both times the body is the real boss, the house is wrecked, and the ghost lives.
+
 ### Ending — Ghost Burial (wake up **calm**, below 100%)
 
 1. He really wants to get rid of this ghost, so he **starts chanting a mantra.** The ghost **runs away**.
@@ -67,6 +69,7 @@
 - **The game plays on absurd, deep and scary.** It doesn't take itself too seriously, but it still **touches the player** and lets the story pass through them. Players should **recognise how similar it is to a lot of their own lives.**
 - **He talks to himself**, like B.J. in **Wolfenstein: The New Order**.
 - **Some of Mr. Robot** in it.
+- **Shadowed, not forced (designer, 26 Oct).** The game **shows and doesn't tell.** Foreshadowing is half-heard and deniable, and nothing is explained directly. Mom's mantra arrives as fragments of an accidental call. The Locked Room is never called "where the ghost died": he dreams it, the player feels it, and the Burial reveals it by showing the same room in the other world.
 
 ### Design logic (designer, 23 Oct 2026)
 
@@ -80,16 +83,32 @@
 
 ---
 
+### The Storeroom blackout (designer, 26 Oct 2026; built in Gate 5b)
+
+During the tea hunt in Phase 3:
+
+1. He goes into the **Storeroom**, upstairs, next to the Locked Room. It holds a lifetime of old stuff: boxes, broken furniture, the clutter a man piles up in a house too big for him. **The axe hangs on the wall**, visible as you enter. Behind the shelves, a way through to the Locked Room.
+2. He sees the axe. The room gets cold. The lights cut. **He blacks out.**
+3. He **"wakes up" in the Locked Room**, the ghost's death room. It's shown, not explained: cold, a stain on the floor he doesn't look at too closely, a chair, a window. Something moves. He blacks out again.
+4. He **"wakes up" in the bathtub** downstairs. The milk is next to him (it was hidden there all along). Confused, he gets up and carries on with the tea.
+
+**What it's for:** the axe is seen before the Burial. The Locked Room is entered, but only in a dream, so in physical reality it stays locked all night. The death room is shown before the Burial reveals it, without a cutscene. The bathtub becomes a place you wake up, so the bathroom is colder every time after. It is **not a cutscene**: in-engine, first person, a fade to black and a wake-up somewhere else.
+
+*Details (the tea under the axe, the hidden door behind the shelf, the trigger, the bathtub): approved 26 Oct, see P1 in Part 2.*
+
 ### Approved additions (designer approved all of Claude's proposals, 23 Oct 2026)
 
 - **The gun** is kept in his bedside drawer. It flashes past once in the Phase 2 drawer scare.
-- **The axe** is in the store room, seen early.
-- **The mantra is his mother's.** The player first hears it in her unheard voicemail.
+- **The axe** is in the **Storeroom** (upstairs, beside the Locked Room), seen early: in the Storeroom blackout during the tea hunt.
+- **The mantra is his mother's.** The player first hears it in her unheard voicemail. **(Designer, 26 Oct:)** the voicemail is an **accidental butt-dial**. She's praying her mantra; you hear fragments of it, then her noticing (*"oh — did I call—"*), then it cuts off. You never get the whole mantra, only enough to recognise it in the Burial.
 - **Call #4 ends with the boss:** *"Fine. I'm coming over to get it myself."* That's why he's at the gate.
 - **Burial ending card by phone:**
   - **Answered:** the boss's voicemail says *"…take a few days off."*
   - **Ignored:** *"…don't bother coming in."*
 - **He talks to the player** (the Mr. Robot touch) as an imaginary friend, paid off in the Burial: *"I see you. I'm here."*
+  - **(Designer, 26 Oct)** the two deniable lines that set it up:
+    - after the cat leaves in Phase 1: *"You saw that too, right? …Right."*
+    - after the mirror cracks in Phase 2: *"You're still here. Huh. Nobody stays."*
 - **Environmental storytelling props** as listed in `STORY_FLOW.md` v2:
   - the climbing unread counter, with voicemails from Mom, his brother and his ex
   - the taped-up trophy box and the broken guitar
@@ -106,4 +125,27 @@
 
 ## Part 2 — Claude's proposals (NOT canon until approved)
 
-*(None open right now. New ideas go here first.)*
+### P1. The Storeroom blackout: details (Claude, 26 Oct) — APPROVED by the designer, 26 Oct (now canon)
+
+1. **The tea moves upstairs, into the Storeroom.** The guest bedroom is *downstairs* (designer floor plans), so the tea hunt as built never takes you upstairs. The tea tin sits on a Storeroom shelf, **right under the axe**. You go up for the tea, as the beat intends, and the Storeroom is a pantry-like room full of someone's life (the Chilla's Art reference).
+   - The guest bed stays. It's free for Gate 5. *Suggestion:* cat visit #2 is the cat asleep on it, the only guest who ever came.
+2. **Connection: a hidden door behind a tall shelf, not a crawlspace.** The top of a door frame shows above the shelf, and dust drifts towards it, as if there's a draft. It can't be opened or reached, so the room stays locked in reality.
+   - Crawling belongs to the Burial (the vent portal). Spending it here would weaken that.
+   - The shared wall is really there: the Storeroom and the Locked Room sit back to back across one thick wall.
+3. **Trigger: after the axe.** The blackout starts the moment you take the tea from under the axe. You can't reach for the tea without looking up at the axe, so nobody can miss it, and nobody blacks out before seeing it.
+4. **The bathtub: it interrupts the hunt, and you keep everything.** You wake lying in the tub, holding whatever you carried, tea included. The milk is beside you if you haven't found it yet; you take it yourself, like any other item. If you already have the milk, you just wake in the tub. The hunt carries on from where you were.
+5. **The dream room, responsibly** (`HORROR_RESEARCH.md` rule 10, never a method):
+   - The chair is upright, at a desk facing the window. Someone sat here and looked out at the factories.
+   - Nothing is knocked over and nothing hangs. The window is shut.
+   - The stain could be old water damage.
+   - The thing that moves is a glimpse under 0.3 s, or only part of something.
+
+### P2. The gun cameo needs a way upstairs (Claude, 26 Oct) — APPROVED by the designer, 26 Oct (now canon)
+
+The bedside drawer is in the upstairs Bedroom, but Phase 2 as built never sends you upstairs: couch → hallway → bathroom mirror → living room.
+
+- **Proposal:** after the mirror, your phone (the torch) is nearly dead: *"4%. The charger's upstairs. Of course it is."* You climb to the Bedroom, the bed he never sleeps in. The bedside drawer is ajar; as your torch passes, it slides shut by itself. The gun is in the beam for about **0.2 s**.
+- **Why 0.2 s, not one frame:** one frame lasts 1/60 s, and almost nobody sees it. 0.2 s is "did I just see that?", the same as the mirror figure.
+- It needs no battery mechanic, only the line and the objective. It fires once, whatever your frustration.
+- It goes in **Gate 5a**, with the Showdown that pays it off.
+

@@ -208,7 +208,7 @@ namespace FedUp.Tests
         {
             yield return SkipTo<PhoneCallTask>();
             frustration.SetValue(20f);
-            var call = Object.FindAnyObjectByType<PhoneCallTask>();
+            var call = (PhoneCallTask)runner.Current; // call #1 (Gate 5a added calls #2-4)
             yield return new WaitUntil(() => call.Ringing);
             yield return Use("phone");
             Assert.IsTrue(call.Answered);
@@ -222,7 +222,7 @@ namespace FedUp.Tests
         public IEnumerator Phone1_Ignored_Plus2_AndRecordedAsMissed()
         {
             yield return SkipTo<PhoneCallTask>();
-            var call = Object.FindAnyObjectByType<PhoneCallTask>();
+            var call = (PhoneCallTask)runner.Current; // call #1 (Gate 5a added calls #2-4)
             Time.timeScale = 6f;
             yield return new WaitUntil(() => call.State == TaskState.Done);
             Time.timeScale = 1f;

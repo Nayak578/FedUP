@@ -143,13 +143,82 @@
 | 43 | **Radio on the dining table** | The only table in the house set for more than one person. The lo-fi song is the one from his old relationship (STORY_FLOW), playing to six empty chairs. Optional, −5 if you let it play 15 s. It's on the way from the fridge to the stove. |
 | 44 | **Tea things** (start in the kitchen) | Milk in the fridge, sugar beside the toaster, tea in the cabinet above: where anyone would keep them. That makes their vanishing a clean violation of the ordinary. |
 | 45 | **Milk hidden in the bathtub** | Absurd (milk in a bath) and a return to the room that scared you: past the cracked mirror and the door that slammed. |
-| 46 | **Sugar on the hallway shelf, beside the phone** | The dark corridor of the footsteps. The phone sits silent, which primes call #2 (Gate 5): absence where you expect presence. |
-| 47 | **Tea on the guest-bedroom bed** | The first time you enter the room built for guests who never came. A made bed nobody sleeps in (research: empty places meant for people are eerie). The bed's headboard is against the east wall, the only unbroken wall, straight ahead as you come through the west doorway; the tea lies at the foot nearest the door, so you see it as you look in. It stays out of the middle of the room, where it would block the way in. |
+| 46 | **Sugar on the hallway shelf, where the phone was** | The dark corridor of the footsteps. From Gate 5a the phone has moved on (#66), so the sugar sits in the empty space where it used to ring: absence where you expect presence. |
+| 47 | **Tea on the guest-bedroom bed** *(approved 26 Oct: in 5b the tea moves to the Storeroom, #56; the bed stays)* | The first time you enter the room built for guests who never came. A made bed nobody sleeps in (research: empty places meant for people are eerie). The bed's headboard is against the east wall, the only unbroken wall, straight ahead as you come through the west doorway; the tea lies at the foot nearest the door, so you see it as you look in. It stays out of the middle of the room, where it would block the way in. |
 | 48 | **Fuse box in the back hall** | Fuse boxes live by the back door. It's the darkest end of the house, where the cat came and went. When the power cuts you walk the footsteps corridor in total darkness with only the torch. |
 | 49 | **Stove and kettle** (south end of the counter) | The counter where the toast went wrong in the evening; the same place fails you twice. The kettle screams in the boss's voice (an approved absurd beat). |
 | 50 | **Throws come from the upper cabinets** | A second-hand kitchen's cabinets bang open and hurl junk. They're above the stove, where you're already looking, so every throw is readable and dodging is fair. |
 | 51 | **Microwave** (north end of the counter) and **blender** (on the kitchen props unit) | Two appliances a step apart in the kitchen: the first chaos is close, the second just after. |
 | 52 | **The bathroom sink overflows** | The sink you splashed your face at in Gate 3, now flooding. Far from the kitchen, so the 10 s race crosses the house: the chaos reaches every room you trusted. |
+
+---
+
+## Gate 5 setup (approved by the designer, 26 Oct; built in 5a and 5b)
+
+**Room names:** the designer's floor plans rule (`MACRO_PLAN.md` G.3). The **Storeroom** (one word) is **upstairs**, between the landing and the east hallway, and shares its north wall with the **Locked Room**. The room east of the kitchen is the **Bathroom Downstairs**. "Store room" for that room was a Slice 0 guess, retired on 23 Oct.
+
+**The upstairs route:** you come up the stairs from the living room onto the landing. The **Bedroom** is right there at the top (west). The **Storeroom** is a walk-through room: in from the landing on its west side, out to the east hallway on its east side. Anyone crossing the upper floor passes through the clutter.
+
+| # | Thing | Why it's there |
+|---|---|---|
+| 53 | **Mom's voicemail** on his phone, on the entrance side table (Phase 1, Gate 5b) | He empties his pockets onto the table beside Mom's unopened birthday card (#6). The screen lights up: "1 new voicemail – Mom". Listening is optional; the screen glows there every time you pass in the evening, a nag he can ignore, the way he ignores her. It's earliest in the night, so the mantra has all night to sink in before the Burial. |
+| 54 | **The Storeroom, full of a life** | Boxes, broken furniture, a taped-up trophy box: the clutter a man piles up in a house too big for him (Chilla's Art: a pantry with too much of someone's life in it). It's on the way across the upper floor, so it's passed, not visited. |
+| 55 | **The axe on the Storeroom wall** | Facing the landing doorway, so it's the first thing in your torch beam as you come in. It's seen for real before the Burial needs it. |
+| 56 | **The tea tin on the shelf under the axe** (moves from #47) | The guest bedroom is downstairs, so the tea hunt as built never goes upstairs. A tea tin belongs on a pantry shelf. Reaching for it means looking up at the axe, and taking it starts the blackout, so no one can miss the axe. |
+| 57 | **A tall shelf against the north wall, with a door frame showing above it** | The Storeroom's north wall is the Locked Room's south wall. The top of a door frame above the shelf, and dust drifting towards it, say "there's a way through" without saying it. The shelf can't be moved and the door can't be reached: the Locked Room stays locked in reality. No crawlspace: crawling is saved for the Burial's vent. |
+| 58 | **The Locked Room, dreamt** (desk, upright chair, shut window, stain) | The real sealed room, used only in the blackout. The chair is at a desk facing the window towards the factories: someone sat here and looked out. Nothing is knocked over and nothing hangs (`HORROR_RESEARCH.md` rule 10: never a method). The stain could be old water damage. What moves is a glimpse under 0.3 s. The Burial's other world shows this same room. |
+| 59 | **Waking in the bathtub** | The milk's hiding place (#45) becomes the place you come to, so the bathroom is colder every time after. It's downstairs, next to the kitchen, so the hunt carries on with no lost walking. |
+| 60 | **The gun in the bedside drawer** (Phase 2, Gate 5a) | The Bedroom is at the top of the stairs; it's the bed he never sleeps in (he sleeps on the couch). The reason to go up is his phone at 4% and the charger upstairs. As the torch passes, the ajar drawer slides shut: the gun is in the beam for about 0.2 s, once, at any frustration. It's tied to his passive death wish and pays off in the Showdown. |
+
+---
+
+## How the player knows where to go (Gate 5 onwards)
+
+Show-don't-tell is for **foreshadowing**, not for **finding your way**. Getting lost isn't scary, it's just annoying. So every "go somewhere new" has three layers, from loudest to quietest:
+
+1. **The objective line** at the top of the screen says the goal in his words ("Charge your phone. The charger's by the bed, upstairs.").
+2. **His voice** gives the reason, in character (*"4%. The charger's upstairs. Of course it is."*).
+3. **The house pulls you there.** A light left on, a sound from that direction.
+
+**Going upstairs:**
+- **Phase 2, the charger (5a):** the torch starts dying, flickering and dimming. The landing light at the top of the stairs is the one light upstairs that's on. This trip teaches you the way to his bed before the final sleep needs it.
+- **Phase 3, the tea (5b):** when the ingredients vanish, a tin drops and rolls across the ceiling above the kitchen, because the Storeroom is directly above it. He says, flatly, *"…That came from upstairs."*
+- **The final sleep (5a):** "Go to bed". You've already been to the bed for the charger, so you know the way.
+- **The secret ending:** nothing points you upstairs before your first chore. That's what makes it a secret.
+
+---
+
+## Gate 5a (approved plan, 26 Oct)
+
+**The whole night, in order** (★ = new in 5a):
+
+- **Phase 1:** porch → drop your things → toast → bath → clean-up → TV → call #1 → cat #1 → sleep on the couch
+- **Phase 2:** splash your face → back to the living room → ★ charge your phone upstairs (the gun) → snack → ★ call #2
+- **Phase 3:**
+  - tea
+  - ★ cat #2
+  - appliance chaos (★ calls #3 and #4 ring during it)
+  - ★ cat #3
+  - ★ **the final sleep** → ★ the ending
+
+| # | Thing | Why it's there |
+|---|---|---|
+| 61 | **Charger on the bedside cabinet, upstairs Bedroom** (Phase 2) | The torch is his phone, and it's dying: a plain, mundane reason to climb the stairs at 3 AM. The cabinet is at the head of the bed he never sleeps in (he sleeps on the couch), so you stand where the final sleep will happen. Plugging in costs a 2 s hold: *"Twelve percent. Living the dream."* |
+| 62 | **The bedside drawer, ajar, under the charger** | It sits right below where you plug in, so your torch passes over it. The first time it's in your beam, the gun shows for **0.2 s** and the drawer slides shut by itself. It happens once, at any frustration. No line, no music sting: you're not sure you saw it. It pays off when he opens this same drawer in the Showdown. |
+| 63 | **Call #2: the phone is on the couch, on your pillow** (Phase 2, after the snack) | You're at the fridge. It rings across the open-plan room from exactly where you slept: the house moved it to where your head was. Close enough to find quickly (−5), creepy enough to hesitate. |
+| 64 | **Call #3: on the back-hall floor, under the fuse box** (during the appliance chaos) | The darkest end of the house, where you ran in the power cut. It lies on the floor, as if dropped. This is the distorted call: the boss's voice repeats *your* lines back, reversed and wrong (+5). It rings over the microwave: answer it, or save the kitchen. |
+| 65 | **Call #4: on the entrance table, on top of the file** (during the appliance chaos) | It's the file he wants, and the phone sits on it. The table is by the front door the boss will come to. *"Fine. I'm coming over to get it myself."* Answered, you hear it live; ignored, the answering machine plays it to the empty room. |
+| 66 | **The phone never goes back to the shelf** | GDD: "never in the same place twice". The hallway shelf stays empty, which is where the sugar is hidden during the tea (#46): an empty space where the phone used to be. |
+| 67 | **Cat #2 on the kitchen counter** (after the tea) | You turn round from the stove and it's sitting on the counter where the toast went wrong, looking at you: the "cat judging you" absurd beat (approved). The GDD lists "on the counter". *(Its first suggestion, "top of the fridge", doesn't exist here: the kitchen's fridge has cabinets right up to the ceiling.)* Its other perch is the dining table. |
+| 68 | **Cat #3 on the guest bed** (after the chaos) | The only guest who ever came, asleep on the bed nobody sleeps in. Its collar bell jingles from that end of the house, and he says *"…the bell. The cat's back."* It's off the way to bed, so the last chance costs a detour. |
+| 69 | **Cats #2–3: walk, don't run** | GDD: "approach slowly". If you sprint within 3 m, it jumps to a second perch. No penalty; you just have to find it again. Above 60% it may still hiss (GDD), with a 30 s retry. |
+| 70 | **The final sleep: his own bed, upstairs** | For the first time tonight he goes to his own bed, not the couch. It's the bed the charger trip showed you. |
+| 71 | **The choice is to act or not to act** | GDD: "[Wake Up] via button press, or stay asleep". The blanket lifts, and you have a few seconds to press E. Doing nothing *is* staying asleep: the passive choice for a man with a passive death wish. |
+| 72 | **The breathing QTE: three beats to the heartbeat**, only above 50% | GDD Task 7. It reuses the toast's timing bar (one control to learn all night). A miss is a scream (+15) and a retry; only the first retry costs +10 (rebalance); after three misses the nightmare simply happens. A clean sleep is −20, which can pull you back under 100% before the choice. |
+| 73 | **The front yard and the gate** | The house model ends at the porch; the gate is built just west of it, in line with the front door and under a sodium street lamp. You see it behind you on the porch at the very start of the night (the way you came in), so the Showdown's gate isn't new. In normal play the porch railing keeps you in the house. |
+| 74 | **The Showdown trail** | The lights die and a red trail runs from the bed to the porch (Max Payne's blood line): bedroom → landing → stairs → living room → front door → porch. The ghost's image waits at each turn; shoot it and it's further on. Every shot breaks something: the house is wrecked by you. The last one is at the gate, shot from the porch. **Phone answered:** the figure becomes the boss just before you fire. **Ignored:** it stays the ghost. Either way, the lamp comes up on the boss, dead, and when you turn round, the ghost is standing in the doorway you burst open. *(First placed in the upstairs window; from the porch the porch roof hides it, so it moved to the doorway.)* The door that locked behind you at the start of the night is burst open in the Showdown and stays open. |
+| 75 | **The secret bed** | His bed upstairs can be used before your first chore is done. Going straight to bed is the whole joke: *"Maybe ignoring it all was the real answer."* Then, at random, the loop or the ghost wins. |
+| 76 | **Endings without a scene yet show a title card** | 5a builds the Showdown and the secret ending. The other endings show their title and one line, so every path finishes and can be tested; their scenes come in 5b. |
 
 ---
 
@@ -172,6 +241,15 @@
 | **Tea: carry two at a time; one re-scatter at most** | GDD: carry 2; GDD rebalance: the tea items reset once. If you don't restore power in 30 s, everything goes back to its hiding place (+10), but only once a night, so the task can't loop forever. |
 | **Dodge counts only in the kitchen** | GDD: "dodge thrown objects for 20 seconds". Running away pauses it instead of skipping it: the stove is what you're protecting. |
 | **Appliance chaos: one at a time, director-gated** | GDD: they "activate on their own". The director spaces them like scares, so they never stack into noise. |
+| **Mr. Robot lines** (designer, 26 Oct) | *"You saw that too, right? …Right."* plays as the cat leaves in Phase 1, when the player has just shared something odd with him. *"You're still here. Huh. Nobody stays."* plays after the mirror cracks, when anyone sane would have left. Both are deniable as talking to himself and set up *"I see you. I'm here."* in the Burial. |
+| **Calls #2–4: a ring every 2 s, rings out after 20 s; each ring after the first +2** | Appendix 1 lists "+2 per ring after the first" and "+1 per second for a long ring ignored". At one ring per 2 s they're the same rate, so the two rules never stack. 20 s is the GDD's "left ringing >20 s". |
+| **"Found and answered quickly" = within 10 s** (−5) | Half the ring time. Later than that, answering still counts for the ending but earns no relief. |
+| **Phone answered = at least 3 of the 4 calls** | Designer ruling, 26 Oct. |
+| **Wake at 100% = the bar is full** | Fed Up is 100 (CLAUDE.md). The final sleep's −20 for a clean sleep happens before the choice, so a calm sleep can tip you into the Burial. |
+| **Cats #2–3 and calls #3–4 don't stop the night** | They happen *alongside* the next chore. Cat #2 waits on its perch through the appliance chaos, and cat #3 while you head to bed; calls #3–4 ring over the chaos. A minute of waiting for an optional cat would kill the pace, and a call that interrupts nothing isn't "mid-task". |
+| **Going to bed ends whatever's still waiting** | A cat still on its perch leaves, unpetted. A call still ringing goes to the answering machine (ignored); a call that hadn't rung yet never does. Nothing rings or costs you while you lie in bed. |
+| **Lines don't talk over each other** | When one chore ends with a line, the next one waits about 3 s before its own (the charger after *"…I'm not going back to sleep."*, the cat's bell after *"Tea. I made tea."* and *"Bed. A real one."*). |
+| **Nine lines rewritten for writing rule 1** (26 Oct) | They were neither flat about the ghost nor raw about his life: *"No. No, no, no."* → *"…That's new."*; *"Get off. GET OFF."* → *"Off. Thank you."*; *"What— the cabinets—"* → *"The cabinets. Sure. Why not."*; *"Ow—"* → *"Ow. Rude."*; *"…Hello?"* → *"…Hello? …Okay. Footsteps. Sure."*; *"Lights. I need lights."* → *"Lights. Lights would be nice."*; *"I can't see it. Torch."* → *"Something's on the switch. …Torch."*; *"Not in there."* → *"Not in there. I have a system."*; *"Can't see a thing. The fuse box first."* → *"…Fuse box first. Then tea. Then a new life."* Veto any of them and I'll put it back. |
 | **The demo videos fix the dice** | So every outcome shows up in 60 seconds. The real odds are covered by the tests. |
 
 ## How this is checked

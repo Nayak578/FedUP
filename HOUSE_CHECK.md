@@ -60,7 +60,7 @@ Floor plans (white = walls, green = you can walk there from the living room, red
 | 6 | **Flipped faces** on small parts (wall-box switch) and duplicate vertices | ✅ Recalculated and merged |
 | 7 | **The house is a `.blend`** (needs Blender installed to open the project) | ✅ Now exported as **`ENV_Apartment_v01.fbx`**, using your existing materials (all 38 matched by name) |
 | 8 | **Player spawns in mid-air** upstairs | ⏳ Slice 0 (player setup) |
-| 9 | **Doorway blocked** to the room east of the kitchen (in the old scene) | ✅ Open in the cleaned house; provisionally the **Store Room** (GDD: "active store room") |
+| 9 | **Doorway blocked** to the room east of the kitchen (in the old scene) | ✅ Open in the cleaned house; this is the **Bathroom Downstairs** (designer floor plans, 23 Oct). The **Storeroom** is upstairs, beside the Locked Room. |
 | 10 | **Open holes to the outside** | ✅ Greybox: the east doorway is the front door (closed), the north gap is walled. The west "opening" was a route over the floorless courtyard, not a door. |
 
 **Result:** the house went from **143,358 → 21,249 triangles** (−85%), and from 91 meshes plus 37 hidden objects to 52 clean meshes. Re-checks on the cleaned copy:

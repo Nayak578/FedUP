@@ -42,6 +42,8 @@ namespace FedUp.Tests
             runner = Object.FindAnyObjectByType<TaskRunner>();
             subtitles = Object.FindAnyObjectByType<SubtitleUI>();
             phase = Object.FindAnyObjectByType<NightPhaseController>();
+            // Gate 5a rings calls #3-4 over the chaos; these tests measure Gate 4's systems on their own
+            Object.FindAnyObjectByType<FedUp.Tasks.Phone.MidTaskCalls>().enabled = false;
             Object.FindAnyObjectByType<CutscenePlayer>().SkipAll();
             motor.UseVirtualInput = true;
             Object.FindAnyObjectByType<FrontDoor>().Open();
@@ -165,7 +167,7 @@ namespace FedUp.Tests
             Assert.IsTrue(snack.Got);
             Assert.AreEqual(15f, frustration.Value, 1e-3f, "-5 for the snack");
             yield return new WaitForSeconds(1.6f);
-            Assert.IsInstanceOf<TeaTask>(runner.Current, "then: make tea");
+            Assert.IsInstanceOf<FedUp.Tasks.Phone.PhoneCallTask>(runner.Current, "then: call #2 (Gate 5a), before the tea");
         }
 
         [UnityTest]
@@ -458,8 +460,8 @@ namespace FedUp.Tests
                 yield return Use(id, hold: 1.3f);
             }
             Assert.AreEqual(3, chaos.ShutOffCount);
-            Assert.IsTrue(runner.AllDone);
-            StringAssert.Contains("whole house is awake", subtitles.LastText);
+            yield return null;
+            Assert.IsInstanceOf<FedUp.Tasks.Night.FinalSleepTask>(runner.Current, "then: bed (Gate 5a)");
         }
 
         // ---------------- design reasons (DESIGN_LOGIC.md #43-52) ----------------

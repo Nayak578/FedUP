@@ -19,6 +19,8 @@ namespace FedUp.World
 
         public bool IsOpen { get; private set; }
         public bool IsLocked { get; private set; }
+        /// <summary>Burst open in the Showdown: it never shuts again.</summary>
+        public bool Broken { get; private set; }
 
         float angle, target;
         AudioSource sfx;
@@ -45,10 +47,21 @@ namespace FedUp.World
             lines?.Say("door_home");
         }
 
+        /// <summary>The Showdown: the lock gives and the door bangs open. The only way back out tonight.</summary>
+        public void BurstOpen()
+        {
+            Broken = true;
+            IsLocked = false;
+            IsOpen = true;
+            target = openAngle;
+            if (handle != null) handle.available = false;
+            sfx.PlayOneShot(PlaceholderTones.Get("slam"));
+        }
+
         /// <summary>Called by the entry zone once the player is inside.</summary>
         public void CloseAndLock()
         {
-            if (IsLocked) return;
+            if (IsLocked || Broken) return;
             IsOpen = false;
             IsLocked = true;
             target = 0f;

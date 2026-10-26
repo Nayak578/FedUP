@@ -15,11 +15,14 @@ namespace FedUp.Player
         [SerializeField, Min(1f)] float flickerEveryMax = 35f;
 
         Light beam;
+        float fullIntensity;
         InputAction toggle;
         float nextFlicker, flickerEnds;
         bool wantOn;
 
         public bool Available { get; set; }
+        /// <summary>Gate 5a: the battery is nearly gone (the reason to go upstairs for the charger). Dim and stuttering.</summary>
+        public bool Dying { get; set; }
         public bool On => wantOn;
         public bool Lit => beam != null && beam.enabled;
 
@@ -27,6 +30,7 @@ namespace FedUp.Player
         {
             beam = GetComponent<Light>();
             beam.enabled = false;
+            fullIntensity = beam.intensity;
             if (controls != null) toggle = controls.FindAction("Player/Torch", true);
             nextFlicker = Time.time + Random.Range(flickerEveryMin, flickerEveryMax);
         }
@@ -46,8 +50,9 @@ namespace FedUp.Player
             if (Time.time >= nextFlicker)
             {
                 flickerEnds = Time.time + Random.Range(0.08f, 0.3f);
-                nextFlicker = flickerEnds + Random.Range(flickerEveryMin, flickerEveryMax);
+                nextFlicker = flickerEnds + (Dying ? Random.Range(1.2f, 3.5f) : Random.Range(flickerEveryMin, flickerEveryMax));
             }
+            beam.intensity = Dying ? fullIntensity * 0.4f : fullIntensity;
             beam.enabled = Available && wantOn && Time.time >= flickerEnds;
         }
     }

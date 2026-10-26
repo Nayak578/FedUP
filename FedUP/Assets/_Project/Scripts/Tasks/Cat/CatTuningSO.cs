@@ -24,6 +24,16 @@ namespace FedUp.Tasks.Cat
         [Tooltip("GDD: hold to pet.")]
         [Min(0f)] public float petHoldSeconds = 1.5f;
 
+        [Header("Visits #2-3 (perched, Gate 5a)")]
+        [Tooltip("How long it waits on its perch. Longer than visit 1: you have to find it first.")]
+        [Min(5f)] public float perchPatienceSeconds = 60f;
+        [Tooltip("Its collar bell, so you can find it by ear.")]
+        [Min(1f)] public float jingleEverySeconds = 6f;
+        [Tooltip("GDD: 'approach slowly'. Sprint within this many metres and it jumps to its other perch.")]
+        [Min(0.5f)] public float spookRadius = 3f;
+        [Tooltip("GDD: petting it 'temporarily pauses ghost activity'.")]
+        [Min(0f)] public float hushSeconds = 20f;
+
         [Header("Frustration events (Appendix 1)")]
         public FrustrationEventSO petted;           // -20
         public FrustrationEventSO pettedAfterHiss;  // -10

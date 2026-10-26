@@ -32,6 +32,8 @@ namespace FedUp.Tasks.Cat
         [SerializeField] RunStateSO runState;
         [SerializeField] MonologueLibrarySO lines;
         [SerializeField] ScreenSoften glow;
+        [Tooltip("The Mr. Robot touch (designer, 26 Oct): said to you, deniably, after the cat has gone.")]
+        [SerializeField] string toPlayerLineId = "to_player_cat";
 
         public CatVisitSession Session { get; private set; }
         public bool Arrived { get; private set; }
@@ -190,7 +192,14 @@ namespace FedUp.Tasks.Cat
             }
             yield return WalkTo(entry.position, 25f);
             cat.gameObject.SetActive(false);
+            if (visit == 1 && !string.IsNullOrEmpty(toPlayerLineId)) StartCoroutine(SayLater(toPlayerLineId, 2.8f));
             Complete();
+        }
+
+        IEnumerator SayLater(string id, float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+            lines?.Say(id);
         }
 
         public override void DebugComplete()

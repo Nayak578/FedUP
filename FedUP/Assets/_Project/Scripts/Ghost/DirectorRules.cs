@@ -45,6 +45,12 @@ namespace FedUp.Ghost
             return size == ScareSize.Big ? quiet * bigMultiplier : quiet;
         }
 
+        /// <summary>The house goes quiet for a while (GDD: petting the cat "temporarily pauses ghost activity").</summary>
+        public void Hush(float now, float seconds)
+        {
+            if (now + seconds > QuietUntil) QuietUntil = now + seconds;
+        }
+
         /// <summary>Asks to fire a scare now. If allowed, the scare is used up and the quiet starts.</summary>
         public ScareDecision Request(string id, int minPhase, ScareSize size, float now, float frustration)
         {

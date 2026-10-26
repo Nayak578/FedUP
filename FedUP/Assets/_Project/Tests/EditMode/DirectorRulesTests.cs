@@ -95,5 +95,24 @@ namespace FedUp.Tests
             Assert.AreEqual(ScareDecision.Grace, d.Request("door", 2, ScareSize.Big, 52f, 0f));
             Assert.AreEqual(ScareDecision.Allowed, d.Request("door", 2, ScareSize.Big, 56.5f, 0f), "phase 2 scares still allowed in phase 3");
         }
+
+        [Test]
+        public void PettingTheCat_HushesTheHouse_ForAWhile()
+        {
+            // GDD Cat Visit #2-3: "temporarily pauses ghost activity"
+            var d = AwakeAt(0f);
+            d.Hush(40f, 20f);
+            Assert.AreEqual(ScareDecision.Quiet, d.Request("door", 2, ScareSize.Big, 55f, 0f));
+            Assert.AreEqual(ScareDecision.Allowed, d.Request("door", 2, ScareSize.Big, 60.5f, 0f));
+        }
+
+        [Test]
+        public void AHush_NeverShortensAQuietAlreadyRunning()
+        {
+            var d = AwakeAt(0f);
+            d.Request("steps", 2, ScareSize.Big, 10f, 0f); // quiet until 23
+            d.Hush(11f, 2f);
+            Assert.AreEqual(ScareDecision.Quiet, d.Request("door", 2, ScareSize.Big, 20f, 0f));
+        }
     }
 }

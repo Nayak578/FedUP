@@ -117,7 +117,9 @@ Fed Up will be **one apartment scene that changes over the night**, not a series
 | **2b** | Same question, part 2 | **TV** · **Cat #1** (a capsule that walks, sits and can be petted) | Cat can be petted, or walks off into the hallway · TV channels and remote loss work | **3–4** |
 | **3** | *"Does the first scare land?"* | Sleep → **Phase 2 wake-up** · ghost director v1 · **2–3 jumpscares** (mirror flicker, door slam, hallway footsteps) · atmosphere kit gets darker per phase | Phase change is visible and audible · each scare fires once, only when the director allows · cooldown proven by test | **3–5** |
 | **4** | *"Does chaos feel absurd, not punishing?"* | **Make Tea** · **appliance chaos** + flashlight QTE · **dodge QTE** · **Grab a Snack** · juice box · radio | All fail and recover paths reachable · "1 calm task per 2 stressful" holds in the log | **4–6** |
-| **5** | *"Does the ending choice feel earned?"* | **Phone #2–4** · **Cat #2–3** · **Final Sleep** · **EndingResolver** with **all 8 endings** as title card + line · secret ending | Resolver passes a test for every row of Appendix 2 · **the whole night is playable from start to every ending** | **4–6** |
+| **5a** | *"Does the ending choice feel earned?"* | **Final Sleep** · **EndingResolver** with all four flags wired · **Phone #2–4** · **Cat #2–3** · secret ending · **one Showdown variant** · the gun cameo | Resolver passes a test for every row of Appendix 2 · the night plays from start to both built endings | **2–3** |
+| **5b** | *(set when 5a is answered)* | the other six endings · the Storeroom blackout · Mom's voicemail · the Mr. Robot lines · the content pass on every ending card | **the whole night is playable from start to every ending** | **3–4** |
+| | | *Gate 5 split by the designer, 26 Oct: if 5b slips, the game still has two endings on a working framework.* | | |
 
 ### Art passes (dress the proven game)
 
@@ -227,7 +229,7 @@ The Slice 0 build plan is in [`SLICE_0_PLAN.md`](SLICE_0_PLAN.md).
 | Yes | Ignored | Wake below 100% | **Ghost Burial (same journey)** | gone 🟡 | safe | at peace |
 | — | — | Bed before any task | **Secret: "Maybe ignoring it all was the real answer."** (random: loop or ghost wins) | — | — | — |
 
-**Still open (needed by Slice 5, not now):** there are four calls, so what counts as "answered the phone"?
+**Ruled (designer, 26 Oct): Option B, at least 3 of 4.** There are four calls, so what counts as "answered the phone"? *(Options kept for the record.)*
 - **Option A — the last call only.** Simple and dramatic.
 - **Option B — at least 3 of 4.** Rewards attention and forgives one miss. **← I recommend B.**
 - **Option C — all four.** Harsh.

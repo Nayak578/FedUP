@@ -61,5 +61,13 @@ namespace FedUp.Tests
         [TestCase("FE_Calm_JuiceBox", -5f)]
         [TestCase("FE_Calm_Radio", -5f)]
         public void Gate4Values_MatchTheDesignerTable(string asset, float amount) => Gate2Values_MatchTheDesignerTable(asset, amount);
+
+        [TestCase("FE_Phone_RingAfterFirst", 2f)]
+        [TestCase("FE_Phone_Distorted", 5f)]
+        [TestCase("FE_Phone_AnsweredQuickly", -5f)]
+        [TestCase("FE_FinalSleep_Scream", 15f)]
+        [TestCase("FE_FinalSleep_Clean", -20f)]
+        [TestCase("FE_FinalSleep_Retry", 10f)]
+        public void Gate5Values_MatchTheDesignerTable(string asset, float amount) => Gate2Values_MatchTheDesignerTable(asset, amount);
     }
 }

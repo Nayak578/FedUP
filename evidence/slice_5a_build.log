@@ -1,0 +1,52 @@
+Mono path[0] = 'D:/Unity/FedUP/builds/slice_5a/FedUp_Data/Managed'
+Mono config path = 'D:/Unity/FedUP/builds/slice_5a/MonoBleedingEdge/etc'
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Initialize engine version: 6000.0.46f1 (fb93bc360d3a)
+[Subsystems] Discovering subsystems at path D:/Unity/FedUP/builds/slice_5a/FedUp_Data/UnitySubsystems
+kGfxThreadingModeSplitJobs is not supported on Direct3D 11. Reverting to kGfxThreadingModeClientWorkerJobs instead.
+GfxDevice: creating device client; kGfxThreadingModeClientWorkerJobs
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 3050 Laptop GPU (ID=0x25e2)
+    Vendor:   NVIDIA
+    VRAM:     3962 MB
+    Driver:   32.0.15.9174
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  0.325 seconds
+- Finished resetting the current domain, in  0.003 seconds
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+<RI> Initializing input.
+Using Windows.Gaming.Input
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 2.087200 ms
+Failed to create agent because there is no valid NavMesh
+RECORDING frames to D:\Temp\fedup_frames_slice_5a at 30 fps
+RenderGraph is now enabled.
+AUTOPILOT START gate5a
+AUTOPILOT CHARGER gunShown=True visible=0.23s charged=True
+AUTOPILOT CALL2 answered=True
+DIRECTOR allowed appliance_microwave at 38.3s; quiet until 48.2s
+AUTOPILOT CAT2 petted=True
+AUTOPILOT CALLS answered=4
+AUTOPILOT NO PATH to GB_BedTop
+ENDING ShowdownAnswered: cat=True calls=4 choice=WakeUp frustration=117.0
+AUTOPILOT SLEEP fails=1 choice=WakeUp ending=ShowdownAnswered frustration=117
+SHOWDOWN trail from (-44.86, 8.28, -5.08) to (-49.40, 4.73, -3.33): 3 stops, answered=True
+AUTOPILOT SHOWDOWN stop cleared=True left=2 shots=1
+AUTOPILOT SHOWDOWN stop cleared=True left=1 shots=2
+AUTOPILOT SHOWDOWN stop cleared=True left=0 shots=3
+ENDING CARD ShowdownAnswered: HORROR SHOWDOWN / The boss came for the file. The house is wrecked. The ghost is still here.
+AUTOPILOT DONE gate5a gun=True calls=4 cats=True/True/True ending=ShowdownAnswered transformed=True shots=4 wrecked=4 card=HORROR SHOWDOWN avgFrameMs=18.92 worstFrameMs=38.66
+[Physics::Module] Cleanup current backned.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.

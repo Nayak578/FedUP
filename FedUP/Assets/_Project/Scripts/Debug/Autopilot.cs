@@ -27,7 +27,8 @@ namespace FedUp.DebugTools
     /// <summary>
     /// Hands-free play for evidence videos and build checks. Runs only when the game is launched with
     /// "-autopilot" (or when a test sets <see cref="forceRun"/>).
-    /// "-autopilot" plays the newest gate (4: snack, juice box, radio, Make Tea, appliance chaos). "-autopilot-gate3"
+    /// "-autopilot" plays the newest gate (5a: the charger and the gun, calls #2-4, cats #2-3, the final sleep, the
+    /// Showdown). "-autopilot-gate4" plays the snack, juice box, radio, Make Tea and appliance chaos. "-autopilot-gate3"
     /// plays sleep and the Phase 2 wake-up with its scares. "-autopilot-gate2b" plays
     /// TV, the boss call and the cat; "-autopilot-gate2a" bath, clean-up and the call; "-autopilot-gate1" the porch,
     /// drop-things and toast; "-autopilot-tour" walks every room.
@@ -58,11 +59,12 @@ namespace FedUp.DebugTools
             bool gate2a = args.Contains("-autopilot-gate2a");
             bool gate2b = args.Contains("-autopilot-gate2b");
             bool gate3 = args.Contains("-autopilot-gate3");
+            bool gate4 = args.Contains("-autopilot-gate4");
             bool demo = forceRun || args.Contains("-autopilot");
-            if (!tour && !gate1 && !gate2a && !gate2b && !gate3 && !demo) { enabled = false; return; }
+            if (!tour && !gate1 && !gate2a && !gate2b && !gate3 && !gate4 && !demo) { enabled = false; return; }
             motor.UseVirtualInput = true;
             if (firstSwitch != null) firstSwitch.Toggled += _ => SwitchToggles++;
-            StartCoroutine(tour ? Tour() : gate1 ? Gate1Demo() : gate2a ? Gate2aDemo() : gate2b ? Gate2bDemo() : gate3 ? Gate3Demo() : Gate4Demo());
+            StartCoroutine(tour ? Tour() : gate1 ? Gate1Demo() : gate2a ? Gate2aDemo() : gate2b ? Gate2bDemo() : gate3 ? Gate3Demo() : gate4 ? Gate4Demo() : Gate5aDemo());
         }
 
         void Update()
@@ -485,6 +487,169 @@ namespace FedUp.DebugTools
             Debug.Log($"AUTOPILOT DONE gate4 snack={snack.Got} juice={snack.JuiceDrunk} tea={tea.Current} dodgeHits={tea.Dodge?.Hits} " +
                       $"appliances={chaos.ShutOffCount}/3 allDone={runner.AllDone} frustration={frustration?.Value:F1} avgFrameMs={avg:F2} worstFrameMs={worstFrame:F2}");
             if (quitWhenDone && !Application.isEditor) { yield return new WaitForSeconds(1f); Application.Quit(); }
+        }
+
+        IEnumerator Gate5aDemo()
+        {
+            var cutscenes = FindAnyObjectByType<CutscenePlayer>();
+            var runner = FindAnyObjectByType<TaskRunner>();
+            var frustration = FindAnyObjectByType<FrustrationSystem>();
+            var torch = FindAnyObjectByType<PhoneTorch>();
+            var cameo = FindAnyObjectByType<GunCameo>();
+            var fs = FindAnyObjectByType<FinalSleepTask>();
+            var showdown = FindAnyObjectByType<ShowdownSequence>();
+            var endings = FindAnyObjectByType<EndingPlayer>();
+            var calls = FindObjectsByType<PhoneCallTask>(FindObjectsSortMode.None);
+            PhoneCallTask CallNo(int n) => System.Array.Find(calls, c => c.CallNumber == n);
+            var cats = FindObjectsByType<CatPerchTask>(FindObjectsSortMode.None);
+            yield return new WaitForSeconds(0.3f);
+            if (cutscenes != null) cutscenes.SkipAll();
+            FindAnyObjectByType<FrontDoor>()?.Open();
+            // the evening, the wake-up, the snack and the tea are in the earlier videos: start at the charger trip, 3 AM
+            while (!(runner.Current is ChargerTask)) { runner.DebugSkipCurrent(); yield return null; }
+            // the cat was petted and call #1 answered in the evening (Gates 2a/2b): the night remembers
+            var run = (RunStateSO)typeof(FinalSleepTask).GetField("runState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(fs);
+            run.RecordCatVisit(1, true);
+            run.RecordCall(1, true);
+            motor.Teleport(GameObject.Find("ROOM_LivingRoom").transform.position + Vector3.up * 0.2f, 270f);
+            yield return new WaitForSeconds(0.6f);
+            torch.VirtualToggle();
+            Debug.Log("AUTOPILOT START gate5a");
+            yield return new WaitForSeconds(2.5f);
+
+            // up the stairs to the one lit landing, into the bedroom; the drawer, the charger
+            // (from the foot of the stairs: the autopilot walks the walking map's corners too tightly to round the hall corner)
+            motor.Teleport(new Vector3(-36.6f, 5.1f, 1.1f), 270f);
+            yield return new WaitForSeconds(0.5f);
+            yield return WalkTo(GameObject.Find("ROOM_Landing").transform.position, "landing");
+            yield return WalkTo(StandNear(cameo.Drawer, 1.4f), "bedroom");
+            for (float t = 0f; t < 1.5f && !cameo.Shown; t += 0.9f) yield return FaceTowards(cameo.Drawer.position);
+            yield return new WaitForSeconds(0.8f);
+            yield return Use("charger", hold: 2.3f);
+            Debug.Log($"AUTOPILOT CHARGER gunShown={cameo.Shown} visible={cameo.GunHiddenAt - cameo.SeenAt:F2}s charged={FindAnyObjectByType<ChargerTask>().Charged}");
+            yield return new WaitForSeconds(2f);
+
+            // call #2: on the couch where you slept
+            while (!(runner.Current is PhoneCallTask)) { runner.DebugSkipCurrent(); yield return null; }
+            motor.Teleport(GameObject.Find("ROOM_Kitchen").transform.position + Vector3.up * 0.2f, 270f);
+            var c2 = CallNo(2);
+            while (!c2.Ringing) yield return null;
+            yield return new WaitForSeconds(1f);
+            yield return UseObject(c2.Phone.transform, 0f, null);
+            yield return new WaitForSeconds(6.5f);
+            Debug.Log($"AUTOPILOT CALL2 answered={c2.Answered}");
+
+            // the tea is Gate 4's video; after it, the cat on the counter
+            while (!(runner.Current is TeaTask)) { runner.DebugSkipCurrent(); yield return null; }
+            runner.DebugSkipCurrent();
+            var cat2 = System.Array.Find(cats, c => GetVisit(c) == 2);
+            while (cat2.State != TaskState.Active) yield return null;
+            motor.Teleport(GameObject.Find("ROOM_Kitchen").transform.position + Vector3.up * 0.2f, 0f);
+            yield return new WaitForSeconds(1.2f);
+            cat2.ForcedRoll = 0.9f;
+            yield return Use("cat", hold: 1.8f);
+            yield return new WaitForSeconds(3f);
+            Debug.Log($"AUTOPILOT CAT2 petted={run.CatPettedOn(2)}");
+
+            // the chaos (Gate 4's video): calls #3 and #4 ring over it
+            var c3 = CallNo(3); var c4 = CallNo(4);
+            runner.DebugSkipCurrent();
+            while (!c3.Ringing) yield return null;
+            motor.Teleport(GameObject.Find("ROOM_BackHall").transform.position + Vector3.up * 0.2f, 0f);
+            yield return new WaitForSeconds(0.8f);
+            yield return UseObject(c3.Phone.transform, 0f, null);
+            yield return new WaitForSeconds(6.5f);
+            while (!c4.Ringing) yield return null;
+            motor.Teleport(GameObject.Find("ROOM_Entrance").transform.position + Vector3.up * 0.2f, 180f);
+            yield return new WaitForSeconds(0.8f);
+            yield return UseObject(c4.Phone.transform, 0f, null);
+            yield return new WaitForSeconds(5.5f);
+            Debug.Log($"AUTOPILOT CALLS answered={run.CallsAnswered}");
+
+            // cat #3, asleep on the guest bed
+            var cat3 = System.Array.Find(cats, c => GetVisit(c) == 3);
+            while (cat3.State != TaskState.Active) yield return null;
+            motor.Teleport(GameObject.Find("ROOM_GuestBedroom").transform.position + Vector3.up * 0.2f, 90f);
+            yield return new WaitForSeconds(1f);
+            cat3.ForcedRoll = 0.9f;
+            yield return Use("cat", hold: 1.8f);
+            yield return new WaitForSeconds(2.5f);
+
+            // the final sleep: his own bed. Fed up: the ghost disrupts him; breathe to the heartbeat (one miss)
+            motor.Teleport(GameObject.Find("ROOM_Bedroom").transform.position + Vector3.up * 0.2f, 180f);
+            frustration.SetValue(112f);
+            yield return Use("bed", hold: 1.7f);
+            while (fs.Session == null || fs.Session.Stage == FinalSleepStage.Awake) yield return null;
+            while (fs.Session.Stage == FinalSleepStage.Breathing)
+            {
+                if (fs.Session.Fails == 0) { yield return null; continue; } // the first beat slips by: the scream
+                while (!fs.InZone && fs.Session.Stage == FinalSleepStage.Breathing) yield return null;
+                interactor.VirtualPress();
+                while (fs.InZone) yield return null;
+            }
+            while (!fs.AwaitingWake) yield return null;
+            yield return new WaitForSeconds(2.0f); // the blanket lifting
+            interactor.VirtualPress(); // wake up
+            while (!fs.Resolved) yield return null;
+            Debug.Log($"AUTOPILOT SLEEP fails={fs.Session.Fails} choice={fs.Session.Chosen} ending={fs.Result} frustration={fs.FrustrationAtChoice:F0}");
+
+            // the Showdown: follow the image down through the house, shoot; the porch; the gate
+            while (showdown.Target == null && !showdown.AtGate) yield return null;
+            for (int guard = 0; guard < 12 && !showdown.AtGate && showdown.StopsLeft > 0; guard++)
+            {
+                while (showdown.Target == null && !showdown.AtGate) yield return null;
+                if (showdown.AtGate) break;
+                var target = showdown.Target;
+                int left = showdown.StopsLeft;
+                Vector3 back = Flat(motor.transform.position - target.position);
+                yield return WalkTo(target.position + (back.sqrMagnitude > 0.01f ? back.normalized : Vector3.right) * 3f, "the image");
+                for (int attempt = 0; attempt < 3 && showdown.StopsLeft == left && !showdown.AtGate; attempt++)
+                {
+                    // the walker can snag on the hall corner: if the last shot didn't land, step to a clear spot and fire again
+                    if (attempt > 0) { motor.Teleport(StandNear(target, 3f) + Vector3.up * 0.2f, motor.Yaw); yield return new WaitForSeconds(0.3f); }
+                    yield return FaceTowards(target.position);
+                    yield return new WaitForSeconds(0.3f);
+                    interactor.VirtualPress();
+                    float t0 = Time.time;
+                    while (showdown.StopsLeft == left && !showdown.AtGate && Time.time - t0 < 1.5f) yield return null;
+                }
+                Debug.Log($"AUTOPILOT SHOWDOWN stop cleared={showdown.StopsLeft != left || showdown.AtGate} left={showdown.StopsLeft} shots={showdown.Shots}");
+            }
+            motor.Teleport(GameObject.Find("ROOM_Entrance").transform.position + Vector3.up * 0.2f, 270f); // (the hall corner again)
+            yield return new WaitForSeconds(0.3f);
+            yield return WalkTo(GameObject.Find("CTRL_PorchShoot").transform.position, "porch");
+            while (!showdown.AtGate || showdown.Target == null) yield return null;
+            yield return FaceTowards(showdown.Target.position);
+            yield return new WaitForSeconds(1.0f); // aiming: it turns into the boss
+            yield return FaceTowards(showdown.Target.position);
+            interactor.VirtualPress();
+            while (!endings.CardShown) yield return null;
+            yield return new WaitForSeconds(3f);
+
+            Finished = true;
+            motor.VirtualMove = Vector2.zero;
+            float avg = frameCount > 0 ? frameTimeSum / frameCount : 0f;
+            Debug.Log($"AUTOPILOT DONE gate5a gun={cameo.Shown} calls={run.CallsAnswered} cats={run.CatPettedOn(1)}/{run.CatPettedOn(2)}/{run.CatPettedOn(3)} " +
+                      $"ending={endings.Current} transformed={showdown.Transformed} shots={showdown.Shots} wrecked={showdown.Wrecked} card={endings.CardTitle} " +
+                      $"avgFrameMs={avg:F2} worstFrameMs={worstFrame:F2}");
+            if (quitWhenDone && !Application.isEditor) { yield return new WaitForSeconds(1f); Application.Quit(); }
+        }
+
+        static int GetVisit(CatPerchTask c) => (int)typeof(CatPerchTask).GetField("visit", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(c);
+
+        /// <summary>A walkable spot this far from the target, on its own floor, with a clear view of it.</summary>
+        Vector3 StandNear(Transform t, float distance)
+        {
+            Vector3 away = motor.transform.position - t.position; away.y = 0f;
+            if (away.sqrMagnitude < 0.01f) away = Vector3.right;
+            for (int i = 0; i < 16; i++)
+            {
+                float a = (i % 2 == 0 ? 1 : -1) * ((i + 1) / 2) * 22.5f;
+                Vector3 want = t.position + Quaternion.Euler(0f, a, 0f) * away.normalized * distance;
+                if (NavMesh.SamplePosition(want, out var hit, 1.8f, NavMesh.AllAreas) && hit.position.y < t.position.y + 0.3f
+                    && Flat(hit.position - want).magnitude < 0.35f && ClearView(hit.position + Vector3.up * 1.6f, t)) return hit.position;
+            }
+            return t.position + away.normalized * distance;
         }
 
         IEnumerator PressWhenMarker(MakeToastTask toast, float at)

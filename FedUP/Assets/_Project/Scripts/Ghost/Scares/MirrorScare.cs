@@ -27,6 +27,8 @@ namespace FedUp.Ghost.Scares
         [SerializeField] float lagSeconds = 0.45f;
         [SerializeField] float figureSeconds = 0.22f;
         [SerializeField] MonologueLibrarySO lines;
+        [Tooltip("The Mr. Robot touch (designer, 26 Oct): said to you, deniably, once the crack has landed.")]
+        [SerializeField] string toPlayerLineId = "to_player_mirror";
 
         public bool Armed { get; private set; }
         public bool Fired { get; private set; }
@@ -84,6 +86,8 @@ namespace FedUp.Ghost.Scares
             yield return new WaitForSeconds(1.2f);
             lines?.Say("mirror_after");
             Finished = true;
+            yield return new WaitForSeconds(2.6f);
+            if (!string.IsNullOrEmpty(toPlayerLineId)) lines?.Say(toPlayerLineId);
         }
     }
 }

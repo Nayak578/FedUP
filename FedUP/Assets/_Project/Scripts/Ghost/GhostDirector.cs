@@ -23,6 +23,9 @@ namespace FedUp.Ghost
 
         public void EnterPhase(int phase) => Rules.EnterPhase(phase, Time.time);
 
+        /// <summary>The house holds its breath for a while (the cat was petted).</summary>
+        public void Hush(float seconds) => Rules.Hush(Time.time, seconds);
+
         /// <summary>Asks to fire a scare now. True means: do it (it's used up and the house goes quiet after).</summary>
         public bool TryScare(string id, int minPhase, ScareSize size)
         {

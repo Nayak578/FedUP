@@ -1,5 +1,145 @@
 # Fed Up — Devlog
 
+## Slice 5a (Greybox Gate 5a) — 26 Oct 2026
+
+**Question for you:** *"Does the ending choice feel earned?"*
+
+### Your review, done first
+- **Your rulings are written in:**
+  - `CLAUDE.md`:
+    - the writing rules
+    - "answered = 3 of 4 calls"
+    - the 5a/5b split
+    - the six-sound A2 gate
+    - the sensitivity reader before A4
+    - room names
+  - `STORY_BIBLE.md` Part 1:
+    - the boss dies at the gate either way
+    - Mom's butt-dial
+    - the Storeroom blackout
+    - your two Mr. Robot lines
+  - `MACRO_PLAN.md` and `DESIGN_LOGIC.md`.
+- **Your two approvals are canon:** P1 (the Storeroom details) and P2 (the charger trip for the gun).
+- **"How would the player know to go upstairs?"** Three layers, loudest first: the objective line, his voice, then the house itself (a light left on, a sound from that direction). The full answer is in `DESIGN_LOGIC.md`, "How the player knows where to go":
+  - **The charger:** the torch starts dying, the landing is the one light on upstairs, and he says *"4%. The charger's upstairs. Of course it is."*
+  - **The tea (5b):** you hear the tin drop and roll across the ceiling above the kitchen, because the Storeroom is right above it.
+  - **The final sleep:** "Go to bed". The charger trip already showed you the way.
+- **Writing rule 1 is applied to every line.** All 82 existing lines are tagged with the rule they play. Nine broke it and were rewritten (listed in `DESIGN_LOGIC.md`; veto any). For example:
+  - *"No. No, no, no."* → *"…That's new."*
+  - *"Get off. GET OFF."* → *"Off. Thank you."*
+- **"Designer's answer" lines** are now under every gate's question in this log. Gate 2b has your words; Gates 3 and 4 are waiting for yours.
+
+### What changed (Gate 5a)
+- **The night now has an end.** In order:
+  - Phase 2: the charger trip, the snack, call #2
+  - Phase 3: the tea, cat #2, the appliance chaos with calls #3 and #4, cat #3
+  - **the final sleep**, then **the ending**
+- **Phase 2, the charger** (your approved P2):
+  - Back in the living room the torch starts dying.
+  - Upstairs, the bedside drawer is ajar. The first time it's in your beam, **the gun is there for 0.2 s** and the drawer slides shut by itself. No line, no sting.
+  - Plug in: *"Twelve percent. Living the dream."*
+- **Calls #2–4** (the phone is never in the same place twice):
+  - **#2** rings on the couch, where your head was.
+  - **#3** lies on the back-hall floor under the fuse box, and it's the distorted one: your own voice, slowed down, then backwards.
+  - **#4** sits on the file at the front door: *"Fine. I'm coming over to get it myself."* Ignore it and the answering machine plays it to the empty room.
+  - Each ring after the first costs +2. Answering within 10 s is −5. The distorted voice is +5.
+  - #3 and #4 ring **over** the appliance chaos, so you choose: the phone or the microwave.
+- **Cats #2–3** (perched, with a collar bell so you can find them by ear):
+  - #2 is **on the kitchen counter**, judging you after the tea. *(The kitchen's fridge has cabinets up to the ceiling, so "top of the fridge" doesn't exist here.)*
+  - #3 is **asleep on the guest bed**, the only guest who ever came.
+  - Walk up and hold E to pet it. **Run at it and it jumps to its other perch.**
+  - A pet hushes the house for 20 s: the drone dips and the ghost holds off.
+  - The night doesn't stop for the cat: it waits while you carry on.
+- **The final sleep** is in his own bed upstairs, for the first time tonight:
+  - The lights turn red.
+  - Above 50% the ghost disrupts you: **breathe on the heartbeat**, three beats on the toast's timing bar.
+    - A miss is a scream: +15, and the first retry costs +10 more (once).
+    - Three misses and the nightmare just happens.
+  - A clean sleep is −20, which can pull you back under 100%.
+  - Then the blanket lifts. **Press E to wake up, or do nothing and stay asleep.** Doing nothing is the passive choice.
+- **The ending resolver** reads the cat, the phone (3 of 4) and how you woke, exactly per `MACRO_PLAN.md` Appendix 2. Every one of the eight endings finishes on a title card and one line.
+- **The Showdown** (wake at 100%):
+  1. He takes the gun from the same drawer. Every light dies.
+  2. A red trail runs from the bed down to the porch, and the ghost's image waits at each turn. Shoot it and it's further on; every shot breaks something in the house.
+  3. The front door that locked behind you at the start of the night bursts open.
+  4. The last image stands at the gate, under the street lamp.
+     - **Phone answered:** as you aim, the lamp stutters and it's the boss.
+     - **Ignored:** it stays the ghost until the shot.
+  5. The lamp comes up on the boss, dead, the file in his hand. *"…Sir?"*
+  6. You turn round, and **the ghost is standing in the doorway.**
+- **The secret ending:** go straight to his bed before your first chore. *"Maybe ignoring it all was the real answer."* Then, at random, the loop or the ghost wins.
+- **Your two Mr. Robot lines are in:**
+  - after cat #1 leaves: *"You saw that too, right? …Right."*
+  - after the mirror cracks: *"You're still here. Huh. Nobody stays."*
+- **The front yard and the gate** now exist: lit by a street lamp, visible behind you on the porch at the very start of the night.
+
+### What I decided and why
+- **Cats #2–3 and calls #3–4 run alongside the chores.** A minute of waiting for an optional cat would kill the pace, and a call that interrupts nothing isn't "mid-task".
+- **Going to bed ends whatever's waiting.** A cat on its perch leaves, unpetted. A ringing call goes to the answering machine. Nothing rings or costs you while you lie in bed.
+- **Lines never talk over each other.** The next chore waits about 3 s before speaking.
+- **A short pause before the blanket lifts,** so your last breath press can't count as "wake up". The tests caught exactly that.
+- **The upstairs bed was a 2.25 m solid block** in greybox (the model's whole bounding box, frame and all). It's now a mattress with a headboard, same footprint.
+- **The ghost at the end is in the doorway, not the upstairs window.** From the porch, the porch roof hides that window.
+
+### Evidence
+- **Rules, test-first:**
+  - The ending table, calls #2–4 and the final sleep: red `208 tests, 168 passed, 40 failed` (e.g. "Expected: DieInSleep, But was: Loop"), then green.
+  - The director's hush after a cat: red `Expected: Quiet, But was: Allowed`, then green.
+  - Final: **EditMode 210 passed, 0 failed.** That includes every 5a frustration value from Appendix 1 and the writing rules (every line tagged; at least two lines to the player).
+- **Play Mode: 96 passed, 0 failed** (26 new). Every older gate's tests pass under the new night order.
+  - Four older tests were updated because the night changed:
+    - there are now four calls, not one
+    - call #2 comes after the snack
+    - bed comes after the chaos
+    - the charger comes after the wake-up
+  - The Gate 4 appliance tests mute the 5a mid-chaos calls, so they measure the appliances alone.
+- **Real bugs the in-game tests and the build found, fixed:**
+  - **The front door re-locked behind you in the Showdown,** so you could never reach the porch. It now bursts open and stays open, with a test that walks out through it.
+  - **Your last breath press counted as waking up,** taking the choice away.
+  - **The charger line talked over** *"…I'm not going back to sleep."*
+  - **The gun's sightline was blocked by the player's own body.**
+  - **The breath bar showed a stale marker between beats.**
+  - **A still-ringing call could cost frustration while you lay in bed.**
+  - **The bed's red light turned the street lamp red,** so the reveal was unlit.
+  - **The Showdown was almost black on screen.** The trail now faces you and glows, and the fog is half as thick.
+- **Packaged build** `builds/slice_5a/FedUp.exe`, run hands-free, 0 exceptions:
+  `AUTOPILOT CHARGER gunShown=True visible=0.20s` · `AUTOPILOT SLEEP fails=1 choice=WakeUp ending=ShowdownAnswered frustration=117` · `AUTOPILOT DONE gate5a gun=True calls=4 cats=True/True/True ending=ShowdownAnswered transformed=True shots=4 wrecked=4 card=HORROR SHOWDOWN`
+- **Smoothness** (a plain run, not recording): average frame **2.4 ms**, worst **13 ms**.
+- **Video:** `evidence/slice_5a.mp4`, 59 s, cut from 115 s of the real build in ten pieces:
+  1. the stairs and the charger
+  2. call #2
+  3. the cat on the counter as the microwave starts
+  4. call #3
+  5. call #4 on the file
+  6. cat #3
+  7. the red bed and the breathing
+  8. waking fed up
+  9. the trail
+  10. the gate, the boss and the doorway
+
+  No sound, as before.
+
+### Playtest checklist (15 minutes: one full night, then a second)
+1. **Play the whole night your way.** Did you notice the gun? Did you know where to go each time (the charger, each phone, each cat)? Write down any moment you were lost.
+2. **At the final sleep:** did "press E or do nothing" feel like a real choice, and did the ending you got feel like *yours*?
+3. **Second night, the opposite:** ignore the calls and the cats, and rush. You should die in your sleep. Does that read as a loss, not an escape?
+
+**Feel question:** *"Does the ending choice feel earned?"*
+
+### Designer's answer: *awaiting your one sentence*
+
+### Known limits (not bugs)
+- **Only the Showdown and the secret ending have scenes.** The loop, unemployed, both Burials and dying in your sleep are title cards for now (Gate 5b). The Burial itself is art pass A4.
+- **5b content isn't here yet:**
+  - the Storeroom blackout
+  - Mom's voicemail
+  - the tea moving upstairs
+  - the final content pass on the ending cards
+- **The reveal at the gate is small and far away** in greybox; the Showdown's camera work is pass A3.
+- **Placeholder tones throughout**, including the boss's voice, which is a caption.
+- **One older test is flaky:** Gate 3's lie-down test. Its helper drops you next to the couch without checking the view. It failed once in three full runs (it passed on its own and in the final run). The fix is to make its helper pick a clear spot, as the Gate 4 and 5a helpers do.
+- **The hands-free demo** snags on the hall corner by the stairs, so the video skips that walk. A player walks round it; the stairs themselves are tested on foot.
+
 ## Slice 4 (Greybox Gate 4) — 24 Oct 2026
 
 **Question for you:** *"Does the night feel like it's escalating, and do the calm moments land?"*
@@ -106,6 +246,8 @@
 
 **Feel question:** *"Does the night feel like it's escalating, and do the calm moments land?"*
 
+### Designer's answer: *awaiting your one sentence*
+
 ### Three questions for you (from the research)
 1. **When does real sound arrive?**
    - **A (I recommend this):** a small scare-sound pass now, about 15 sounds (footsteps, slam, sting, drone, fridge, kettle…). Every playtest after it tests the real fear.
@@ -191,6 +333,8 @@
 
 **Feel question:** *"Does the first scare land?"*
 
+### Designer's answer: *awaiting your one sentence* (your Gate 3 notes, the toast and the bath, are under Slice 4)
+
 ### Known limits (not bugs)
 - **All sounds are placeholder tones**, footsteps and slam included. Real sound design comes in pass A2, and scares lean on sound more than anything.
 - **The figure and your reflection are capsules.** Faces and bodies come in the art passes.
@@ -262,6 +406,8 @@
 3. Meet the cat. Pet it once, then replay and ignore it. **Did ignoring it feel like it mattered, even though nothing happened?**
 
 **Feel question:** *"Does the apartment feel alive without being hostile yet?"*
+
+### Designer's answer (23 Oct 2026): "The apartment feels alive without being hostile."
 
 ### Known limits (not bugs)
 - **The channels are coloured screens with captions.** Real footage comes in the art passes.
@@ -407,7 +553,7 @@ Gate 2a: **Clean Up**, **Take a Bath**, **Phone call #1** (the boss).
 
 ### What I decided and why
 - **Front door = the doorway at the east end of the entrance corridor, not the west "porch opening".** The deeper check showed the porch route was really a path across the floorless courtyard onto the ground outside. The east doorway is the only door-sized way in, and its corridor makes a natural entrance hall for "Drop Your Things".
-- **The store room** (the GDD's "active store room") is the room east of the kitchen. In the cleaned house its doorway is open; in the old scene something in front of it blocked the way.
+- *(Retired 23 Oct: the designer's floor plans make this room the Bathroom Downstairs; the Storeroom is upstairs.)* **The store room** (the GDD's "active store room") is the room east of the kitchen. In the cleaned house its doorway is open; in the old scene something in front of it blocked the way.
 - **I wrote our own player controller** instead of reusing Unity's Starter Assets. Theirs can't be linked to our separately compiled code and brings mobile joysticks along. Same feel, every number editable.
 - **The test guard is live.** During this slice it blocked me twice: once a false alarm, which I fixed, and once correctly, which made me add tests as a new file instead of moving old ones. It now fails safe: if the guard itself breaks, it blocks rather than lets changes through.
 

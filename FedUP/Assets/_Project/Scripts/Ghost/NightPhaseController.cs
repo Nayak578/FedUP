@@ -30,6 +30,12 @@ namespace FedUp.Ghost
         [SerializeField] AudioSource whispers;
         [SerializeField] PhoneTorch torch;
         [SerializeField] GhostDirector director;
+        [Header("Phase 3 (the haunted night)")]
+        [Tooltip("GDD art notes: purple fog is the supernatural signal.")]
+        [SerializeField] Color phase3FogColor = new Color(0.1f, 0.05f, 0.13f);
+        [SerializeField] float phase3FogDensity = 0.065f;
+        [Tooltip("Other lights that go out in a power cut (the TV).")]
+        [SerializeField] Light[] alsoOnMains = Array.Empty<Light>();
 
         public int Phase { get; private set; } = 1;
         public bool DronePlaying => drone != null && drone.isPlaying;
@@ -50,7 +56,8 @@ namespace FedUp.Ghost
         {
             director?.EnterPhase(1);
             // make the night's sounds now, at load, not mid-scene (a 6 s drone costs a visible hitch to generate)
-            foreach (var tone in new[] { "drone", "whisper", "step", "sting", "slam", "creak" }) PlaceholderTones.Get(tone);
+            foreach (var tone in new[] { "drone", "whisper", "step", "sting", "slam", "creak",
+                                         "lofi", "kettle", "whoosh", "fire", "whine", "giggle", "buzz", "thunk", "pop", "click" }) PlaceholderTones.Get(tone);
         }
 
         /// <summary>The house turns. Called while the screen is black (the sleep scene).</summary>
@@ -83,5 +90,67 @@ namespace FedUp.Ghost
 
         /// <summary>He's awake and in control: the haunting starts (after the director's grace).</summary>
         public void StartHaunting() => director?.EnterPhase(Phase);
+
+        /// <summary>Phase 3 (GDD: haunted night tasks, high haunting): the fog turns purple and thickens.</summary>
+        public void EnterPhase3()
+        {
+            if (Phase < 2) EnterPhase2();
+            if (Phase >= 3) return;
+            Phase = 3;
+            RenderSettings.fogColor = phase3FogColor;
+            RenderSettings.fogDensity = phase3FogDensity;
+            director?.EnterPhase(3);
+            PhaseChanged?.Invoke(Phase);
+        }
+
+        public bool PowerOn { get; private set; } = true;
+        bool[] litBeforeCut;
+
+        /// <summary>The mains: a power cut kills every room light and the TV (the torch is a phone, it stays).</summary>
+        public void SetPower(bool on)
+        {
+            if (on == PowerOn) return;
+            PowerOn = on;
+            var all = AllMains();
+            if (!on)
+            {
+                litBeforeCut = new bool[all.Length];
+                for (int i = 0; i < all.Length; i++) { litBeforeCut[i] = all[i] != null && all[i].enabled; if (all[i] != null) all[i].enabled = false; }
+                if (drone != null) drone.Pause();
+            }
+            else
+            {
+                for (int i = 0; i < all.Length; i++) if (all[i] != null && litBeforeCut != null && i < litBeforeCut.Length) all[i].enabled = litBeforeCut[i];
+                if (drone != null) drone.UnPause();
+            }
+            foreach (var l in all) { var f = l != null ? l.GetComponent<LightFlicker>() : null; if (f != null) f.enabled = on; }
+            // no power, no switches: you can't flip your way out of a power cut
+            foreach (var sw in FindObjectsByType<FedUp.Interaction.LightSwitch>(FindObjectsSortMode.None)) sw.enabled = on;
+        }
+
+        Light[] AllMains()
+        {
+            var all = new Light[roomLights.Length + alsoOnMains.Length];
+            roomLights.CopyTo(all, 0);
+            alsoOnMains.CopyTo(all, roomLights.Length);
+            return all;
+        }
+
+        /// <summary>The lights stutter for a moment (things vanish; something passes).</summary>
+        public void Flicker(float seconds) => StartCoroutine(FlickerRoutine(seconds));
+
+        System.Collections.IEnumerator FlickerRoutine(float seconds)
+        {
+            var all = AllMains();
+            var was = new bool[all.Length];
+            for (int i = 0; i < all.Length; i++) was[i] = all[i] != null && all[i].enabled;
+            for (float t = 0f; t < seconds; t += 0.08f)
+            {
+                bool on = UnityEngine.Random.value > 0.5f;
+                for (int i = 0; i < all.Length; i++) if (all[i] != null && was[i]) all[i].enabled = on;
+                yield return new WaitForSeconds(0.08f);
+            }
+            if (PowerOn) for (int i = 0; i < all.Length; i++) if (all[i] != null) all[i].enabled = was[i];
+        }
     }
 }

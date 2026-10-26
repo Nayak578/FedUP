@@ -9,10 +9,12 @@ namespace FedUp.Tasks.Bath
     {
         [Tooltip("Seconds of holding E to finish the bath.")]
         [Min(1f)] public float relaxSeconds = 12f;
-        [Tooltip("When each piece of clothing starts sliding off its hook (seconds into the bath).")]
-        public float[] slideTimes = { 3.5f, 7.0f, 10.5f };
-        [Tooltip("Which key snatches each piece back.")]
-        public BathDirection[] directions = { BathDirection.Left, BathDirection.Up, BathDirection.Right };
+        [Tooltip("Seconds into the bath before the first snatch.")]
+        [Min(0.5f)] public float firstSnatchAt = 2.5f;
+        [Tooltip("A new snatch every this many seconds, for as long as you're relaxing (designer: they keep being snatched).")]
+        [Min(0.5f)] public float snatchEvery = 2.6f;
+        [Tooltip("The key each snatch asks for, in turn.")]
+        public BathDirection[] directions = { BathDirection.Left, BathDirection.Up, BathDirection.Right, BathDirection.Down };
         [Tooltip("Seconds you have to snatch a sliding item back.")]
         [Min(0.3f)] public float snatchWindow = 1.6f;
         [Tooltip("Camera height while lying in the bath (metres above the floor).")]

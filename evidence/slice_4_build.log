@@ -1,0 +1,48 @@
+Mono path[0] = 'D:/Unity/FedUP/builds/slice_4/FedUp_Data/Managed'
+Mono config path = 'D:/Unity/FedUP/builds/slice_4/MonoBleedingEdge/etc'
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Initialize engine version: 6000.0.46f1 (fb93bc360d3a)
+[Subsystems] Discovering subsystems at path D:/Unity/FedUP/builds/slice_4/FedUp_Data/UnitySubsystems
+kGfxThreadingModeSplitJobs is not supported on Direct3D 11. Reverting to kGfxThreadingModeClientWorkerJobs instead.
+GfxDevice: creating device client; kGfxThreadingModeClientWorkerJobs
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 3050 Laptop GPU (ID=0x25e2)
+    Vendor:   NVIDIA
+    VRAM:     3962 MB
+    Driver:   32.0.15.9174
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  0.161 seconds
+- Finished resetting the current domain, in  0.003 seconds
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+<RI> Initializing input.
+Using Windows.Gaming.Input
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 0.554200 ms
+Failed to create agent because there is no valid NavMesh
+RECORDING frames to D:\Temp\fedup_frames_slice_4 at 30 fps
+RenderGraph is now enabled.
+AUTOPILOT START gate4
+AUTOPILOT SNACK got=True juice=True
+AUTOPILOT MISSED GB_TeaStation at (-30.82, 5.88, -3.13) from (-31.82, 4.91, -4.05), looking at nothing (interactor on=True, usable=True, ray: GB_Kitchen_Set02@1.48, GB_TeaStation@1.48, GB_Kitchen_Set03@1.76, Cube.055@2.37)
+AUTOPILOT RECOVERED GB_TeaStation
+AUTOPILOT HUNT placed=2 carrying=1
+AUTOPILOT POWER cut=True
+AUTOPILOT DODGE hits=0 step=StoveOff
+DIRECTOR allowed appliance_microwave at 92.2s; quiet until 102.2s
+DIRECTOR allowed appliance_blender at 102.2s; quiet until 112.2s
+DIRECTOR allowed appliance_bathroom sink at 112.2s; quiet until 122.2s
+AUTOPILOT DONE gate4 snack=True juice=True tea=Done dodgeHits=0 appliances=3/3 allDone=True frustration=0.0 avgFrameMs=20.96 worstFrameMs=44.57
+[Physics::Module] Cleanup current backned.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.

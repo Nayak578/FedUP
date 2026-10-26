@@ -119,7 +119,7 @@ namespace FedUp.Tasks.Toast
                     break;
                 case ToasterState.Toasting:
                     elapsed += Time.deltaTime;
-                    MarkerPosition = TimingQte.MarkerPosition(elapsed, tuning.sweepSeconds);
+                    MarkerPosition = TimingQte.MarkerPosition(elapsed, tuning.sweepSeconds, tuning.crook);
                     qte?.Raise(new QteDisplay(true, QteKind.Timing, MarkerPosition, tuning.goldenZoneStart, tuning.goldenZoneEnd, 0, "PRESS  E  WHEN IT'S GOLDEN"));
                     if (elapsed >= tuning.sweepSeconds + tuning.graceAfterEnd) Resolve(TimingJudgement.Late);
                     break;
@@ -236,6 +236,15 @@ namespace FedUp.Tasks.Toast
                 yield return null;
             }
             if (toast != null) toast.position = target;
+        }
+
+        public override void DebugComplete()
+        {
+            StopAllCoroutines();
+            qte?.Raise(QteDisplay.Hidden);
+            if (toaster != null) toaster.available = false; // a skipped toaster mustn't stay clickable
+            if (toastPickup != null) { toastPickup.available = false; toastPickup.gameObject.SetActive(false); }
+            base.DebugComplete();
         }
 
         /// <summary>Tests: pretend the marker is at a given spot and press.</summary>

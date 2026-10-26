@@ -35,6 +35,12 @@ namespace FedUp.Audio
                 "sting" => Make(name, 1.2f, t => (Sine(880f, t) + Sine(932f, t) + Sine(1245f, t) + Noise(t) * 0.6f) * 0.22f * Mathf.Exp(-t * 3.2f)),
                 "slam" => Make(name, 0.9f, t => (Sine(55f, t) * 0.9f + Noise(t) * 0.7f * Mathf.Exp(-t * 30f)) * Mathf.Exp(-t * 6f)),
                 "creak" => Make(name, 2.5f, t => 0.2f * Sine(180f + 60f * Mathf.Sin(t * 3.1f), t) * ((t * 23f % 1f) < 0.55f ? 1f : 0.3f) * Env(t, 2.5f)),
+                // a slow warm chord loop that changes every 2 s (8 s)
+                "lofi" => Make(name, 8.0f, t => 0.07f * Chord(LofiChords[(int)(t / 2f) % 4], t) * (0.75f + 0.25f * Mathf.Sin(t * 3.1f))),
+                "kettle" => Make(name, 3.0f, t => 0.25f * Sine(1400f + 500f * Mathf.Sin(t * 9f), t) * Mathf.Clamp01(t / 1.5f)),
+                "whoosh" => Make(name, 0.5f, t => Noise(t) * 0.35f * Mathf.Sin(Mathf.PI * t / 0.5f)),
+                "fire" => Make(name, 3.0f, t => Noise(t) * 0.15f * (0.6f + 0.4f * Mathf.Sin(t * 13f))),
+                "whine" => Make(name, 2.0f, t => 0.12f * Sine(620f + 40f * Mathf.Sin(t * 30f), t)),
                 // whole cycles in 6 s so the loop has no click
                 "drone" => Make(name, 6.0f, t => 0.25f * (Sine(48f, t) + Sine(48.5f, t) + 0.4f * Sine(96.5f, t)) + Noise(t) * 0.02f),
                 _ => Make("click", 0.05f, t => Sine(1800f, t) * Mathf.Exp(-t * 90f) * 0.6f),
@@ -43,6 +49,8 @@ namespace FedUp.Audio
             return c;
         }
 
+        static readonly float[][] LofiChords = { new[] { 220f, 277.2f, 329.6f }, new[] { 196f, 246.9f, 293.7f }, new[] { 174.6f, 220f, 261.6f }, new[] { 196f, 233.1f, 293.7f } };
+        static float Chord(float[] notes, float t) { float v = 0f; foreach (var n in notes) v += Sine(n, t); return v; }
         static readonly float[] JingleNotes = { 523f, 659f, 784f, 1046f };
         static readonly float[] LullabyNotes = { 392f, 330f, 349f, 294f };
 

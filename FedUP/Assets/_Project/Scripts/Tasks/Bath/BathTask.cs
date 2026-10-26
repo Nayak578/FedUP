@@ -10,9 +10,9 @@ using UnityEngine.InputSystem;
 namespace FedUp.Tasks.Bath
 {
     /// <summary>
-    /// GDD Phase 1, Take a Bath. Hold E on the tub to get in; keep holding E to relax. Clothes slide off the hooks
-    /// one at a time: press the shown direction (W A S D) in time to snatch each back. Each lost item +6 and
-    /// "...Not again."; a perfect bath -10.
+    /// GDD Phase 1, Take a Bath. Hold E on the tub to get in; keep holding E to relax. For as long as you lie
+    /// there, the ghost keeps snatching at the clothes on the hooks: press the shown direction (W A S D) in time
+    /// to snatch each back. Each lost item +6 and "...Not again."; a perfect bath -10.
     /// </summary>
     public class BathTask : TaskBehaviour
     {
@@ -68,7 +68,7 @@ namespace FedUp.Tasks.Bath
         {
             if (Bathing || State != TaskState.Active) return;
             tub.available = false;
-            Session = new BathSession(tuning.relaxSeconds, tuning.slideTimes, tuning.directions, tuning.snatchWindow);
+            Session = new BathSession(tuning.relaxSeconds, clothes.Length, tuning.firstSnatchAt, tuning.snatchEvery, tuning.directions, tuning.snatchWindow);
             Bathing = true;
             exitFeet = motor.transform.position;
             exitYaw = motor.Yaw;

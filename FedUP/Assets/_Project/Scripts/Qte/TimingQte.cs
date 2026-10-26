@@ -15,6 +15,13 @@ namespace FedUp.Qte
             return p < 0f ? 0f : p > 1f ? 1f : p;
         }
 
+        /// <summary>A crooked sweep: starts slow and lurches faster towards the end (crook 1 = even speed).</summary>
+        public static float MarkerPosition(float elapsed, float sweepSeconds, float crook)
+        {
+            float p = MarkerPosition(elapsed, sweepSeconds);
+            return crook <= 0f || crook == 1f ? p : UnityEngine.Mathf.Pow(p, crook);
+        }
+
         public static TimingJudgement Judge(float position, float zoneStart, float zoneEnd)
         {
             const float eps = 1e-5f;

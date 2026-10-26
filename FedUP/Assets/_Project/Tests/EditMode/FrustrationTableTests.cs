@@ -46,5 +46,20 @@ namespace FedUp.Tests
             Assert.AreEqual(amount, e.amount, 1e-4f, asset);
             Assert.IsFalse(e.perSecond, asset);
         }
+
+        [TestCase("FE_Tea_Rescatter", 10f)]
+        [TestCase("FE_Tea_Hit", 7f)]
+        [TestCase("FE_Tea_Fire", 15f)]
+        [TestCase("FE_Tea_Made", -10f)]
+        [TestCase("FE_Snack_FailedGrab", 5f)]
+        [TestCase("FE_Snack_QteFail", 10f)]
+        [TestCase("FE_Snack_Success", -5f)]
+        [TestCase("FE_Snack_Sarcasm", 3f)]
+        [TestCase("FE_Appliance_NotShutOff", 10f)]
+        [TestCase("FE_Appliance_Blocked", 7f)]
+        [TestCase("FE_Appliance_ScareOff", -5f)]
+        [TestCase("FE_Calm_JuiceBox", -5f)]
+        [TestCase("FE_Calm_Radio", -5f)]
+        public void Gate4Values_MatchTheDesignerTable(string asset, float amount) => Gate2Values_MatchTheDesignerTable(asset, amount);
     }
 }

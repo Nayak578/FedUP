@@ -10,7 +10,11 @@ using FedUp.Tasks;
 using FedUp.Tasks.Bath;
 using FedUp.Tasks.Cat;
 using FedUp.Tasks.Cleanup;
+using FedUp.Tasks.Appliances;
+using FedUp.Tasks.Calm;
 using FedUp.Tasks.Night;
+using FedUp.Tasks.Snack;
+using FedUp.Tasks.Tea;
 using FedUp.Tasks.Phone;
 using FedUp.Tasks.Toast;
 using FedUp.Tasks.Tv;
@@ -23,7 +27,8 @@ namespace FedUp.DebugTools
     /// <summary>
     /// Hands-free play for evidence videos and build checks. Runs only when the game is launched with
     /// "-autopilot" (or when a test sets <see cref="forceRun"/>).
-    /// "-autopilot" plays the newest gate (3: sleep, the Phase 2 wake-up and its scares). "-autopilot-gate2b" plays
+    /// "-autopilot" plays the newest gate (4: snack, juice box, radio, Make Tea, appliance chaos). "-autopilot-gate3"
+    /// plays sleep and the Phase 2 wake-up with its scares. "-autopilot-gate2b" plays
     /// TV, the boss call and the cat; "-autopilot-gate2a" bath, clean-up and the call; "-autopilot-gate1" the porch,
     /// drop-things and toast; "-autopilot-tour" walks every room.
     /// </summary>
@@ -52,11 +57,12 @@ namespace FedUp.DebugTools
             bool gate1 = args.Contains("-autopilot-gate1");
             bool gate2a = args.Contains("-autopilot-gate2a");
             bool gate2b = args.Contains("-autopilot-gate2b");
+            bool gate3 = args.Contains("-autopilot-gate3");
             bool demo = forceRun || args.Contains("-autopilot");
-            if (!tour && !gate1 && !gate2a && !gate2b && !demo) { enabled = false; return; }
+            if (!tour && !gate1 && !gate2a && !gate2b && !gate3 && !demo) { enabled = false; return; }
             motor.UseVirtualInput = true;
             if (firstSwitch != null) firstSwitch.Toggled += _ => SwitchToggles++;
-            StartCoroutine(tour ? Tour() : gate1 ? Gate1Demo() : gate2a ? Gate2aDemo() : gate2b ? Gate2bDemo() : Gate3Demo());
+            StartCoroutine(tour ? Tour() : gate1 ? Gate1Demo() : gate2a ? Gate2aDemo() : gate2b ? Gate2bDemo() : gate3 ? Gate3Demo() : Gate4Demo());
         }
 
         void Update()
@@ -360,6 +366,127 @@ namespace FedUp.DebugTools
             if (quitWhenDone && !Application.isEditor) { yield return new WaitForSeconds(1f); Application.Quit(); }
         }
 
+        // ------------------------------------------------------------------ Gate 4 demo
+
+        /// <summary>The demo skips the long walks across the house (they're in the Gate 3 video): it steps in near.</summary>
+        IEnumerator StepNear(string id, float metres = 1.6f)
+        {
+            var t = TaskInteractable.Find(id);
+            if (t == null) yield break;
+            Vector3 best = t.transform.position; bool found = false;
+            for (int i = 0; i < 16 && !found; i++)
+            {
+                Vector3 dir = Quaternion.Euler(0f, i * 22.5f, 0f) * Vector3.forward;
+                Vector3 p = t.transform.position + dir * metres;
+                if (!NavMesh.SamplePosition(new Vector3(p.x, 4.85f, p.z), out var hit, 0.2f, NavMesh.AllAreas)) continue;
+                if (Physics.Linecast(hit.position + Vector3.up * 1.6f, t.transform.position, out var b) && !b.collider.transform.IsChildOf(t.transform)
+                    && b.collider.GetComponentInParent<IInteractable>() == null) continue;
+                best = hit.position; found = true;
+            }
+            motor.Teleport(best + Vector3.up * 0.2f, motor.Yaw);
+            yield return null;
+            yield return FaceTowards(t.transform.position);
+        }
+
+        IEnumerator Gate4Demo()
+        {
+            var cutscenes = FindAnyObjectByType<CutscenePlayer>();
+            var runner = FindAnyObjectByType<TaskRunner>();
+            var frustration = FindAnyObjectByType<FrustrationSystem>();
+            var torch = FindAnyObjectByType<PhoneTorch>();
+            var snack = FindAnyObjectByType<SnackTask>();
+            var tea = FindAnyObjectByType<TeaTask>();
+            var chaos = FindAnyObjectByType<ApplianceChaosTask>();
+            yield return new WaitForSeconds(0.3f);
+            if (cutscenes != null) cutscenes.SkipAll();
+            FindAnyObjectByType<FrontDoor>()?.Open();
+            // the evening and the wake-up are in the earlier videos: start at 3 AM, in the living room
+            while (!(runner.Current is SnackTask)) { runner.DebugSkipCurrent(); yield return null; }
+            motor.Teleport(GameObject.Find("ROOM_LivingRoom").transform.position + Vector3.up * 0.2f, 90f);
+            yield return new WaitForSeconds(0.5f);
+            torch.VirtualToggle();
+            Debug.Log("AUTOPILOT START gate4");
+
+            // the fridge: "Back so soon?", a juice box today, then the snack bar
+            snack.ForcedJuice = true;
+            yield return Use("fridge");
+            yield return new WaitForSeconds(1.8f);
+            yield return Use("juice_box");
+            yield return new WaitForSeconds(2.2f);
+            yield return Use("snack");
+            yield return new WaitForSeconds(2.5f);
+            Debug.Log($"AUTOPILOT SNACK got={snack.Got} juice={snack.JuiceDrunk}");
+
+            // the radio on the dining table: switch it on, let it play a moment
+            yield return Use("radio");
+            yield return new WaitForSeconds(4f);
+            yield return Use("radio");
+
+            // tea: gather the three things, they vanish
+            while (!(runner.Current is TeaTask)) yield return null;
+            foreach (var id in new[] { "tea_milk", "tea_sugar", "tea_leaves" }) yield return Use(id);
+            yield return new WaitForSeconds(2.2f);
+            // the hunt: milk in the bathtub, sugar by the phone, to the station; then the tea on the guest bed
+            yield return StepNear("tea_milk"); yield return Use("tea_milk");
+            yield return StepNear("tea_sugar"); yield return Use("tea_sugar");
+            yield return StepNear("tea_station"); yield return Use("tea_station");
+            yield return StepNear("tea_leaves"); yield return Use("tea_leaves");
+            Debug.Log($"AUTOPILOT HUNT placed={tea.Session.Placed} carrying={tea.Session.Carrying}");
+            // walk back into the kitchen with the last one: the power cuts
+            motor.Teleport(GameObject.Find("ROOM_LivingRoom").transform.position + Vector3.up * 0.2f, 90f);
+            yield return WalkTo(GameObject.Find("ROOM_Kitchen").transform.position, "kitchen");
+            yield return new WaitForSeconds(2f);
+            Debug.Log($"AUTOPILOT POWER cut={tea.Session.Stage == TeaStage.PowerCut}");
+            yield return StepNear("fuse_box"); yield return Use("fuse_box", hold: 1.3f);
+            yield return new WaitForSeconds(1f);
+            yield return StepNear("tea_station"); yield return Use("tea_station");
+            yield return Use("kettle");
+            // the kettle screams; the cabinets throw: step aside every throw
+            float t0 = Time.time;
+            while (tea.Current != TeaTask.Step.Dodge && Time.time - t0 < 15f) yield return null;
+            var k = GameObject.Find("ROOM_Kitchen").transform.position;
+            Vector3 a = new Vector3(k.x, k.y + 0.2f, k.z - 1f), b = new Vector3(k.x, k.y + 0.2f, k.z + 1f);
+            motor.Teleport(a, 90f);
+            yield return FaceTowards(TaskInteractable.Find("kettle").transform.position + Vector3.up * 0.8f);
+            int seen = tea.Launched; bool atA = true;
+            t0 = Time.time;
+            while (tea.Current == TeaTask.Step.Dodge && Time.time - t0 < 30f)
+            {
+                if (tea.Launched != seen)
+                {
+                    seen = tea.Launched;
+                    atA = !atA;
+                    for (float s = 0f; s < 0.3f; s += Time.deltaTime) { motor.VirtualMove = new Vector2(atA ? -1f : 1f, 0f); yield return null; } // sidestep
+                    motor.VirtualMove = Vector2.zero;
+                    motor.Teleport(atA ? a : b, motor.Yaw);
+                }
+                yield return null;
+            }
+            Debug.Log($"AUTOPILOT DODGE hits={tea.Dodge?.Hits} step={tea.Current}");
+            if (tea.Current == TeaTask.Step.StoveOff) yield return Use("kettle", hold: 1.3f);
+            else if (tea.Current == TeaTask.Step.Fire) yield return Use("kettle", hold: 2.3f);
+            yield return new WaitForSeconds(2.5f);
+
+            // the appliances: each one when the director lets it
+            foreach (var id in new[] { "microwave", "blender", "sink_tap" })
+            {
+                t0 = Time.time;
+                while (chaos.Session == null && Time.time - t0 < 30f) yield return null;
+                yield return new WaitForSeconds(1.5f);
+                if (id == "sink_tap") yield return StepNear(id);
+                yield return Use(id, hold: 1.3f);
+                yield return new WaitForSeconds(1f);
+            }
+            yield return new WaitForSeconds(3f);
+
+            Finished = true;
+            motor.VirtualMove = Vector2.zero;
+            float avg = frameCount > 0 ? frameTimeSum / frameCount : 0f;
+            Debug.Log($"AUTOPILOT DONE gate4 snack={snack.Got} juice={snack.JuiceDrunk} tea={tea.Current} dodgeHits={tea.Dodge?.Hits} " +
+                      $"appliances={chaos.ShutOffCount}/3 allDone={runner.AllDone} frustration={frustration?.Value:F1} avgFrameMs={avg:F2} worstFrameMs={worstFrame:F2}");
+            if (quitWhenDone && !Application.isEditor) { yield return new WaitForSeconds(1f); Application.Quit(); }
+        }
+
         IEnumerator PressWhenMarker(MakeToastTask toast, float at)
         {
             float started = Time.time;
@@ -380,14 +507,21 @@ namespace FedUp.DebugTools
             Vector3 away = motor.transform.position - target.position;
             away.y = 0f;
             if (away.sqrMagnitude < 0.01f) away = -target.forward;
-            Vector3 stand = target.position + away.normalized * Mathf.Min(1.0f, away.magnitude);
+            Vector3 stand = StandSpot(target, away.normalized, Mathf.Min(1.0f, away.magnitude));
             stand.y = motor.transform.position.y; // stand on the floor below wall- and ceiling-mounted things
             if (away.magnitude > 1.2f) yield return WalkTo(stand, target.name);
             yield return FaceTowards(target.position);
             yield return new WaitForSeconds(0.25f);
             var focused = interactor.Current as Component;
             if (press == null && (focused == null || focused.transform != target))
-                Debug.LogWarning($"AUTOPILOT MISSED {target.name} at {target.position} from {motor.transform.position}, looking at {(focused != null ? focused.name : "nothing")}");
+            {
+                Debug.LogWarning($"AUTOPILOT MISSED {target.name} at {target.position} from {motor.transform.position}, looking at {(focused != null ? focused.name : "nothing")}" +
+                                 $" (interactor on={interactor.isActiveAndEnabled}, usable={target.GetComponent<IInteractable>()?.CanInteract(null)}, ray: {RayHits()})");
+                // aim again for a moment before giving up (the camera can still be settling after a teleport)
+                yield return FaceTowards(target.position);
+                yield return new WaitForSeconds(0.5f);
+                if (ReferenceEquals(interactor.Current as Component, target.GetComponent<IInteractable>() as Component)) Debug.Log($"AUTOPILOT RECOVERED {target.name}");
+            }
             if (hold > 0f)
             {
                 interactor.VirtualHeld = true;
@@ -397,6 +531,37 @@ namespace FedUp.DebugTools
             else if (press != null) press();
             else interactor.VirtualPress();
             yield return new WaitForSeconds(0.5f);
+        }
+
+        /// <summary>
+        /// Where to stand to use something: the way we came if it has a clear view, otherwise the nearest direction
+        /// around it that does (things you can't use right now don't block the view, as for the interactor).
+        /// </summary>
+        Vector3 StandSpot(Transform target, Vector3 preferred, float distance)
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                float a = (i % 2 == 0 ? 1 : -1) * ((i + 1) / 2) * 22.5f;
+                Vector3 feet = target.position + Quaternion.Euler(0f, a, 0f) * preferred * Mathf.Max(0.8f, distance);
+                if (!NavMesh.SamplePosition(new Vector3(feet.x, motor.transform.position.y, feet.z), out var hit, 0.6f, NavMesh.AllAreas)) continue;
+                if (ClearView(hit.position + Vector3.up * 1.6f, target)) return hit.position;
+            }
+            return target.position + preferred * distance;
+        }
+
+        static bool ClearView(Vector3 eye, Transform target)
+        {
+            Vector3 to = target.position - eye;
+            var hits = Physics.RaycastAll(eye, to.normalized, to.magnitude + 0.05f, ~0, QueryTriggerInteraction.Collide);
+            System.Array.Sort(hits, (x, y) => x.distance.CompareTo(y.distance));
+            foreach (var h in hits)
+            {
+                if (h.collider.transform.IsChildOf(target)) return true;
+                var other = h.collider.GetComponentInParent<IInteractable>();
+                if (other != null && !other.CanInteract(null)) continue;
+                return false;
+            }
+            return true;
         }
 
         IEnumerator WaitForCutscene(CutscenePlayer cutscenes)
@@ -474,6 +639,17 @@ namespace FedUp.DebugTools
             }
             motor.VirtualMove = Vector2.zero;
             done?.Invoke(true);
+        }
+
+        /// <summary>What the crosshair ray passes through, nearest first (for MISSED logs).</summary>
+        string RayHits()
+        {
+            var t = interactor.transform;
+            var hits = Physics.RaycastAll(t.position, t.forward, 4f, ~0, QueryTriggerInteraction.Collide);
+            System.Array.Sort(hits, (x, y) => x.distance.CompareTo(y.distance));
+            var names = new System.Collections.Generic.List<string>();
+            foreach (var h in hits) if (!h.collider.transform.IsChildOf(motor.transform)) names.Add($"{h.collider.name}@{h.distance:F2}");
+            return names.Count > 0 ? string.Join(", ", names) : "nothing";
         }
 
         IEnumerator FaceTowards(Vector3 point)

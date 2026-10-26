@@ -16,6 +16,8 @@ namespace FedUp.Interaction
         public IInteractable Current { get; private set; }
         /// <summary>Autopilot/tests: hold the interact button.</summary>
         public bool VirtualHeld { get; set; }
+        /// <summary>The interact button went down this frame, whatever you're looking at (for mash QTEs).</summary>
+        public bool InteractPressedThisFrame { get; private set; }
 
         InputAction interact;
         HoldProgress hold;
@@ -54,6 +56,7 @@ namespace FedUp.Interaction
             bool pressed = virtualPressQueued || (interact != null && interact.WasPressedThisFrame());
             bool held = VirtualHeld || virtualPressQueued || (interact != null && interact.IsPressed());
             virtualPressQueued = false;
+            InteractPressedThisFrame = pressed;
 
             if (Current != null && Current.CanInteract(this))
             {

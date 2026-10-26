@@ -120,6 +120,39 @@
 
 ---
 
+## Phase 2 calm and Phase 3 chaos (Gate 4)
+
+**Route:** living room → **fridge** (a snack; maybe a juice box) → *(optional: the **radio** on the dining table)* → **make tea**:
+- gather the three things in the kitchen; they vanish
+- find them across the house (bathroom, hallway shelf, guest bedroom)
+- the power cuts as you bring the last one back; walk the dark to the **fuse box** in the back hall
+- back to the stove, kettle on, dodge what's thrown from the cabinets
+- then the **appliances** turn on: kitchen microwave, kitchen blender, the bathroom sink
+
+**The idea (from `HORROR_RESEARCH.md`):**
+- **The appliances you used in the evening turn on you** (the uncanny).
+- **The calm items sit right after the hard stretches** (the sweet spot).
+- **Every hiding place and item says something about him** (embedded story).
+- **The tea run sends you back through every scare location from Gate 3.**
+
+| # | Thing | Why it's there |
+|---|---|---|
+| 40 | **Fridge** (already in the kitchen) | GDD: *"Grab a snack"*, in the dark, at 3 AM. The one appliance that never broke all evening is the one that talks back: *"Back so soon?"* |
+| 41 | **Snack items on the shelves** | Leftovers, milk, one sad snack bar: the fridge of a man who eats alone. Above 30% they slide away from your look (GDD), so the shelf mocks you too. |
+| 42 | **Juice box (sometimes)** | GDD: the fridge "occasionally" has one, −5. A kid's drink in a grown man's fridge: a small comfort from someone he used to be. It sits right after the fridge has mocked you (the sweet spot). |
+| 43 | **Radio on the dining table** | The only table in the house set for more than one person. The lo-fi song is the one from his old relationship (STORY_FLOW), playing to six empty chairs. Optional, −5 if you let it play 15 s. It's on the way from the fridge to the stove. |
+| 44 | **Tea things** (start in the kitchen) | Milk in the fridge, sugar beside the toaster, tea in the cabinet above: where anyone would keep them. That makes their vanishing a clean violation of the ordinary. |
+| 45 | **Milk hidden in the bathtub** | Absurd (milk in a bath) and a return to the room that scared you: past the cracked mirror and the door that slammed. |
+| 46 | **Sugar on the hallway shelf, beside the phone** | The dark corridor of the footsteps. The phone sits silent, which primes call #2 (Gate 5): absence where you expect presence. |
+| 47 | **Tea on the guest-bedroom bed** | The first time you enter the room built for guests who never came. A made bed nobody sleeps in (research: empty places meant for people are eerie). The bed's headboard is against the east wall, the only unbroken wall, straight ahead as you come through the west doorway; the tea lies at the foot nearest the door, so you see it as you look in. It stays out of the middle of the room, where it would block the way in. |
+| 48 | **Fuse box in the back hall** | Fuse boxes live by the back door. It's the darkest end of the house, where the cat came and went. When the power cuts you walk the footsteps corridor in total darkness with only the torch. |
+| 49 | **Stove and kettle** (south end of the counter) | The counter where the toast went wrong in the evening; the same place fails you twice. The kettle screams in the boss's voice (an approved absurd beat). |
+| 50 | **Throws come from the upper cabinets** | A second-hand kitchen's cabinets bang open and hurl junk. They're above the stove, where you're already looking, so every throw is readable and dodging is fair. |
+| 51 | **Microwave** (north end of the counter) and **blender** (on the kitchen props unit) | Two appliances a step apart in the kitchen: the first chaos is close, the second just after. |
+| 52 | **The bathroom sink overflows** | The sink you splashed your face at in Gate 3, now flooding. Far from the kitchen, so the 10 s race crosses the house: the chaos reaches every room you trusted. |
+
+---
+
 ## Decisions (not places)
 
 | Decision | Reason |
@@ -134,6 +167,11 @@
 | **Scares cost no frustration** | The table has no Phase 2 scare values (only the final-sleep jumpscare, +15). Scares are atmosphere until you say otherwise. |
 | **"Splash water on your face" (Phase 2 objective)** | **My proposal, not GDD.** At 3 AM he needs a reason to walk somewhere, and this one takes him down the hallway to a mirror. You can veto it. |
 | **The mirror shows a figure, not a face** | The GDD's "distorted smile or missing eyes" needs a real face. In grey boxes a dark figure in the doorway reads better. The face comes in the art pass. |
+| **Toast timing tightened** (designer, 24 Oct: "no way to make a mistake on the first try") | The bar now takes 2.8 s (was 3.5), the golden zone is 62–73% (was 60–75%), and the marker is "crooked": slow at first, then it lurches through the golden zone. About 0.26 s to hit (was over 0.5 s). Fair, but you have to watch. |
+| **Bath clothes keep being snatched** (designer, 24 Oct) | A snatch every 2.6 s for as long as you're relaxing, going round the hooks; a saved piece can be snatched again. Each asks for a different arrow. Lost pieces stay lost (+6 each); nothing lost is −10. |
+| **Tea: carry two at a time; one re-scatter at most** | GDD: carry 2; GDD rebalance: the tea items reset once. If you don't restore power in 30 s, everything goes back to its hiding place (+10), but only once a night, so the task can't loop forever. |
+| **Dodge counts only in the kitchen** | GDD: "dodge thrown objects for 20 seconds". Running away pauses it instead of skipping it: the stove is what you're protecting. |
+| **Appliance chaos: one at a time, director-gated** | GDD: they "activate on their own". The director spaces them like scares, so they never stack into noise. |
 | **The demo videos fix the dice** | So every outcome shows up in 60 seconds. The real odds are covered by the tests. |
 
 ## How this is checked

@@ -115,7 +115,9 @@ namespace FedUp.Tests
                 yield return null;
             }
             Time.timeScale = 1f;
-            Assert.AreEqual(3, bath.Session.Saved);
+            Assert.AreEqual(bath.Session.Snatches, bath.Session.Saved, "every snatch saved");
+            Assert.AreEqual(0, bath.Session.Lost);
+            Assert.Greater(bath.Session.Snatches, 3, "designer, 24 Oct: the clothes keep being snatched");
             Assert.AreEqual(10f, frustration.Value, 1e-3f, "-10 for a perfect bath");
             Assert.AreEqual(TaskState.Done, bath.State);
             Assert.IsFalse(motor.Locked, "out of the bath");

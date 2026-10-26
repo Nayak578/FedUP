@@ -1,69 +1,31 @@
-# Launches a slice build with the hands-free autopilot, records its window with ffmpeg,
-# and copies the player log next to the video.
-# Usage: powershell -ExecutionPolicy Bypass -File tools/capture_build.ps1 -Slice 2a
-param([string]$Slice = "0", [int]$MaxSeconds = 90)
+# Launches a slice build with the hands-free autopilot, has the game save its own frames (FrameRecorder, "-record"),
+# stitches them into the evidence mp4 with ffmpeg, and keeps the player log next to the video.
+# The game records itself, so it can run behind other windows: nothing else on the desktop ends up in the video,
+# and it never takes focus or the mouse.
+# Usage: & tools/capture_build.ps1 -Slice 4      (-Demo "-autopilot-gate3" for an older gate's demo)
+param([string]$Slice = "0", [string]$Demo = "-autopilot", [int]$MaxSeconds = 900)
 
 $root = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $root "builds\slice_$Slice\FedUp.exe"
 $evidence = Join-Path $root "evidence"
 $video = Join-Path $evidence "slice_$Slice.mp4"
 $log = Join-Path $evidence "slice_${Slice}_build.log"
+$frames = Join-Path $env:TEMP "fedup_frames_slice_$Slice"
 New-Item -ItemType Directory -Force $evidence | Out-Null
 Remove-Item $video, $log -ErrorAction SilentlyContinue
+if (Test-Path $frames) { Remove-Item -Recurse -Force $frames }
 
-$game = Start-Process $exe -ArgumentList "-autopilot", "-logFile", "`"$log`"", "-screen-fullscreen", "0", "-screen-width", "1280", "-screen-height", "720" -PassThru
-
-# wait for the game window
-$deadline = (Get-Date).AddSeconds(30)
-while ((Get-Date) -lt $deadline) {
-    $game.Refresh()
-    if ($game.MainWindowHandle -ne 0) { break }
-    Start-Sleep -Milliseconds 250
-}
-if ($game.MainWindowHandle -eq 0) { Write-Output "FAIL: game window never appeared"; exit 1 }
-$title = $game.MainWindowTitle
-
-# GDI window capture can't see DirectX frames, so record the desktop region the window occupies, with the window in front.
-Add-Type @"
-using System; using System.Runtime.InteropServices;
-public static class Win {
-  [StructLayout(LayoutKind.Sequential)] public struct RECT { public int L, T, R, B; }
-  [DllImport("user32.dll")] public static extern bool GetClientRect(IntPtr h, out RECT r);
-  [DllImport("user32.dll")] public static extern bool ClientToScreen(IntPtr h, ref POINT p);
-  [StructLayout(LayoutKind.Sequential)] public struct POINT { public int X, Y; }
-  [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
-  [DllImport("user32.dll")] public static extern bool SetProcessDPIAware();
-  [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
-}
-"@
-[Win]::SetProcessDPIAware() | Out-Null
-Start-Sleep -Milliseconds 800
-[Win]::SetForegroundWindow($game.MainWindowHandle) | Out-Null
-$r = New-Object Win+RECT; [Win]::GetClientRect($game.MainWindowHandle, [ref]$r) | Out-Null
-$p = New-Object Win+POINT; [Win]::ClientToScreen($game.MainWindowHandle, [ref]$p) | Out-Null
-$w = ($r.R - $r.L) - (($r.R - $r.L) % 2); $h = ($r.B - $r.T) - (($r.B - $r.T) % 2)
-[Win]::SetCursorPos($p.X + [int]($w / 2), $p.Y + [int]($h / 2)) | Out-Null  # keep the mouse off the taskbar so no thumbnail popup lands in the video
-
-$psi = New-Object System.Diagnostics.ProcessStartInfo
-$psi.FileName = "ffmpeg"
-$psi.Arguments = "-hide_banner -loglevel error -y -f gdigrab -framerate 30 -draw_mouse 0 -offset_x $($p.X) -offset_y $($p.Y) -video_size ${w}x${h} -i desktop -t $MaxSeconds -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p `"$video`""
-$psi.RedirectStandardInput = $true
-$psi.UseShellExecute = $false
-$ff = [System.Diagnostics.Process]::Start($psi)
 $started = Get-Date
-
-# stop recording when the autopilot reports it is done (the game quits ~1 s later)
-while (-not $game.HasExited -and ((Get-Date) - $started).TotalSeconds -lt $MaxSeconds) {
-    if ((Test-Path $log) -and (Select-String -Path $log -Pattern "AUTOPILOT DONE" -Quiet)) { break }
-    Start-Sleep -Milliseconds 250
-}
-if (-not $ff.HasExited) { $ff.StandardInput.Write("q"); $ff.StandardInput.Close() }
-$ff.WaitForExit(15000) | Out-Null
-$game.WaitForExit(10000) | Out-Null
-if (-not $game.HasExited) { Stop-Process -Id $game.Id }
-
+$game = Start-Process $exe -ArgumentList $Demo, "-record", "`"$frames`"", "-logFile", "`"$log`"", "-screen-fullscreen", "0", "-screen-width", "1280", "-screen-height", "720" -PassThru
+# the autopilot quits the game when it's done
+if (-not $game.WaitForExit($MaxSeconds * 1000)) { Stop-Process -Id $game.Id; Write-Output "TIMEOUT: stopped the game after $MaxSeconds s" }
 $secs = [int]((Get-Date) - $started).TotalSeconds
-Write-Output "window title: $title"
-Write-Output "recorded ~$secs s -> $video ($([int]((Get-Item $video).Length / 1KB)) KB)"
+
+$count = (Get-ChildItem $frames -Filter "f_*.jpg" -ErrorAction SilentlyContinue).Count
+if ($count -eq 0) { Write-Output "FAIL: the game saved no frames"; exit 1 }
+& ffmpeg -hide_banner -loglevel error -y -framerate 30 -i (Join-Path $frames "f_%05d.jpg") -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p $video
+Remove-Item -Recurse -Force $frames
+
+Write-Output "ran $secs s, saved $count frames = $([math]::Round($count / 30, 1)) s of game -> $video ($([int]((Get-Item $video).Length / 1KB)) KB)"
 Write-Output "--- autopilot / error lines from the player log ---"
-Select-String -Path $log -Pattern "AUTOPILOT|Exception|Error" | ForEach-Object { $_.Line } | Select-Object -First 40
+Select-String -Path $log -Pattern "AUTOPILOT|RECORDING|Exception|Error" | ForEach-Object { $_.Line } | Select-Object -First 40

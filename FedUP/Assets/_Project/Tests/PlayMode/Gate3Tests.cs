@@ -272,7 +272,7 @@ namespace FedUp.Tests
             Assert.IsInstanceOf<ReachTask>(runner.Current);
             Stand(GameObject.Find("ROOM_LivingRoom").transform.position, 0f);
             yield return new WaitForSeconds(0.3f);
-            Assert.IsTrue(runner.AllDone);
+            Assert.IsInstanceOf<FedUp.Tasks.Snack.SnackTask>(runner.Current, "Gate 4 carries on: the fridge");
             StringAssert.Contains("not going back to sleep", subtitles.LastText);
         }
 

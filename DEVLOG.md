@@ -1,5 +1,124 @@
 # Fed Up — Devlog
 
+## Slice 4 (Greybox Gate 4) — 24 Oct 2026
+
+**Question for you:** *"Does the night feel like it's escalating, and do the calm moments land?"*
+
+### Your notes from Gate 3, done first
+- **"No way to make a mistake on the first try" (toast).**
+  - It *was* possible to fail, but far too easy to succeed: the marker crawled across in 3.5 s and the golden zone lasted over half a second.
+  - The toaster is now **crooked**. The marker starts slow and **lurches faster right through the golden zone**, the sweep is 2.8 s, and the zone is 62–73%.
+  - That leaves about a quarter of a second to hit. Fair, but you have to watch.
+- **"The clothes should keep being snatched" (bath).** For as long as you lie there, the ghost snatches at the clothes **every 2.6 s, going round the hooks**.
+  - A piece you save goes back on its hook and can be snatched again.
+  - Each snatch asks for a different arrow.
+  - Lost pieces stay lost (+6 each); nothing lost is still −10.
+- **Research.** `HORROR_RESEARCH.md` collects papers and studies on fear, immersion and storytelling, and turns them into **10 rules for Fed Up**, with sources. The highlights:
+  - **Fear has a sweet spot:** a heart-rate study at a haunted house found enjoyment peaks at medium fear, and the peak differs per person. That's why the director and the calm items matter.
+  - **Sound does most of the work.**
+  - **The familiar made slightly wrong** (the uncanny).
+  - **Show less than you could.**
+  - **Absurd first, then scary.**
+  - **He under-reacts to the impossible and over-reacts to the trivial:** that's what "real and unreal at the same time" is made of.
+  - **Depict despair honestly and suicide responsibly.** Your Burial ending (a promise to live) is already the protective kind of story.
+  - It ends with **three questions for you** (below).
+
+### What changed (Gate 4)
+- **Grab a snack** (back in the living room at 3 AM, then the fridge):
+  - The fridge greets you: *"Back so soon?"*
+  - **Above 30% the snack bar slides away** if you stare at it. Grab it mid-slide and you miss (+5).
+  - **Hover 3 s** and the fridge mocks you (+3).
+  - **Leave it open 10 s** and a hand at the back pulls it the other way. Mash E to win, or lose it (+10).
+  - **15 s** and the door slams.
+  - The snack itself: −5.
+  - **Sometimes there's a juice box** (−5, optional): *"Apple. Like the ones Mom used to pack."*
+- **The radio** on the dining table (optional, from the wake-up on): the lo-fi song from his old relationship. Let it play **15 s within earshot** for −5, once a night.
+- **Phase 3 begins with Make Tea.** The fog turns **purple** (the game's supernatural signal).
+  1. **Gather** the milk, sugar and tea in the kitchen. **The lights stutter, and they're gone.**
+  2. **Find them:**
+     - the milk **in the bathtub**
+     - the sugar **beside the silent phone**
+     - the tea **on the guest-room bed** (a made bed nobody sleeps in)
+  3. **Carry two at a time** to the tea station.
+  4. Walk back into the kitchen with the last one and **the power cuts** (once).
+     - **Every light and the TV** go off; the wall switches stop working, and only your torch works.
+     - **You have 30 s to flip the breaker in the back hall**, down the dark footsteps corridor.
+     - **Too slow** and everything goes back to its hiding place (+10). That happens **once a night at most** (the GDD rebalance).
+  5. **Put the kettle on.** It screams **in the boss's voice**: *"WHERE. IS. MY. FILE."*
+  6. **The cabinets start throwing.** Each throw is announced by a cabinet banging open. **Stay in the kitchen and dodge for 20 s** (leaving pauses it).
+     - Each hit is +7.
+     - **Three hits and the stove catches fire** (+15, no tea).
+     - Survive, turn the stove off: **tea (−10)**: *"Tea. I made tea. In this economy."*
+- **Appliance chaos:** when the ghost director allows, **the microwave, then the blender, then the bathroom sink** switch themselves on.
+  - **Hold E within 10 s** to shut each off, or it overloads (+10).
+  - **Above 50%** a pale hand may cover the switch (+7). **Shine the torch on it and press E** to scare it off (−5).
+  - The sink is the one you splashed your face at in Gate 3, now overflowing, across the house from the kitchen.
+- *"The whole house is awake. So I am too."* That's the end of this slice; Gate 5 brings phone calls #2–4, cat visits #2–3, the final sleep and the endings.
+
+### What I decided and why
+- **Every placement has its reason** in `DESIGN_LOGIC.md` #40–52. The hiding places send you back through Gate 3's scare rooms, the fuse box sits at the dark end where the cat came and went, and the throws come from above the stove where you're already looking.
+- **The guest room was empty in the house model,** so I added a made double bed. The tea needs a bed nobody sleeps in.
+- **The power cuts once per hunt.** The tests caught that walking back in after fixing the fuse cut it again, forever. The GDD says "upon returning with the 3rd item", so it's once.
+- **The dodge pauses if you leave the kitchen,** so running away isn't a skip.
+- **Appliances are released by the ghost director, one at a time,** so they space out like scares instead of piling into noise.
+- **The line "…I'm not going back to sleep."** now plays when you get back to the living room, since the night now carries on from there.
+
+### Evidence
+- **Rules, test-first:**
+  - Bath and toast: red `118 tests, 106 passed, 12 failed`, green **118/118**.
+  - Gate 4 (snack, tea, dodge, appliances, radio, plus 13 frustration values): red `162 tests, 123 passed, 39 failed`, green.
+  - One more rule found by the in-game tests (the power cut must not repeat): red `Expected: False, But was: True`, green.
+  - Final: **163 passed, 0 failed**.
+- **Play Mode: 70 passed, 0 failed** (20 new). Highlights:
+  - **Snack:** "Back so soon?"; above 30% it slides away and a grab mid-slide fails; at 10 s the ghost hand wins (+10).
+  - **Tea:** gathering makes everything vanish; you carry two at a time; the last one cuts the power **once**; the fuse box fixes it; too slow re-scatters everything once (+10).
+  - **Dodge:** dodge every throw and turn the stove off for −10; three hits start the fire.
+  - **Appliances:** above 50% the ghost covers the switch, and the torch scares it off.
+  - **Design reasons are tested** for every Gate 4 placement:
+    - the hiding places (bathtub, the phone, the guest bed)
+    - the fuse box in the back hall
+    - the radio on the dining table
+    - throws coming from above the stove
+    - **new:** the guest bed stands against a wall.
+- **Two real problems found and fixed while proving it:**
+  - **The guest bed was in the middle of the room, in the way.** My builder looked for "the far wall" in a direction where the room has an opening, so it fell back to the centre. The new design test went red ("the bed touches a wall: was False"), and the "every room reachable" test failed for the Guest Bedroom. The bed now has its headboard against the east wall, straight ahead as you come in the west door, with the tea at the foot nearest you (`DESIGN_LOGIC.md` #47, updated). Both tests are green.
+  - **The evidence recorder filmed the desktop,** so another window in front of the game ended up in the first take. **The game now records its own frames** (`-record`). The video can only ever contain the game, and recording no longer takes your focus or your mouse.
+- **Packaged build** `builds/slice_4/FedUp.exe`, run hands-free, 0 exceptions:
+  `AUTOPILOT SNACK got=True juice=True` · `AUTOPILOT HUNT placed=2 carrying=1` · `AUTOPILOT POWER cut=True` · `AUTOPILOT DODGE hits=0 step=StoveOff` · `AUTOPILOT DONE gate4 … tea=Done appliances=3/3 allDone=True`
+- **Smoothness** (a plain run, not recording): average frame **2.6 ms**, worst **8.8 ms**. The first build had one **86 ms** hitch, the same cause as Gate 3's: the new sounds (kettle, fire, lo-fi…) were being generated mid-scene. They're now made at load too.
+- **Video:** `evidence/slice_4.mp4`, 59 s, cut from 123 s of the real build in nine pieces:
+  1. fridge and juice box
+  2. radio
+  3. gather and vanish
+  4. power cut
+  5. fuse
+  6. the kettle's boss voice and the cabinets
+  7. stove off and the microwave
+  8. blender
+  9. the overflowing sink and the closing line
+
+  There's no sound in the video (as before); play the build for that.
+
+### Playtest checklist (10 minutes)
+1. **Toast and bath first:** miss the toast on purpose once, then hit it. **Is the crooked lurch readable, or does it feel unfair?** Lie in the bath for a while. **Do the repeated snatches feel like a ghost toying with you, or like a chore?**
+2. **The tea hunt:** find the milk, sugar and tea without hints, then walk back into the kitchen. **Did the power cut make you run, and did 30 s feel tight but fair?**
+3. **The dodge and the appliances:** **does the kettle's boss voice get a laugh, and then do the cabinets make you stop laughing?**
+
+**Feel question:** *"Does the night feel like it's escalating, and do the calm moments land?"*
+
+### Three questions for you (from the research)
+1. **When does real sound arrive?**
+   - **A (I recommend this):** a small scare-sound pass now, about 15 sounds (footsteps, slam, sting, drone, fridge, kettle…). Every playtest after it tests the real fear.
+   - **B:** keep the placeholder tones until art pass A2, as planned. It's faster now, but your feel answers about scares are weaker until then.
+2. **A sensitivity reader for the Burial ending** before A4? I recommend yes.
+3. **The corrupted home-video idea:** in Phase 3, the kid on the tape looks at the camera a beat too long. Should I add it to the bible's proposals (Part 2)?
+
+### Known limits (not bugs)
+- **All sounds are still placeholder tones,** including the kettle's "voice", which is a subtitle over a sting. (See question 1.)
+- **The ghost hand, the thrown junk and the fire are grey boxes and glow.** They get real looks in the art passes.
+- **The appliances only switch on once each, in a fixed order** (microwave, blender, sink), as the GDD lists them. Gate 5 can let the director pick.
+- **The tea station is a thin pad on the counter.** Aim at its top; aiming at the front edge hits the counter. It becomes a proper tray in A1.
+
 ## Slice 3 (Greybox Gate 3) — 23 Oct 2026
 
 **Question for you:** *"Does the first scare land?"*

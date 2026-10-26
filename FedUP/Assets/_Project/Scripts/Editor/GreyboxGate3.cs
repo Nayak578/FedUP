@@ -217,7 +217,7 @@ namespace FedUp.EditorTools
             var back = systems.AddComponent<ReachTask>();
             back.objective = "Go back to the living room";
             GreyboxBuilder.Wire(back, ("destination", GameObject.Find("ROOM_LivingRoom").transform), ("player", c.Motor.transform), ("lines", lines));
-            G1.SetString(back, "lineId", "back_living");
+            G1.SetString(back, "lineId", "gate3_done"); // "...I'm not going back to sleep." (the night carries on)
 
             var runner = systems.GetComponent<TaskRunner>();
             var so = new SerializedObject(runner);
@@ -260,7 +260,7 @@ namespace FedUp.EditorTools
             return p;
         }
 
-        static Material Unlit(string name, Color c)
+        internal static Material Unlit(string name, Color c)
         {
             string path = $"Assets/_Project/Art/Materials/{name}.mat";
             var m = AssetDatabase.LoadAssetAtPath<Material>(path);
@@ -307,7 +307,7 @@ namespace FedUp.EditorTools
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
-        static Texture2D SoftPuffTexture()
+        internal static Texture2D SoftPuffTexture()
         {
             const string path = "Assets/_Project/Art/Textures/T_SoftPuff.png";
             var existing = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
@@ -330,7 +330,7 @@ namespace FedUp.EditorTools
         }
 
         /// <summary>Purple fog seeping out along the floor (GDD: purple fog is the supernatural signal).</summary>
-        static ParticleSystem FogPuffs(Transform doorway, float width)
+        internal static ParticleSystem FogPuffs(Transform doorway, float width)
         {
             var go = new GameObject("FX_DoorFog");
             go.transform.SetParent(doorway, false);

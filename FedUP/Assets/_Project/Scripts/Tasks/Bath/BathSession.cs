@@ -11,36 +11,41 @@ namespace FedUp.Tasks.Bath
     }
 
     /// <summary>
-    /// Take a Bath rules (GDD Phase 1 + designer notes). Holding the button fills the relax bar. On the clock,
-    /// clothes start sliding off the hooks one by one; each shows a direction prompt you must press within the
-    /// window to snatch it back, or it's lost. The bath ends once you're relaxed and nothing is sliding.
+    /// Take a Bath rules (GDD Phase 1 + designer notes: "keep an eye on all clothes"). Holding the button fills the
+    /// relax bar. For as long as you're relaxing, the ghost keeps snatching at whatever still hangs on the hooks:
+    /// each snatch shows a direction prompt; press it in time and the piece goes back on its hook (it can be
+    /// snatched again), miss it and that piece is gone. The bath ends once you're relaxed and nothing is sliding.
     /// </summary>
     public sealed class BathSession
     {
-        readonly float relaxSeconds, window;
-        readonly float[] slideTimes;
+        readonly float relaxSeconds, window, snatchEvery;
         readonly BathDirection[] directions;
-        float clock, relaxed;
-        int next;
-        int activeItem = -1;
-        float activeLeft;
+        readonly bool[] gone;
+        float clock, relaxed, nextSnatchAt, activeLeft;
+        int activeItem = -1, cursor;
+        BathDirection activeDirection;
 
-        public BathSession(float relaxSeconds, float[] slideTimes, BathDirection[] directions, float windowSeconds)
+        public BathSession(float relaxSeconds, int items, float firstSnatchAt, float snatchEvery, BathDirection[] directions, float windowSeconds)
         {
             this.relaxSeconds = relaxSeconds <= 0f ? 0.01f : relaxSeconds;
-            this.slideTimes = slideTimes ?? new float[0];
-            this.directions = directions ?? new BathDirection[0];
+            Items = items < 0 ? 0 : items;
+            OnHooks = Items;
+            gone = new bool[Items];
+            nextSnatchAt = firstSnatchAt;
+            this.snatchEvery = snatchEvery <= 0.1f ? 0.1f : snatchEvery;
+            this.directions = directions == null || directions.Length == 0 ? new[] { BathDirection.Left } : directions;
             window = windowSeconds;
         }
 
-        public int Items => slideTimes.Length;
+        public int Items { get; }
+        public int OnHooks { get; private set; }
+        public int Snatches { get; private set; }
         public float Relax => relaxed / relaxSeconds > 1f ? 1f : relaxed / relaxSeconds;
-        public BathPrompt? Prompt => activeItem < 0 ? (BathPrompt?)null
-            : new BathPrompt(activeItem, DirectionFor(activeItem), activeLeft, window);
+        public BathPrompt? Prompt => activeItem < 0 ? (BathPrompt?)null : new BathPrompt(activeItem, activeDirection, activeLeft, window);
         public int Saved { get; private set; }
         public int Lost { get; private set; }
         public int LostThisTick { get; private set; }
-        public bool Finished => Relax >= 1f && activeItem < 0 && (next >= slideTimes.Length || Saved + Lost >= slideTimes.Length);
+        public bool Finished => Relax >= 1f && activeItem < 0;
         public bool Perfect => Finished && Lost == 0;
 
         public void Tick(float dt, bool relaxHeld)
@@ -55,29 +60,35 @@ namespace FedUp.Tasks.Bath
                 activeLeft -= dt;
                 if (activeLeft <= 0f)
                 {
+                    gone[activeItem] = true;
+                    OnHooks--;
                     Lost++;
                     LostThisTick++;
                     activeItem = -1;
                 }
             }
-            // once relaxed, any clothes that haven't started sliding are safe
-            if (activeItem < 0 && next < slideTimes.Length && Relax < 1f && clock >= slideTimes[next])
+
+            // the ghost keeps snatching while you're relaxing, at whatever still hangs there, round the hooks
+            if (activeItem < 0 && Relax < 1f && OnHooks > 0 && clock >= nextSnatchAt)
             {
-                activeItem = next++;
+                while (gone[cursor % Items]) cursor++;
+                activeItem = cursor % Items;
+                cursor++;
+                activeDirection = directions[Snatches % directions.Length];
                 activeLeft = window;
+                Snatches++;
+                nextSnatchAt += snatchEvery;
+                if (nextSnatchAt < clock) nextSnatchAt = clock + snatchEvery; // a snatch that waited doesn't double up
             }
-            if (Relax >= 1f && activeItem < 0) next = slideTimes.Length;
         }
 
         /// <summary>Returns true if this press snatched the sliding item back.</summary>
         public bool Press(BathDirection d)
         {
-            if (activeItem < 0 || d != DirectionFor(activeItem)) return false;
+            if (activeItem < 0 || d != activeDirection) return false;
             Saved++;
             activeItem = -1;
             return true;
         }
-
-        BathDirection DirectionFor(int item) => directions.Length == 0 ? BathDirection.Left : directions[item % directions.Length];
     }
 }

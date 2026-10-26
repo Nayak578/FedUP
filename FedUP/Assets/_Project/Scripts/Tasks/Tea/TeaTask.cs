@@ -26,6 +26,8 @@ namespace FedUp.Tasks.Tea
         [SerializeField] TaskInteractable[] items = new TaskInteractable[0];
         [SerializeField] string[] itemNames = { "milk", "sugar", "tea" };
         [SerializeField] Transform[] hideSpots = new Transform[0];
+        [Tooltip("Gate 5b: where the tea's hiding place is heard from when they vanish (the Storeroom, over the kitchen).")]
+        [SerializeField] Transform heardFrom;
         [SerializeField] Transform[] placedSpots = new Transform[0];
         [SerializeField] TaskInteractable station;
         [SerializeField] TaskInteractable kettle;
@@ -145,7 +147,12 @@ namespace FedUp.Tasks.Tea
             items[i].gameObject.SetActive(false);
             sfx.PlayOneShot(PlaceholderTones.Get("click"));
             station.available = true;
+            Taken?.Invoke(i);
         }
+
+        /// <summary>An item was picked up during the hunt (Gate 5b: taking the tea in the Storeroom blacks you out).</summary>
+        public event System.Action<int> Taken;
+        public TaskInteractable Item(int i) => items[i];
 
         IEnumerator Vanish()
         {
@@ -155,6 +162,14 @@ namespace FedUp.Tasks.Tea
             Hide();
             Current = Step.Hunt;
             lines?.Say("tea_vanished");
+            if (heardFrom != null)
+            {
+                // a tin drops and rolls across the ceiling: the Storeroom is right above the kitchen (DESIGN_LOGIC #78)
+                yield return new WaitForSeconds(1.6f);
+                AudioSource.PlayClipAtPoint(PlaceholderTones.Get("tin"), heardFrom.position, 1f);
+                yield return new WaitForSeconds(1.6f);
+                lines?.Say("tea_upstairs");
+            }
         }
 
         /// <summary>Everything still hidden goes to (or back to) its hiding place.</summary>

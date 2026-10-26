@@ -43,11 +43,50 @@ namespace FedUp.Ghost
         public event Action<int> PhaseChanged;
 
         float[] baseline;
+        Color[] baselineColour;
+        (Color colour, float density, Color ambient) eveningFog;
+
+        /// <summary>
+        /// The loop ending: the house as it was at the start of the evening, as if nothing happened. Every room light back
+        /// at its evening brightness and colour, no fog of the night, no drone.
+        /// </summary>
+        public void RestoreEvening()
+        {
+            for (int i = 0; i < roomLights.Length; i++)
+            {
+                var l = roomLights[i];
+                if (l == null) continue;
+                var f = l.GetComponent<LightFlicker>();
+                if (f != null) f.enabled = false;
+                l.intensity = baseline[i];
+                l.color = baselineColour[i];
+                l.enabled = true;
+            }
+            RenderSettings.fogColor = eveningFog.colour;
+            RenderSettings.fogDensity = eveningFog.density;
+            RenderSettings.ambientLight = eveningFog.ambient;
+            if (phase2Look != null) phase2Look.weight = 0f;
+            if (drone != null) drone.Stop();
+            if (whispers != null) whispers.Stop();
+        }
+
+        /// <summary>The night's sounds stop (dying in your sleep: the silence after).</summary>
+        public void Silence()
+        {
+            if (drone != null) drone.Stop();
+            if (whispers != null) whispers.Stop();
+        }
 
         void Awake()
         {
             baseline = new float[roomLights.Length];
-            for (int i = 0; i < roomLights.Length; i++) baseline[i] = roomLights[i] != null ? roomLights[i].intensity : 0f;
+            baselineColour = new Color[roomLights.Length];
+            for (int i = 0; i < roomLights.Length; i++)
+            {
+                baseline[i] = roomLights[i] != null ? roomLights[i].intensity : 0f;
+                baselineColour[i] = roomLights[i] != null ? roomLights[i].color : Color.white;
+            }
+            eveningFog = (RenderSettings.fogColor, RenderSettings.fogDensity, RenderSettings.ambientLight);
             if (phase2Look != null) phase2Look.weight = 0f;
             if (torch != null) torch.Available = false;
         }
@@ -57,7 +96,8 @@ namespace FedUp.Ghost
             director?.EnterPhase(1);
             // make the night's sounds now, at load, not mid-scene (a 6 s drone costs a visible hitch to generate)
             foreach (var tone in new[] { "drone", "whisper", "step", "sting", "slam", "creak",
-                                         "lofi", "kettle", "whoosh", "fire", "whine", "giggle", "buzz", "thunk", "pop", "click" }) PlaceholderTones.Get(tone);
+                                         "lofi", "kettle", "whoosh", "fire", "whine", "giggle", "buzz", "thunk", "pop", "click",
+                                         "tin", "beep", "ring", "jingle", "purr", "hiss" }) PlaceholderTones.Get(tone);
         }
 
         /// <summary>The house turns. Called while the screen is black (the sleep scene).</summary>

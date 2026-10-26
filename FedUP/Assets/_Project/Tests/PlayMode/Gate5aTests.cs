@@ -379,7 +379,7 @@ namespace FedUp.Tests
             Assert.AreEqual(FinalChoice.StayAsleep, fs.Session.Chosen);
             Assert.AreEqual(Ending.Loop, fs.Result);
             var endings = Object.FindAnyObjectByType<EndingPlayer>();
-            yield return WaitUntilFast(() => endings.CardShown, 4f, 2f);
+            yield return WaitUntilFast(() => endings.CardShown, 30f, 4f); // Gate 5b: the loop's scene plays first
             Assert.AreEqual("THE LOOP", endings.CardTitle);
         }
 
@@ -410,9 +410,10 @@ namespace FedUp.Tests
             Assert.AreEqual(FinalChoice.WakeUp, fs.Session.Chosen);
             Assert.AreEqual(Ending.BurialAnswered, fs.Result);
             var endings = Object.FindAnyObjectByType<EndingPlayer>();
-            yield return WaitUntilFast(() => endings.CardShown, 4f, 2f);
-            Assert.AreEqual("GHOST BURIAL", endings.CardTitle);
-            StringAssert.Contains("take a few days off", endings.CardLine);
+            Assert.AreEqual(Ending.BurialAnswered, endings.Current);
+            yield return new WaitForSeconds(1f);
+            // Gate 5b: the Burial now plays in the house first (its card is checked at the end of it, in Gate5bTests)
+            Assert.AreNotEqual(BurialSequence.Stage.Idle, Object.FindAnyObjectByType<BurialSequence>().Current);
         }
 
         [UnityTest]
@@ -427,7 +428,7 @@ namespace FedUp.Tests
             yield return new WaitUntil(() => fs.Resolved);
             Assert.AreEqual(Ending.DieInSleep, fs.Result, "the cat rule beats everything, even waking up");
             var endings = Object.FindAnyObjectByType<EndingPlayer>();
-            yield return WaitUntilFast(() => endings.CardShown, 4f, 2f);
+            yield return WaitUntilFast(() => endings.CardShown, 40f, 4f); // Gate 5b: the morning plays first
             Assert.AreEqual("YOU DIE IN YOUR SLEEP", endings.CardTitle);
             StringAssert.Contains("Nobody picks up", endings.CardLine, "it reads as a loss, not an escape");
         }

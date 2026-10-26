@@ -59,6 +59,7 @@ namespace FedUp.Tasks.Night
 
         public override void DebugComplete()
         {
+            StopAllCoroutines(); // a skipped trip must not say its line later
             if (charger != null) charger.available = false;
             if (torch != null) torch.Dying = false;
             base.DebugComplete();

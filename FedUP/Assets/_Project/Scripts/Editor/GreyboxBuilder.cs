@@ -207,6 +207,7 @@ namespace FedUp.EditorTools
             GreyboxGate3.Build(gate1);
             GreyboxGate4.Build(gate1);
             GreyboxGate5a.Build(gate1);
+            GreyboxGate5b.Build(gate1);
 
             foreach (var mb in Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None))
             {

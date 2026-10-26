@@ -149,3 +149,15 @@ The bedside drawer is in the upstairs Bedroom, but Phase 2 as built never sends 
 - It needs no battery mechanic, only the line and the objective. It fires once, whatever your frustration.
 - It goes in **Gate 5a**, with the Showdown that pays it off.
 
+### P3. Mom's mantra: the words (Claude, 26 Oct) — waiting for the designer's yes
+
+The bible says the mantra is his mother's, said over him when he was sick as a kid, but not what it is. Proposal:
+
+> *"I see you. I'm here. Stay with me."*
+
+- **In the voicemail** you only get pieces: *"…I see you… I'm here… stay with—"*.
+- **In the Burial** he says it whole, for the first time, and the ghost runs.
+- **It's also where his line to the player comes from.** *"I see you. I'm here."* is the Burial payoff (canon), so the thing he's been half-saying to you all night is his mother's prayer. It's a man who lost everything still carrying her words. The ghost wanted to be seen, and the mantra is literally "I see you".
+- **It's not tied to any religion,** so it reads in any language.
+- It's in the game as placeholder text. One line in the monologue file changes it.
+

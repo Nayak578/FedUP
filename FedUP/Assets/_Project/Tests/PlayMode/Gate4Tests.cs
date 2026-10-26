@@ -44,6 +44,8 @@ namespace FedUp.Tests
             phase = Object.FindAnyObjectByType<NightPhaseController>();
             // Gate 5a rings calls #3-4 over the chaos; these tests measure Gate 4's systems on their own
             Object.FindAnyObjectByType<FedUp.Tasks.Phone.MidTaskCalls>().enabled = false;
+            // Gate 5b blacks you out when you take the tea upstairs; these tests measure the tea task on its own
+            Object.FindAnyObjectByType<FedUp.Tasks.Tea.StoreroomBlackout>().enabled = false;
             Object.FindAnyObjectByType<CutscenePlayer>().SkipAll();
             motor.UseVirtualInput = true;
             Object.FindAnyObjectByType<FrontDoor>().Open();
@@ -69,7 +71,8 @@ namespace FedUp.Tests
                 float a = (i % 2 == 0 ? 1 : -1) * ((i + 1) / 2) * 22.5f;
                 Vector3 dir = Quaternion.Euler(0f, a, 0f) * preferred;
                 Vector3 feet = target.position + dir * 0.9f;
-                if (!NavMesh.SamplePosition(new Vector3(feet.x, 4.85f, feet.z), out var hit, 0.15f, NavMesh.AllAreas)) continue;
+                // either storey: the tea moved upstairs in Gate 5b
+                if (!NavMesh.SamplePosition(new Vector3(feet.x, Floor(target), feet.z), out var hit, 0.15f, NavMesh.AllAreas)) continue;
                 Vector3 eye = new Vector3(feet.x, hit.position.y + 1.6f, feet.z);
                 if (!ClearView(eye, target)) continue;
                 return feet;
@@ -99,12 +102,14 @@ namespace FedUp.Tests
             motor.SetLook(Mathf.Atan2(d.x, d.z) * Mathf.Rad2Deg, -Mathf.Atan2(d.y, new Vector2(d.x, d.z).magnitude) * Mathf.Rad2Deg);
         }
 
+        static float Floor(Transform t) => t.position.y > 7.5f ? 8.28f : 4.83f;
+
         IEnumerator GoTo(TaskInteractable t)
         {
             Vector3 away = motor.transform.position - t.transform.position; away.y = 0;
             if (away.sqrMagnitude < 0.01f) away = Vector3.right;
             Vector3 feet = StandSpot(t.transform, away.normalized);
-            feet.y = 4.83f + 0.3f;
+            feet.y = Floor(t.transform) + 0.3f;
             motor.Teleport(feet, 0f);
             yield return null;
             Aim(t.transform);
@@ -476,9 +481,10 @@ namespace FedUp.Tests
             Assert.Less(Vector3.Distance(new Vector3(milk.x, 0, milk.z), new Vector3(tub.center.x, 0, tub.center.z)), 0.5f, "milk in the bathtub");
             var sugar = GameObject.Find("CTRL_HideSugar").transform.position;
             Assert.Less(Vector3.Distance(sugar, GameObject.Find("PREF_Phone (greybox)").transform.position), 0.6f, "sugar beside the silent phone");
+            // the tea moved to the Storeroom shelf under the axe in Gate 5b (designer-approved P1; DESIGN_LOGIC #56)
             var tea = GameObject.Find("CTRL_HideTea").transform.position;
-            var bed = GameObject.Find("GB_GuestBed").GetComponent<Renderer>().bounds;
-            Assert.IsTrue(Inside(tea, bed.min.x, bed.max.x, bed.min.z, bed.max.z) && tea.y >= bed.max.y - 0.05f, "tea on the guest bed");
+            var axe = GameObject.Find("PROP_Axe (greybox)").transform.position;
+            Assert.Less(Vector2.Distance(new Vector2(tea.x, tea.z), new Vector2(axe.x, axe.z)), 0.4f, "tea under the axe in the Storeroom");
         }
 
         [Test]

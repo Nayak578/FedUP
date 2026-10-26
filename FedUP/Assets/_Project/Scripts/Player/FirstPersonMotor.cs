@@ -18,6 +18,16 @@ namespace FedUp.Player
         public bool Locked { get; set; }
         /// <summary>Lower the camera (e.g. lying in the bath). Null = normal eye height.</summary>
         public float? EyeHeightOverride { get; set; }
+        /// <summary>Feet stay put but you can still look around (a dream you can't walk out of).</summary>
+        public bool FeetFrozen { get; set; }
+        /// <summary>Squeezing through a gap: a thinner body. Null = normal.</summary>
+        public float? RadiusOverride
+        {
+            get => radiusOverride;
+            set { radiusOverride = value; if (controller != null && tuning != null) controller.radius = value ?? tuning.bodyRadius; }
+        }
+        /// <summary>Scales walking speed (1 = normal), e.g. shuffling sideways.</summary>
+        public float SpeedScale { get; set; } = 1f;
         public bool UseVirtualInput { get; set; }
         public Vector2 VirtualMove { get; set; }
         public bool VirtualSprint { get; set; }
@@ -32,6 +42,7 @@ namespace FedUp.Player
         InputAction move, look, sprint;
         Vector3 horizontalVelocity;
         float verticalVelocity, bobPhase;
+        float? radiusOverride;
 
         void Awake()
         {
@@ -91,7 +102,7 @@ namespace FedUp.Player
         {
             Vector2 moveInput = UseVirtualInput ? VirtualMove : move?.ReadValue<Vector2>() ?? Vector2.zero;
             bool sprinting = UseVirtualInput ? VirtualSprint : sprint != null && sprint.IsPressed();
-            if (Locked) { moveInput = Vector2.zero; sprinting = false; }
+            if (Locked || FeetFrozen) { moveInput = Vector2.zero; sprinting = false; }
 
             if (!Locked && !UseVirtualInput && look != null && Cursor.lockState == CursorLockMode.Locked)
             {
@@ -100,7 +111,7 @@ namespace FedUp.Player
             }
 
             moveInput = Vector2.ClampMagnitude(moveInput, 1f);
-            float speed = sprinting ? tuning.sprintSpeed : tuning.walkSpeed;
+            float speed = (sprinting ? tuning.sprintSpeed : tuning.walkSpeed) * SpeedScale;
             Vector3 wish = (transform.right * moveInput.x + transform.forward * moveInput.y) * speed;
             horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, wish, tuning.acceleration * speed * Time.deltaTime);
 

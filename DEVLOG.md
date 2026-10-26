@@ -1,5 +1,98 @@
 # Fed Up — Devlog
 
+## Slice 5b (Greybox Gate 5b) — 26 Oct 2026
+
+**Question for you:** *"Does every ending feel like the night you played?"*
+
+### What changed (Gate 5b)
+- **Mom's voicemail** (your Option A):
+  - His phone lies on the entrance table beside her birthday card, the screen pulsing "1 new voicemail".
+  - Listening is optional. It's a butt-dial: her voice in pieces mid-prayer (*"…I see you… I'm here… stay with— stay with me, stay—"*), then *"oh— did I— is this on?"*, then a click.
+  - You never hear the whole mantra. He says *"…Later, Mom."*
+  - The phone goes with him when the house turns, because it's his torch.
+- **The tea is upstairs now** (your approved P1). When the ingredients vanish, a tin drops and rolls across the ceiling over the kitchen: *"…That came from upstairs."*
+- **The Storeroom** is a walk-through room full of a life:
+  - boxes, a taped-up trophy box, a broken chair
+  - **the axe on the wall** straight ahead as you come in from the landing, with **the tea tin on the shelf right under it**
+  - against the north wall, a tall shelf with **the top of a door frame showing above it**, and dust drifting towards it
+- **The blackout:** take the tea and your breath is cold, the light goes, black.
+  - **The Locked Room, dreamt**, for six seconds. You can look but not walk. It's a desk and an upright chair facing a shut window and the factory glow, a water stain, a mattress on the floor. A shape passes the window (a 0.26 s glimpse).
+  - Black again, then **you wake lying in the bathtub**, the milk beside you (if you hadn't found it), still holding the tea.
+  - Once a night, and the hunt carries on.
+- **The endings now have scenes** (in-engine, first person, with placeholder captions; real cutscenes are A6):
+  - **The loop:** black, 7:00 AM, the alarm three times, then you're on the porch at dusk again, the house lit for the evening as if nothing happened. *"…Again."*
+  - **Unemployed, ghost angry:** 7:02 AM, *"…don't bother coming in."* Then the house rages: six doors slam upstairs in turn, the TV comes on to static, the lights stutter. *"…Yeah. Me too."*
+  - **You die in your sleep:** a slow fade, then the night's sounds stop. Morning. His phone rings, and rings: *Mom*. Nobody picks up.
+  - **Ghost Burial, the part in the house:**
+    1. He wakes calm and says his mother's words whole for the first time: *"I see you. I'm here. Stay with me."* (*"…That's what she used to say. When I was sick."*)
+    2. The ghost runs, never letting you closer than 3.5 m, through the Storeroom past the axe, to the north end of the east hallway.
+    3. It walks into the wall and leaves a crack. You take the axe; three swings.
+    4. You **squeeze sideways into the cavity between the double walls** and shuffle the length of the house to the triangle.
+    5. Darkness rises from a vent. Crawl in.
+    6. The other world is art pass A4, after the sensitivity read.
+- **Every ending card has a third line:** what happened to his job, his home and the ghost. The card lines got their final pass, e.g. the loop: *"7:00 AM. The alarm. The office. The bag. The toaster. He tells himself tonight will be different."*
+
+### What I decided and why
+- **The mantra's words are a proposal (P3 in the bible), waiting for your yes:** *"I see you. I'm here. Stay with me."*
+  - It's his mother's prayer, so it's also where his "I see you. I'm here." to the player comes from.
+  - The ghost wanted to be seen.
+  - One line in the monologue file changes it.
+- **The ghost's chase goes through the Storeroom on purpose.** The shortest route skips it, but the axe needs to be fresh in your mind when the crack appears.
+- **The cavity between the east walls measures about 0.3 m, not 0.6.** The hallway wall is 0.3 m thick (x −25.59 to −25.29) and the cavity ends at −24.97. So "squeezes sideways" is literal: in there your body is thin and you move at about a third of walking speed. `CLAUDE.md` says 0.6 m; that's your file, so I haven't changed it.
+- **The triangle has floor in this house model,** so the vent is a dark opening I placed in it, with darkness rising.
+- **The dream room keeps to research rule 10.** The chair is upright, nothing hangs, nothing is knocked over, and the stain could be water. A test checks the chair.
+- **Mom's voicemail doesn't use any word that would set the family's culture.** That's yours to decide if you want it.
+
+### Evidence
+- **Rules, test-first:** the blackout and the Burial chase went red `8 tests, 4 passed, 4 failed`, then green **8/8**.
+  - New card checks: every ending has a title, a line and an outcome; the Burial cards carry the canon voicemails; Mom's voicemail never contains the whole mantra.
+  - **EditMode 221 passed, 0 failed.**
+- **Play Mode: 109 passed, 0 failed** (13 new).
+  - The new tests cover the voicemail, the tea upstairs, the blackout, all four new ending scenes (including the whole Burial walked on foot through the cavity), and the design reasons.
+  - Older tests updated for the changes you approved:
+    - the tea's hiding place is now under the axe
+    - the Gate 4 tea tests reach upstairs, with the blackout switched off so they measure the tea task alone
+    - the 5a sleep tests wait for each ending's scene before its card
+- **Packaged build** `builds/slice_5b/FedUp.exe`, run hands-free, 0 exceptions:
+  `AUTOPILOT VOICEMAIL listened=True` · `AUTOPILOT BLACKOUT happened=True glimpse=0.25s milkBeside=True tea=Carried` · `AUTOPILOT DONE gate5b … ending=BurialAnswered hits=3 card=GHOST BURIAL outcome='Job: safe · Home: safe · The ghost: at peace'`
+- **Smoothness** (a plain run): average **7.1 ms**, worst **17.9 ms**. The first run had a 124 ms hitch from sounds made on the spot (the tin, the alarm, the ring), now made at load.
+- **Found from the video and fixed:**
+  - **The Burial was lit red, torch and all.** The bed's red light stayed on after you woke; waking now restores the house's light.
+  - **A cat visit that hadn't started yet when you lay down started afterwards,** and said its line inside the wall. Going to bed now cancels cats that haven't come yet, as it does calls.
+- **Video:** `evidence/slice_5b.mp4`, 60 s, cut from 145 s of the real build in eleven pieces:
+  1. the voicemail
+  2. the vanish and the tin overhead
+  3. the axe
+  4. the dreamt Locked Room
+  5. waking in the bath
+  6. the mantra
+  7. the ghost going into the wall
+  8. the axe on the wall
+  9. the squeeze
+  10. the darkness and the vent
+  11. the card
+
+  No sound.
+
+### Playtest checklist (20 minutes)
+1. **The evening:** do you notice the phone on the table? If you listen, do the pieces of her voice stay with you?
+2. **The tea:** do you hear it go upstairs, and find the Storeroom? When you take the tea, does the blackout land as "did that happen?", and does waking in the bath make the bathroom worse after?
+3. **Two endings:**
+   - one calm night: wake up below 100% and follow the ghost into the walls
+   - one where you stay asleep
+
+   Does each scene say who he is?
+
+**Feel question:** *"Does every ending feel like the night you played?"*
+
+### Designer's answer: *awaiting your one sentence*
+
+### Known limits (not bugs)
+- **The other world (the Burial's second half) is art pass A4**, after the sensitivity read. The greybox ends at the vent.
+- **The scenes are greybox:** captions, fades and the house itself. Proper cutscenes are A6.
+- **The mantra's words are a proposal** until you say yes (P3).
+- **Placeholder tones throughout,** including Mom's voice and the alarm (A2 gives six real sounds).
+
 ## Slice 5a (Greybox Gate 5a) — 26 Oct 2026
 
 **Question for you:** *"Does the ending choice feel earned?"*

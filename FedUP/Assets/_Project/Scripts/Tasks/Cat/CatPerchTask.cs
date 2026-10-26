@@ -158,6 +158,7 @@ namespace FedUp.Tasks.Cat
         /// <summary>You went to bed with the cat still waiting: it leaves, unpetted.</summary>
         public void Dismiss()
         {
+            if (State == TaskState.Waiting) { base.DebugComplete(); return; } // it hadn't come yet: now it won't
             if (State != TaskState.Active || Session == null || Session.Done) return;
             StopAllCoroutines();
             hopping = false;

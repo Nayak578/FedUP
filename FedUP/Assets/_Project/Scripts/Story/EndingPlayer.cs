@@ -15,6 +15,8 @@ namespace FedUp.Story
     public class EndingPlayer : MonoBehaviour
     {
         [SerializeField] ShowdownSequence showdown;
+        [SerializeField] BurialSequence burial;
+        [SerializeField] EndingScenes scenes;
         [SerializeField] FirstPersonMotor motor;
         [SerializeField] Interactor interactor;
         [SerializeField] MonologueLibrarySO lines;
@@ -23,6 +25,8 @@ namespace FedUp.Story
         [SerializeField] Text title;
         [SerializeField] Text line;
         [SerializeField] Text prompt;
+        [Tooltip("The small line under the card: job, home, ghost.")]
+        [SerializeField] Text outcome;
         [SerializeField, Min(1f)] float againAfterSeconds = 4f;
 
         public bool Playing { get; private set; }
@@ -30,6 +34,7 @@ namespace FedUp.Story
         public bool CardShown { get; private set; }
         public string CardTitle => title != null ? title.text : null;
         public string CardLine => line != null ? line.text : null;
+        public string CardOutcome => outcome != null ? outcome.text : null;
 
         void Awake()
         {
@@ -41,9 +46,11 @@ namespace FedUp.Story
             if (Playing) return;
             Playing = true;
             Current = ending;
-            if ((ending == Ending.ShowdownAnswered || ending == Ending.ShowdownIgnored) && showdown != null)
-                showdown.Play(ending == Ending.ShowdownAnswered, () => StartCoroutine(Card(ending)));
-            else StartCoroutine(Card(ending));
+            System.Action card = () => StartCoroutine(Card(ending));
+            if ((ending == Ending.ShowdownAnswered || ending == Ending.ShowdownIgnored) && showdown != null) showdown.Play(ending == Ending.ShowdownAnswered, card);
+            else if ((ending == Ending.BurialAnswered || ending == Ending.BurialIgnored) && burial != null) burial.Play(card);
+            else if ((ending == Ending.Loop || ending == Ending.UnemployedGhostAngry || ending == Ending.DieInSleep) && scenes != null) scenes.Play(ending, card);
+            else card();
         }
 
         /// <summary>The card's id stem for each ending ("ending_loop_title", "ending_loop_line").</summary>
@@ -69,6 +76,7 @@ namespace FedUp.Story
             string id = IdFor(ending);
             title.text = Text(id + "_title");
             line.text = Text(id + "_line");
+            if (outcome != null) outcome.text = Text(id + "_outcome");
             prompt.text = "";
             card.SetActive(true);
             for (float t = 0f; t < 1.5f; t += Time.deltaTime) { SetAlpha(t / 1.5f); yield return null; }
@@ -87,7 +95,7 @@ namespace FedUp.Story
         void SetAlpha(float a)
         {
             var c = black.color; c.a = a; black.color = c;
-            foreach (var t in new[] { title, line, prompt }) { var k = t.color; k.a = a; t.color = k; }
+            foreach (var t in new[] { title, line, prompt, outcome }) { if (t == null) continue; var k = t.color; k.a = a; t.color = k; }
         }
     }
 }

@@ -222,6 +222,31 @@ Show-don't-tell is for **foreshadowing**, not for **finding your way**. Getting 
 
 ---
 
+## Gate 5b (26 Oct)
+
+**What 5b adds:**
+- the Storeroom blackout (approved P1)
+- Mom's voicemail (approved, Option A)
+- scenes for the five endings that only had cards
+- the final pass on every ending card
+
+The other world itself stays in art pass A4, after the sensitivity read.
+
+| # | Thing | Why it's there |
+|---|---|---|
+| 77 | **Mom's voicemail plays as fragments** (on his phone, entrance table, Phase 1) | Writing rule 2: a butt-dial, not a message. Her voice in pieces, mid-prayer: *"…I see you… I'm here… stay with—"*, then *"oh— did I— is this on—"*, then a click. You never hear it whole. Listening is optional. The phone goes into his pocket when he lies down on the couch, because it's the torch in Phase 2. |
+| 78 | **The tin drops on the ceiling** (the tea hunt) | Wayfinding for the tea's new hiding place (#56): the Storeroom is right above the kitchen. The vanish ends with a tin rolling across the ceiling over your head, and he says *"…That came from upstairs."* |
+| 79 | **The blackout, step by step** | 1. You take the tea from under the axe. 2. Your breath shows, the hum stops, the lights die. 3. Black. 4. You're in the Locked Room for six seconds. 5. Black again. 6. You're lying in the bathtub; the milk is beside you if it's still hidden. 7. You stand up. It happens once a night, never a cutscene, and you keep everything you carry. |
+| 80 | **The Locked Room, dreamt** (#58, made real) | A desk and an upright chair facing a shut window that looks out at the factory glow. An old water stain on the floor, a mattress on the floor in the corner, his kind of clutter but older. What moves is a shape crossing the window, under 0.3 s. Nothing suggests a method. You can look around but can't walk: it's a dream you can't wake from yet. |
+| 81 | **The loop** (stay asleep, phone answered) | 7:00 AM: the alarm. Then you're standing on the porch at dusk again, the bag in your hand, the door in front of you. The house is lit for the evening as if nothing happened. *"…Again."* It uses the exact first shot of the game, because a loop has to look like the start. |
+| 82 | **Unemployed, ghost angry** (stay asleep, ignored) | Morning. His phone on the entrance table: the boss's voicemail, *"…don't bother coming in."* Then the house answers for the ghost: every door upstairs slams in turn, the TV comes on to static, the lights stutter. He doesn't move. *"…Yeah. Me too."* |
+| 83 | **You die in your sleep** (the cat never petted) | The blanket comes all the way up over your eyes. Silence; the drone stops. Morning light under the door. His phone rings and rings on the bedside cabinet: *"Mom"*. Nobody picks up. It must read as a loss, not an escape (research rule 10): the last thing is someone who loved him, unanswered. |
+| 84 | **The Burial, in the house** (wake below 100%) | 1. He says Mom's mantra aloud, the whole thing for the first time. 2. The ghost, at the foot of the bed, flinches and flees. 3. You follow it upstairs: along the landing, through the Storeroom (past the axe), into the long east hallway; it never lets you closer than 3 m. 4. At the north end it walks into the east wall and is gone; a crack is left. 5. *"…The axe."* It's in the Storeroom, the room you just passed through. 6. Three swings break the plaster. 7. Behind it is the cavity between the double walls, about 0.3 m: you squeeze in sideways, slow, the whole length of the house. 8. At the south end is the triangle, and darkness rising from a vent in its floor. 9. Crawl in. **The other world (art pass A4) continues from here.** For now, a card. |
+| 85 | **Why the axe is in the Storeroom on the Burial route** | The chase passes through the Storeroom on purpose, so the axe is fresh in mind when the crack appears. If you did the blackout, you've seen it twice. |
+| 86 | **Ending cards** | Each card gives a title, then one line about him, then a small line of outcome: job, home, ghost. Short, dry, no moral. The Burial cards carry the boss's voicemail from canon (*"…take a few days off."* / *"…don't bother coming in."*). |
+
+---
+
 ## Decisions (not places)
 
 | Decision | Reason |

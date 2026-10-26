@@ -40,6 +40,7 @@ namespace FedUp.Audio
                 "kettle" => Make(name, 3.0f, t => 0.25f * Sine(1400f + 500f * Mathf.Sin(t * 9f), t) * Mathf.Clamp01(t / 1.5f)),
                 "whoosh" => Make(name, 0.5f, t => Noise(t) * 0.35f * Mathf.Sin(Mathf.PI * t / 0.5f)),
                 "fire" => Make(name, 3.0f, t => Noise(t) * 0.15f * (0.6f + 0.4f * Mathf.Sin(t * 13f))),
+                "tin" => Make(name, 1.4f, t => (Sine(2300f + 400f * Mathf.Sin(t * 20f), t) * 0.12f + Noise(t) * 0.08f) * ((t * 9f % 1f) < 0.35f ? 1f : 0.2f) * Env(t, 1.4f)),
                 "whine" => Make(name, 2.0f, t => 0.12f * Sine(620f + 40f * Mathf.Sin(t * 30f), t)),
                 // whole cycles in 6 s so the loop has no click
                 "drone" => Make(name, 6.0f, t => 0.25f * (Sine(48f, t) + Sine(48.5f, t) + 0.4f * Sine(96.5f, t)) + Noise(t) * 0.02f),

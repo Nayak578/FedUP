@@ -27,8 +27,9 @@ namespace FedUp.DebugTools
     /// <summary>
     /// Hands-free play for evidence videos and build checks. Runs only when the game is launched with
     /// "-autopilot" (or when a test sets <see cref="forceRun"/>).
-    /// "-autopilot" plays the newest gate (5a: the charger and the gun, calls #2-4, cats #2-3, the final sleep, the
-    /// Showdown). "-autopilot-gate4" plays the snack, juice box, radio, Make Tea and appliance chaos. "-autopilot-gate3"
+    /// "-autopilot" plays the newest gate (5b: Mom's voicemail, the Storeroom blackout, a calm final sleep and the
+    /// Burial in the house). "-autopilot-gate5a" plays the charger and the gun, calls #2-4, cats #2-3, the final sleep and
+    /// the Showdown. "-autopilot-gate4" plays the snack, juice box, radio, Make Tea and appliance chaos. "-autopilot-gate3"
     /// plays sleep and the Phase 2 wake-up with its scares. "-autopilot-gate2b" plays
     /// TV, the boss call and the cat; "-autopilot-gate2a" bath, clean-up and the call; "-autopilot-gate1" the porch,
     /// drop-things and toast; "-autopilot-tour" walks every room.
@@ -60,11 +61,12 @@ namespace FedUp.DebugTools
             bool gate2b = args.Contains("-autopilot-gate2b");
             bool gate3 = args.Contains("-autopilot-gate3");
             bool gate4 = args.Contains("-autopilot-gate4");
+            bool gate5a = args.Contains("-autopilot-gate5a");
             bool demo = forceRun || args.Contains("-autopilot");
-            if (!tour && !gate1 && !gate2a && !gate2b && !gate3 && !gate4 && !demo) { enabled = false; return; }
+            if (!tour && !gate1 && !gate2a && !gate2b && !gate3 && !gate4 && !gate5a && !demo) { enabled = false; return; }
             motor.UseVirtualInput = true;
             if (firstSwitch != null) firstSwitch.Toggled += _ => SwitchToggles++;
-            StartCoroutine(tour ? Tour() : gate1 ? Gate1Demo() : gate2a ? Gate2aDemo() : gate2b ? Gate2bDemo() : gate3 ? Gate3Demo() : gate4 ? Gate4Demo() : Gate5aDemo());
+            StartCoroutine(tour ? Tour() : gate1 ? Gate1Demo() : gate2a ? Gate2aDemo() : gate2b ? Gate2bDemo() : gate3 ? Gate3Demo() : gate4 ? Gate4Demo() : gate5a ? Gate5aDemo() : Gate5bDemo());
         }
 
         void Update()
@@ -650,6 +652,110 @@ namespace FedUp.DebugTools
                     && Flat(hit.position - want).magnitude < 0.35f && ClearView(hit.position + Vector3.up * 1.6f, t)) return hit.position;
             }
             return t.position + away.normalized * distance;
+        }
+
+        IEnumerator Gate5bDemo()
+        {
+            var cutscenes = FindAnyObjectByType<CutscenePlayer>();
+            var runner = FindAnyObjectByType<TaskRunner>();
+            var frustration = FindAnyObjectByType<FrustrationSystem>();
+            var torch = FindAnyObjectByType<PhoneTorch>();
+            var vm = FindAnyObjectByType<MomsVoicemail>();
+            var blackout = FindAnyObjectByType<StoreroomBlackout>();
+            var fs = FindAnyObjectByType<FinalSleepTask>();
+            var burial = FindAnyObjectByType<BurialSequence>();
+            var endings = FindAnyObjectByType<EndingPlayer>();
+            yield return new WaitForSeconds(0.3f);
+            if (cutscenes != null) cutscenes.SkipAll();
+            FindAnyObjectByType<FrontDoor>()?.Open();
+            Debug.Log("AUTOPILOT START gate5b");
+
+            // the evening: his phone on the table, Mom's voicemail
+            motor.Teleport(GameObject.Find("ROOM_Entrance").transform.position + Vector3.up * 0.2f, 180f);
+            yield return new WaitForSeconds(1f);
+            yield return Use("his_phone");
+            while (!vm.Listened) yield return null;
+            yield return new WaitForSeconds(2f);
+            Debug.Log($"AUTOPILOT VOICEMAIL listened={vm.Listened}");
+
+            // 3 AM, the tea: gathered, gone, and something rolls across the ceiling
+            while (!(runner.Current is TeaTask)) { runner.DebugSkipCurrent(); yield return null; }
+            var tea = (TeaTask)runner.Current;
+            motor.Teleport(GameObject.Find("ROOM_Kitchen").transform.position + Vector3.up * 0.2f, 180f);
+            torch.VirtualToggle();
+            yield return new WaitForSeconds(0.5f);
+            foreach (var id in new[] { "tea_milk", "tea_sugar", "tea_leaves" }) yield return Use(id);
+            while (tea.Current != TeaTask.Step.Hunt) yield return null;
+            yield return FaceTowards(motor.transform.position + Vector3.up * 3f + motor.transform.forward); // looking up at the ceiling
+            yield return new WaitForSeconds(3.6f);
+            // upstairs: through the landing doorway into the Storeroom, the axe straight ahead
+            motor.Teleport(new Vector3(-36.3f, 8.5f, -3.8f), 90f);
+            yield return new WaitForSeconds(0.4f);
+            yield return FaceTowards(GameObject.Find("PROP_Axe (greybox)").transform.position);
+            yield return new WaitForSeconds(1.5f);
+            yield return Use("tea_leaves");
+            while (blackout.Running) yield return null;
+            yield return new WaitForSeconds(1f);
+            Debug.Log($"AUTOPILOT BLACKOUT happened={blackout.Happened} glimpse={blackout.GlimpseVisibleFor:F2}s milkBeside={blackout.MilkWasBeside} tea={tea.Session.StateOf(2)}");
+
+            // the final sleep, calm: the cat was petted and the phone answered earlier in the night
+            while (!(runner.Current is FinalSleepTask)) { runner.DebugSkipCurrent(); yield return null; }
+            var run = (RunStateSO)typeof(FinalSleepTask).GetField("runState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(fs);
+            frustration.SetValue(40f);
+            motor.Teleport(GameObject.Find("ROOM_Bedroom").transform.position + Vector3.up * 0.2f, 180f);
+            yield return Use("bed", hold: 1.7f);
+            // (after lying down: going to bed sends any still-ringing call to the machine)
+            run.RecordCatVisit(1, true);
+            for (int i = 1; i <= 3; i++) run.RecordCall(i, true);
+            while (fs.Session == null || !fs.AwaitingWake) yield return null;
+            yield return new WaitForSeconds(2f);
+            interactor.VirtualPress(); // wake up, calm
+            while (!fs.Resolved) yield return null;
+            Debug.Log($"AUTOPILOT SLEEP ending={fs.Result} frustration={fs.FrustrationAtChoice:F0}");
+
+            // the Burial: the mantra, the chase, the wall, the axe, the gap, the vent
+            while (burial.Current != BurialSequence.Stage.Chase) yield return null;
+            for (int guard = 0; guard < 20 && burial.Current == BurialSequence.Stage.Chase; guard++)
+            {
+                var f = burial.Figure.position;
+                int stop = burial.Chase.Stop;
+                Vector3 back = Flat(motor.transform.position - f);
+                yield return WalkTo(f + (back.sqrMagnitude > 0.01f ? back.normalized : Vector3.right) * 2.6f, "the ghost");
+                yield return FaceTowards(burial.Figure.position);
+                float t0 = Time.time;
+                while (burial.Chase.Stop == stop && !burial.Chase.Gone && Time.time - t0 < 1.5f) yield return null;
+                if (burial.Chase.Stop == stop && !burial.Chase.Gone)
+                {
+                    // the walker snagged: step in close and look
+                    motor.Teleport(StandNear(burial.Figure, 2.4f) + Vector3.up * 0.2f, motor.Yaw);
+                    yield return FaceTowards(burial.Figure.position);
+                    yield return new WaitForSeconds(0.4f);
+                }
+            }
+            while (burial.Current != BurialSequence.Stage.Crack) yield return null;
+            yield return FaceTowards(GameObject.Find("CTRL_BurialWallFace").transform.position);
+            yield return new WaitForSeconds(3.4f);
+            yield return Use("axe", hold: 1.0f);
+            yield return new WaitForSeconds(0.5f);
+            for (int i = 0; i < 3; i++) { yield return Use("burial_wall"); yield return new WaitForSeconds(0.5f); }
+            yield return new WaitForSeconds(1.5f);
+            yield return Use("burial_wall"); // squeeze in
+            while (burial.Current == BurialSequence.Stage.Squeeze && motor.Locked) yield return null;
+            motor.SetLook(180f, 0f);
+            motor.VirtualMove = Vector2.up;
+            while (burial.Current == BurialSequence.Stage.Squeeze) yield return null;
+            motor.VirtualMove = Vector2.zero;
+            yield return new WaitForSeconds(2.5f);
+            yield return Use("vent");
+            while (!endings.CardShown) yield return null;
+            yield return new WaitForSeconds(3f);
+
+            Finished = true;
+            motor.VirtualMove = Vector2.zero;
+            float avg = frameCount > 0 ? frameTimeSum / frameCount : 0f;
+            Debug.Log($"AUTOPILOT DONE gate5b voicemail={vm.Listened} blackout={blackout.Happened} ending={endings.Current} hits={burial.Hits} card={endings.CardTitle} " +
+                      $"outcome='{endings.CardOutcome}' avgFrameMs={avg:F2} worstFrameMs={worstFrame:F2}");
+            if (quitWhenDone && !Application.isEditor) { yield return new WaitForSeconds(1f); Application.Quit(); }
         }
 
         IEnumerator PressWhenMarker(MakeToastTask toast, float at)

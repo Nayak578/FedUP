@@ -53,6 +53,8 @@ namespace FedUp.Tasks.Night
 
         AudioSource sfx;
         Vector3 blanketRest;
+        Light[] tinted;
+        Color[] before;
 
         void Awake()
         {
@@ -114,6 +116,8 @@ namespace FedUp.Tasks.Night
             Resolved = true;
             Debug.Log($"ENDING {Result}: cat={runState?.CatPettedEver} calls={runState?.CallsAnswered} choice={Session.Chosen} frustration={FrustrationAtChoice:F1}");
             if (ghostArms != null) ghostArms.SetActive(false);
+            // awake again: the red is gone (the Burial is the calm ending; the Showdown kills the lights anyway)
+            if (tinted != null) for (int i = 0; i < tinted.Length; i++) if (tinted[i] != null) tinted[i].color = before[i];
             Complete();
             endings.Play(Result);
         }
@@ -163,6 +167,7 @@ namespace FedUp.Tasks.Night
             var lights = FindObjectsByType<Light>(FindObjectsSortMode.None);
             var from = new Color[lights.Length];
             for (int i = 0; i < lights.Length; i++) from[i] = lights[i].color;
+            tinted = lights; before = from;
             for (float t = 0f; t < seconds; t += Time.deltaTime)
             {
                 for (int i = 0; i < lights.Length; i++) if (lights[i] != null && lights[i].type != LightType.Directional) lights[i].color = Color.Lerp(from[i], redLight, t / seconds);
